@@ -12,6 +12,8 @@
 
 # IntelliJ IDEA
 .idea
+build
+buildSrc/build
 
 # Gradle
 .gradle

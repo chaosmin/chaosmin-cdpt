@@ -1,23 +1,89 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-    kotlin("jvm") version "1.3.72"
+    base
+    kotlin("jvm") version Vers.App.kotlinVersion
+    id("org.jetbrains.kotlin.kapt") version Vers.App.kotlinVersion
+    id("org.sonarqube") version Vers.Plugins.sonarqubeVersion
+    maven
+    jacoco
 }
 
 group = "tech.chaosmin"
-version = "1.0-SNAPSHOT"
+version = "0.0.1.SNAPSHOT"
 
 repositories {
+    maven(url = "https://maven.aliyun.com/repository/central")
+    maven(url = "https://maven.aliyun.com/repository/gradle-plugin")
+    maven(url = "https://maven.aliyun.com/nexus/content/groups/public")
+    maven(url = "https://jitpack.io")
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("reflect"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Vers.Deps.kotlinCoroutinesVersion}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-common:${Vers.Deps.kotlinCoroutinesVersion}")
+
+    // spring boot
+    implementation("org.springframework.boot:spring-boot-starter:${Vers.Deps.springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-web:${Vers.Deps.springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-aop:${Vers.Deps.springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-actuator:${Vers.Deps.springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc:${Vers.Deps.springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis:${Vers.Deps.springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-mail:${Vers.Deps.springBootVersion}")
+
+    // jackson
+    implementation("com.fasterxml.jackson.core:jackson-core:${Vers.Deps.jacksonVersion}")
+    implementation("com.fasterxml.jackson.core:jackson-databind:${Vers.Deps.jacksonVersion}")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:${Vers.Deps.jacksonVersion}")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-joda:${Vers.Deps.jacksonVersion}")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${Vers.Deps.jacksonVersion}")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${Vers.Deps.jacksonVersion}")
+    implementation("com.fasterxml.jackson.module:jackson-module-parameter-names:${Vers.Deps.jacksonVersion}")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-properties:${Vers.Deps.jacksonVersion}")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${Vers.Deps.jacksonVersion}")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${Vers.Deps.jacksonVersion}")
+
+    // database
+    implementation("mysql:mysql-connector-java:${Vers.Deps.mysqlConnectorVersion}")
+    implementation("com.baomidou:mybatis-plus:${Vers.Deps.mybatisPlusVersion}") {
+        exclude("com.alibaba", "fastjson")
+    }
+    // implementation("com.github.chaosmin:chaosmin-common:${Vers.Deps.chaosminCommonVersion}")
+
+    // common tools
+    implementation("commons-codec:commons-codec:${Vers.Deps.commonsCodecVersion}")
+    implementation("org.mapstruct:mapstruct:${Vers.Deps.mapStructVersion}")
+    kapt("org.mapstruct:mapstruct-processor:${Vers.Deps.mapStructVersion}")
+
+    // config discovery
+    implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")
+    implementation("org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}") {
+        exclude("com.alibaba", "fastjson")
+    }
+
+    // swagger
+    implementation("io.springfox:springfox-swagger-ui:${Vers.Deps.swaggerVersion}")
+    implementation("io.springfox:springfox-bean-validators:${Vers.Deps.swaggerVersion}")
+
+    // logback
+    implementation("ch.qos.logback:logback-classic:${Vers.Deps.logbackVersion}")
+    implementation("org.codehaus.janino:janino:${Vers.Deps.janinoVersion}")
+    implementation("org.codehaus.janino:commons-compiler:${Vers.Deps.janinoVersion}")
 }
 
-tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "11"
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.isEnabled = true
+        csv.isEnabled = false
+        html.isEnabled = false
+        html.destination = file("${buildDir}/jacocoHtml")
     }
 }

@@ -24,7 +24,7 @@ repositories {
 dependencies {
     implementation(kotlin("reflect"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Vers.Deps.kotlinCoroutinesVersion}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-common:${Vers.Deps.kotlinCoroutinesVersion}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Vers.Deps.kotlinCoroutinesVersion}")
 
     // spring boot
     implementation("org.springframework.boot:spring-boot-starter:${Vers.Deps.springBootVersion}")
@@ -61,9 +61,9 @@ dependencies {
 
     // config discovery
     implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")
-    implementation("org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}") {
-        exclude("com.alibaba", "fastjson")
-    }
+    // implementation("org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}") {
+    //     exclude("com.alibaba", "fastjson")
+    // }
 
     // swagger
     implementation("io.springfox:springfox-swagger-ui:${Vers.Deps.swaggerVersion}")

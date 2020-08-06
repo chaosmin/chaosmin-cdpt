@@ -7,3 +7,17 @@ Base web application framework
 
 ---
 
+## 网关拦截
+
+> 对请求连接有权限校验, 目前支持读写操作区分
+>
+> 默认读写用户 admin/nimda
+>
+> 默认只读用户 reader/redaer
+>
+> 不过滤以下url
+
+1. /auth/**
+2. /event/**
+3. /ddl-change
+4. /system/ping-without-auth

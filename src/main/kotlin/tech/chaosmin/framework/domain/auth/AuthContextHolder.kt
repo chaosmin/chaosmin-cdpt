@@ -1,6 +1,5 @@
 package tech.chaosmin.framework.domain.auth
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication
 import org.springframework.core.NamedInheritableThreadLocal
 
 /**

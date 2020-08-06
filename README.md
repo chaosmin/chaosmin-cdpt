@@ -1,6 +1,7 @@
 # chaosmin-framework
 Base web application framework
 
+[![Build Status](https://travis-ci.org/chaosmin/chaosmin-framework.svg?branch=master)](https://travis-ci.org/chaosmin/chaosmin-framework)
 ![License](https://img.shields.io/github/license/chaosmin/chaosmin-framework.svg)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/chaosmin/chaosmin-framework)
 ![GitHub repo size](https://img.shields.io/github/repo-size/chaosmin/chaosmin-framework)

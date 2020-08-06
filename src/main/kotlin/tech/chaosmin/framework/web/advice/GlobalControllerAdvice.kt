@@ -16,7 +16,6 @@ import tech.chaosmin.framework.domain.RestResultExt.noPermissionRestResult
 import tech.chaosmin.framework.exception.AuthenticationException
 import tech.chaosmin.framework.exception.PermissionException
 import tech.chaosmin.framework.exception.ResourceNotExistException
-import javax.validation.ConstraintViolationException
 
 @Order(1)
 @RestControllerAdvice
@@ -74,11 +73,11 @@ class GlobalControllerAdvice {
     /**
      * 参数校验异常
      */
-    @ExceptionHandler(ConstraintViolationException::class)
-    fun handleConstraintViolationException(e: ConstraintViolationException): RestResult<Void> {
-        logger.error("捕获到参数校验异常", e)
-        return failureRestResult(e.message ?: "params validation failed")
-    }
+    // @ExceptionHandler(ConstraintViolationException::class)
+    // fun handleConstraintViolationException(e: ConstraintViolationException): RestResult<Void> {
+    //     logger.error("捕获到参数校验异常", e)
+    //     return failureRestResult(e.message ?: "params validation failed")
+    // }
 
     /**
      * 参数绑定异常

@@ -73,6 +73,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:${Vers.Deps.logbackVersion}")
     implementation("org.codehaus.janino:janino:${Vers.Deps.janinoVersion}")
     implementation("org.codehaus.janino:commons-compiler:${Vers.Deps.janinoVersion}")
+
+    // test
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${Vers.Deps.springBootVersion}")
 }
 
 tasks.withType<KotlinCompile> {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="600 seconds" debug="false">
+    <property name="logging.level" value="INFO"/>
+    <property name="project.name" value="chaosmin-user"/>
+
+    <include resource="logback-file-appender.xml"/>
+
+    <root>
+        <level value="${logging.level}"/>
+        <appender-ref ref="errorAppenderAsync"/>
+        <appender-ref ref="infoAppenderAsync"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

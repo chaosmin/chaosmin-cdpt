@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: chaosmin-user
+#  cloud:
+#    cloud:
+#      config:
+#        uri: ${CONFIG_SERVER_URL}
+#        name: chaosmin-platform
+#        label: ${spring.application.name}-${DEPLOY_ENV}
+#        failFast: true
+#        enabled: ${SPRING_DISCOVERY_ENABLE:true}
+#    nacos:
+#      config:
+#        file-extension: yml
+#        server-addr: ${CONFIG_SERVER_URL}
+#        ext-config[0].data-id: ${NACOS_COMMON:common.yml}
+#        ext-config[0].group: ${NACOS_GROUP}
+#        namespace: ${DEPLOY_ENV}
+#        group: ${NACOS_GROUP}
+#        enabled: ${NACOS_ENABLE:false}
+#        refresh:
+#          enabled: ${NACOS_REFRESH:false}
+#    consul:
+#      host: ${CONSUL_HOST}
+#      port: ${CONSUL_PORT}
+#      config:
+#        enabled: false
+#      discovery:
+#        health-check-path: ${server.servlet.context-path}/health
+#        health-check-interval: 15s
+#        health-check-critical-timeout: 60s
+#        query-passing: true
+#        prefer-ip-address: true
+#        tags: ${spring.application.name}-${DEPLOY_ENV}
+#    discovery:
+#      client:
+#        composite-indicator:
+#          enabled: false
+#        health-indicator:
+#          enabled: false
+#  sleuth:
+#    sampler:
+#      percentage: 1.0
+#    enabled: true
+
+management:
+  endpoint:
+    health:
+      show-details: always

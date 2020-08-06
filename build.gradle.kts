@@ -60,7 +60,7 @@ dependencies {
     kapt("org.mapstruct:mapstruct-processor:${Vers.Deps.mapStructVersion}")
 
     // config discovery
-    implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")
+    // implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")
     // implementation("org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}") {
     //     exclude("com.alibaba", "fastjson")
     // }

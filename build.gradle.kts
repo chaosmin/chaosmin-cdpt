@@ -49,7 +49,7 @@ dependencies {
 
     // database
     implementation("mysql:mysql-connector-java:${Vers.Deps.mysqlConnectorVersion}")
-    implementation("com.baomidou:mybatis-plus:${Vers.Deps.mybatisPlusVersion}") {
+    implementation("com.baomidou:mybatis-plus-boot-starter:${Vers.Deps.mybatisPlusVersion}") {
         exclude("com.alibaba", "fastjson")
     }
     // implementation("com.github.chaosmin:chaosmin-common:${Vers.Deps.chaosminCommonVersion}")
@@ -61,9 +61,9 @@ dependencies {
 
     // config discovery
     implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")
-    // implementation("org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}") {
-    //     exclude("com.alibaba", "fastjson")
-    // }
+    implementation("org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}") {
+         exclude("com.alibaba", "fastjson")
+    }
 
     // swagger
     implementation("io.springfox:springfox-swagger-ui:${Vers.Deps.swaggerVersion}")
@@ -80,6 +80,10 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 tasks.jacocoTestReport {

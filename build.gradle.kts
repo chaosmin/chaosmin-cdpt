@@ -49,7 +49,7 @@ dependencies {
 
     // database
     implementation("mysql:mysql-connector-java:${Vers.Deps.mysqlConnectorVersion}")
-    implementation("com.baomidou:mybatis-plus:${Vers.Deps.mybatisPlusVersion}") {
+    implementation("com.baomidou:mybatis-plus-boot-starter:${Vers.Deps.mybatisPlusVersion}") {
         exclude("com.alibaba", "fastjson")
     }
     // implementation("com.github.chaosmin:chaosmin-common:${Vers.Deps.chaosminCommonVersion}")
@@ -80,6 +80,10 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 tasks.jacocoTestReport {

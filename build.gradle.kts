@@ -58,6 +58,8 @@ dependencies {
     implementation("commons-codec:commons-codec:${Vers.Deps.commonsCodecVersion}")
     implementation("org.mapstruct:mapstruct:${Vers.Deps.mapStructVersion}")
     kapt("org.mapstruct:mapstruct-processor:${Vers.Deps.mapStructVersion}")
+    implementation("cn.hutool:hutool-all:${Vers.Deps.hutoolVersion}")
+    implementation("com.google.guava:guava:${Vers.Deps.guavaVersion}")
 
     // config discovery
     implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")

@@ -10,6 +10,8 @@ object Vers {
     object Deps {
         const val chaosminCommonVersion = "0.1.2.SNAPSHOT"
         const val commonsCodecVersion = "1.14"
+        const val guavaVersion = "29.0-jre"
+        const val hutoolVersion = "5.4.0"
         const val jacksonVersion = "2.11.2"
         const val janinoVersion = "3.1.0"
         const val kotlinCoroutinesVersion = "1.3.8"

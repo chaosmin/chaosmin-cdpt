@@ -1,6 +1,6 @@
 package tech.chaosmin.framework.config
 
-import org.apache.commons.lang3.ArrayUtils
+import org.apache.catalina.connector.RequestFacade
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -14,11 +14,15 @@ import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.utils.JsonUtil
 import java.util.function.Function
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+import kotlin.reflect.KClass
 
 @Aspect
 @Component
 @ConditionalOnProperty(prefix = "log.provider", name = ["enable"], havingValue = "true", matchIfMissing = false)
 class ProviderLogConfig {
+    private val ignoreTypes: Array<KClass<*>> = arrayOf(RequestFacade::class, ServletRequest::class, ServletResponse::class)
     private val log: Logger = LoggerFactory.getLogger(ProviderLogConfig::class.java)
 
     @Around("execution(public * tech.chaosmin.framework.provider.*.*(..))")
@@ -32,7 +36,7 @@ class ProviderLogConfig {
         val logContent = StringBuilder(lineSeparator)
 
         // 2.2 获取接口的类及方法名
-        logContent.append(String.format("Provider class:\t%s.%s", method.declaringClass.name, method.name))
+        logContent.append(String.format("%-25s: %s.%s", "Provider class", method.declaringClass.name, method.name))
         logContent.append(lineSeparator)
 
         // 2.3 拼装接口URL
@@ -40,7 +44,7 @@ class ProviderLogConfig {
         val parentClazz = method.declaringClass.interfaces[0]
         var url = ""
         val reqMappingFunc = Function { p: RequestMapping ->
-            java.lang.String.join(",", *if (ArrayUtils.isNotEmpty<String>(p.value)) p.value else p.path)
+            java.lang.String.join(",", *if (p.value.isNotEmpty()) p.value else p.path)
         }
 
         val baseMapping = parentClazz.getAnnotation(RequestMapping::class.java)
@@ -57,14 +61,23 @@ class ProviderLogConfig {
             url += reqMappingFunc.apply(methodReqMapping)
         }
 
-        logContent.append(String.format("Provider URL:\t\t%s", url + lineSeparator))
-        logContent.append(String.format("Provider request param:\t%s", JsonUtil.encode(joinPoint.args) + lineSeparator))
+        logContent.append(String.format("%-25s: %s", "Provider URL", url + lineSeparator))
+
+        val params = HashMap<String, Any>()
+        val args = joinPoint.args
+        val parameterNames = signature.parameterNames
+        for (i in args.indices) {
+            if (!contains(ignoreTypes, args[i])) {
+                params[parameterNames[i]] = args[i]
+            }
+        }
+        logContent.append(String.format("%-25s: %s", "Provider request param", JsonUtil.encode(params) + lineSeparator))
         return try {
             val r: Any = onProcess(joinPoint)
-            logContent.append(java.lang.String.format("Provider response param:\t%s", JsonUtil.encode(r)))
+            logContent.append(String.format("%-25s: %s", "Provider response param", JsonUtil.encode(r)))
             r
         } catch (ex: java.lang.Exception) {
-            logContent.append(String.format("Error:\t\t%s", ex.message))
+            logContent.append(String.format("%-25s: %s", "Provider Error", ex.message))
             onException(log, ex)
         } finally {
             log.info(logContent.toString())
@@ -76,8 +89,16 @@ class ProviderLogConfig {
         return joinPoint.proceed()
     }
 
+    /**
+     * 排除需要记录的Java类型
+     */
+    private fun contains(classes: Array<KClass<*>>, entity: Any?): Boolean {
+        if (entity == null) return false
+        return classes.any { entity.javaClass.name == it.qualifiedName }
+    }
+
     private fun onException(log: Logger, ex: Exception): RestResult<Void> {
         log.error("Provider Error {}", ex, ex)
-        return RestResultExt.failureRestResult("System error, please try later!")
+        return RestResultExt.failureRestResult("System error, please try later again!")
     }
 }

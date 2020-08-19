@@ -33,3 +33,9 @@ Base web application framework
 > 日志实现类为`tech.chaosmin.framework.web.filter.AccessLogFilter`。
 >
 > 底层日志依托于logback配置中的`requestInfoAppenderAsync`。
+
+### Web handler provider log
+
+> 通过配置`log.provider.enable=true`来打开WebHandlerProvider处理记录日志。
+>
+> 日志基于切面实现, 通过文本组装出入参并打印至日志文件。

@@ -28,7 +28,10 @@ dependencies {
 
     // spring boot
     implementation("org.springframework.boot:spring-boot-starter:${Vers.Deps.springBootVersion}")
-    implementation("org.springframework.boot:spring-boot-starter-web:${Vers.Deps.springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-web:${Vers.Deps.springBootVersion}"){
+        exclude("org.springframework.boot:spring-boot-starter-tomcat")
+    }
+    implementation("org.springframework.boot:spring-boot-starter-undertow:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-aop:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-actuator:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-jdbc:${Vers.Deps.springBootVersion}")

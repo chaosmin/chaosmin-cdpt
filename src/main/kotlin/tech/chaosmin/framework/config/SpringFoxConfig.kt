@@ -17,7 +17,7 @@ import java.util.*
 
 @Configuration
 @Import(BeanValidatorPluginsConfiguration::class)
-@ConditionalOnProperty(value = ["swagger.enable"], havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "swagger", value = ["enable"], havingValue = "true", matchIfMissing = false)
 open class SpringFoxConfig {
     private val logger = LoggerFactory.getLogger(SpringFoxConfig::class.java)
 

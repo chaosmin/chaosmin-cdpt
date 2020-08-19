@@ -9,7 +9,9 @@ Base web application framework
 
 ---
 
-## 网关拦截
+## 系统配置
+
+### 网关拦截
 
 > 对请求连接有权限校验, 目前支持读写操作区分
 >
@@ -23,3 +25,11 @@ Base web application framework
 2. /event/**
 3. /ddl-change
 4. /system/ping-without-auth
+
+### HTTP access log
+
+> 通过配置`log.access.enable=true`来打开HTTP请求记录日志。
+>
+> 日志实现类为`tech.chaosmin.framework.web.filter.AccessLogFilter`。
+>
+> 底层日志依托于logback配置中的`requestInfoAppenderAsync`。

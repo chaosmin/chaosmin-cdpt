@@ -71,9 +71,7 @@ dependencies {
     }
 
     // swagger
-    implementation("io.springfox:springfox-swagger2:${Vers.Deps.swaggerVersion}")
-    implementation("io.springfox:springfox-swagger-ui:${Vers.Deps.swaggerVersion}")
-    implementation("io.springfox:springfox-bean-validators:${Vers.Deps.swaggerVersion}")
+    implementation("io.springfox:springfox-boot-starter:${Vers.Deps.swaggerVersion}")
 
     // logback
     implementation("ch.qos.logback:logback-classic:${Vers.Deps.logbackVersion}")

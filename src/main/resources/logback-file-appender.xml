@@ -71,9 +71,7 @@
     <appender class="ch.qos.logback.core.rolling.RollingFileAppender" name="requestInfoAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d [%thread] %-5p [%c] [%F:%L] - [%X{method}] [%X{requestURIWithQueryString}] [%X{startTime}]
-                [%X{costTime}] [%X{status}] [ip=%X{remoteAddr}, realIp=%X{remoteRealIp}, ref=%X{referrer},
-                ua=%X{userAgent}, sid=%X{cookie.JSESSIONID}] [%X{requestServerInfo}] %msg%n
+            <pattern>%d [%thread] %-5p [%c] [%F:%L] - %msg%n
             </pattern>
         </encoder>
         <file>${logging.path}/${logging.requestInfoAppender.fileName}.log</file>

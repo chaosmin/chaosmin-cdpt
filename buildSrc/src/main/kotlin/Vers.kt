@@ -14,6 +14,7 @@ object Vers {
         const val hutoolVersion = "5.4.0"
         const val jacksonVersion = "2.11.2"
         const val janinoVersion = "3.1.0"
+        const val jwtVersion = "0.9.1"
         const val kotlinCoroutinesVersion = "1.3.8"
         const val logbackVersion = "1.2.3"
         const val mapStructVersion = "1.3.1.Final"

@@ -37,6 +37,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-data-redis:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-mail:${Vers.Deps.springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-security:${Vers.Deps.springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-configuration-processor:${Vers.Deps.springBootVersion}")
 
     // jackson
     implementation("com.fasterxml.jackson.core:jackson-core:${Vers.Deps.jacksonVersion}")
@@ -63,6 +65,7 @@ dependencies {
     kapt("org.mapstruct:mapstruct-processor:${Vers.Deps.mapStructVersion}")
     implementation("cn.hutool:hutool-all:${Vers.Deps.hutoolVersion}")
     implementation("com.google.guava:guava:${Vers.Deps.guavaVersion}")
+    implementation("io.jsonwebtoken:jjwt:${Vers.Deps.jwtVersion}")
 
     // config discovery
     // implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")

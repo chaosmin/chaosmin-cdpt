@@ -13,4 +13,8 @@ mybatis-plus:
     db-config:
       logic-delete-field: is_deleted
 
-global-anonymous: true
+server:
+  interceptor:
+    except:
+      - /swagger-ui/**
+      - /login

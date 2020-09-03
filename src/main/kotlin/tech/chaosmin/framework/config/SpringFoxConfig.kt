@@ -7,13 +7,19 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration
+import springfox.documentation.builders.ParameterBuilder
 import springfox.documentation.builders.PathSelectors
 import springfox.documentation.builders.RequestHandlerSelectors
+import springfox.documentation.builders.RequestParameterBuilder
+import springfox.documentation.schema.ModelRef
+import springfox.documentation.schema.ModelSpecification
 import springfox.documentation.service.ApiInfo
 import springfox.documentation.service.Contact
+import springfox.documentation.service.RequestParameter
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spring.web.plugins.Docket
 import java.util.*
+
 
 @Configuration
 @Import(BeanValidatorPluginsConfiguration::class)
@@ -57,6 +63,10 @@ open class SpringFoxConfig {
     @Bean
     open fun apiDocket(): Docket {
         logger.info(">> init apiDocket.")
+        val parameterBuilder =  RequestParameterBuilder()
+        val parameters = ArrayList<RequestParameter>()
+        parameterBuilder.name("Authorization").description("令牌").required(false).build()
+        parameters.add(parameterBuilder.build())
         return Docket(DocumentationType.SWAGGER_2)
             .enable(show)
             .select()
@@ -64,6 +74,7 @@ open class SpringFoxConfig {
             .paths(PathSelectors.any())
             .build()
             .apiInfo(apiInfo())
+            .globalRequestParameters(parameters)
     }
 
     private fun apiInfo(): ApiInfo {

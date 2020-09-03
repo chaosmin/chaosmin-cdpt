@@ -8,15 +8,20 @@ import org.springframework.web.servlet.HandlerInterceptor
 import tech.chaosmin.framework.domain.auth.AuthContextHolder
 import tech.chaosmin.framework.domain.auth.HttpMethodAction
 import tech.chaosmin.framework.domain.auth.UrlAction
+import tech.chaosmin.framework.domain.configuration.Server
 import tech.chaosmin.framework.exception.AuthenticationException
 import tech.chaosmin.framework.exception.PermissionException
 import tech.chaosmin.framework.service.AuthService
+import javax.annotation.Resource
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
 @Order(-1000)
 class AuthInterceptor(private val authService: AuthService) : HandlerInterceptor {
+    @Resource
+    lateinit var server: Server
+
     companion object {
         const val TOKEN = "AUTH-TOKEN"
     }
@@ -25,6 +30,12 @@ class AuthInterceptor(private val authService: AuthService) : HandlerInterceptor
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any?): Boolean {
         val uri: String = request.requestURI
+
+        val except = server.interceptor?.except
+        if (except?.any { uri.matches((it.replace("**", ".*")).toRegex()) } == true) {
+            return true
+        }
+
         val urlAction = UrlAction(uri)
         val httpMethodAction = HttpMethodAction(request.method)
 

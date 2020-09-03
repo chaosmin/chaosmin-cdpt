@@ -18,7 +18,7 @@ class AuthServiceImpl(
     private val authenticateService: AuthenticateService,
     private val tokenService: TokenService,
     private val storeService: StoreService,
-    @Value("\${global-anonymous}") @Volatile override var globalAnonymous: Boolean
+    @Value("\${global-anonymous:false}") @Volatile override var globalAnonymous: Boolean
 ) : AuthService {
     @Throws(AuthenticationException::class)
     override fun authenticate(username: String, password: String): Authentication {

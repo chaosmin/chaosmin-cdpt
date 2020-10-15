@@ -53,9 +53,9 @@ object RequestUtil {
      * @param request HTTP请求体
      * @return [PageQueryDTO]
      */
-    fun <T, E> getQueryCondition(request: HttpServletRequest): PageQueryDTO<T, E> {
+    fun <T> getQueryCondition(request: HttpServletRequest): PageQueryDTO<T> {
         val parameterMap = request.parameterMap
-        val page = Page<E>(0, 10)
+        val page = Page<T>(0, 10)
         val wrapper = QueryWrapper<T>()
         parameterMap.filter { (_, v) -> v.isNotEmpty() }.filter { (_, v) -> v[0].isNotBlank() }.forEach { (k, v) ->
             val values = k.split(SPLIT_CHAR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()

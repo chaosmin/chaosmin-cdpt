@@ -9,9 +9,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 class JwtAuthenticationProvider() : DaoAuthenticationProvider() {
 
-    constructor(userDetailsService: UserDetailsService) : this() {
+    constructor(userDetailsService: UserDetailsService, passwordEncoder: BCryptPasswordEncoder) : this() {
         setUserDetailsService(userDetailsService)
-        passwordEncoder = BCryptPasswordEncoder()
+        this.passwordEncoder = passwordEncoder
     }
 
     override fun authenticate(authentication: Authentication): Authentication {

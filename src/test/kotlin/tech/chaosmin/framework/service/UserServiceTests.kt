@@ -7,11 +7,8 @@ import org.springframework.test.annotation.Rollback
 import org.springframework.transaction.annotation.Transactional
 import tech.chaosmin.framework.BaseTestMain
 import tech.chaosmin.framework.dao.dataobject.User
-import javax.annotation.Resource
 
-open class UserServiceTests : BaseTestMain() {
-    @Resource
-    lateinit var useService: UserService
+open class UserServiceTests(private val useService: UserService) : BaseTestMain() {
 
     @Test
     @Rollback

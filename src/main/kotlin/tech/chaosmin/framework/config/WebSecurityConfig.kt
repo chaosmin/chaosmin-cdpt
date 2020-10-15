@@ -1,5 +1,8 @@
 package tech.chaosmin.framework.config
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -11,29 +14,33 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler
 import tech.chaosmin.framework.provider.JwtAuthenticationProvider
+import tech.chaosmin.framework.web.filter.AccessLogFilter
 import tech.chaosmin.framework.web.filter.JwtLoginFilter
-import javax.annotation.Resource
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 open class WebSecurityConfig(
-    @Value("\${server.interceptor.debug:false}") @Volatile var interceptorDebug: Boolean
+    @Value("\${server.interceptor.debug:false}") @Volatile var interceptorDebug: Boolean,
+    @Qualifier("userDetailsServiceImpl") private val userDetailsService: UserDetailsService
 ) : WebSecurityConfigurerAdapter() {
-    @Resource
-    private lateinit var userDetailsService: UserDetailsService
+    private val log: Logger = LoggerFactory.getLogger(AccessLogFilter::class.java)
 
     override fun configure(auth: AuthenticationManagerBuilder) {
         // 使用自定义登录身份认证组件
-        auth.authenticationProvider(JwtAuthenticationProvider(userDetailsService))
+        auth.authenticationProvider(JwtAuthenticationProvider(userDetailsService, passwordEncoder()))
     }
 
     override fun configure(http: HttpSecurity) {
         if (interceptorDebug) {
-            http.authorizeRequests().anyRequest().permitAll().and().logout().permitAll();
+            log.info("Interceptor function has been deactivated.")
+            http.cors().and().csrf().disable()
+                .authorizeRequests()
+                .anyRequest().permitAll().and().logout().permitAll();
         } else {
             // 禁用 csrf, 由于使用的是JWT，我们这里不需要csrf
             http.cors().and().csrf().disable()
@@ -58,5 +65,10 @@ open class WebSecurityConfig(
     @Bean
     override fun authenticationManager(): AuthenticationManager {
         return super.authenticationManager()
+    }
+
+    @Bean
+    open fun passwordEncoder(): BCryptPasswordEncoder {
+        return BCryptPasswordEncoder()
     }
 }

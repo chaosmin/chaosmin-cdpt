@@ -61,13 +61,17 @@ class ProviderLogConfig {
             url += reqMappingFunc.apply(methodReqMapping)
         }
 
+        // if (method.name.isNotBlank()) {
+        //     url += "/${method.name}"
+        // }
+
         logContent.append(String.format("%-25s: %s", "Provider URL", url + lineSeparator))
 
         val params = HashMap<String, Any>()
         val args = joinPoint.args
         val parameterNames = signature.parameterNames
         for (i in args.indices) {
-            if (!contains(ignoreTypes, args[i])) {
+            if ("request" != parameterNames[i] && !contains(ignoreTypes, args[i])) {
                 params[parameterNames[i]] = args[i]
             }
         }

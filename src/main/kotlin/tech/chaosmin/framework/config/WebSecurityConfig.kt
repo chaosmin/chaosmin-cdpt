@@ -1,5 +1,6 @@
 package tech.chaosmin.framework.config
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -19,9 +20,11 @@ import javax.annotation.Resource
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
+open class WebSecurityConfig(
+    @Value("\${server.interceptor.debug:false}") @Volatile var interceptorDebug: Boolean
+) : WebSecurityConfigurerAdapter() {
     @Resource
-    lateinit var userDetailsService: UserDetailsService
+    private lateinit var userDetailsService: UserDetailsService
 
     override fun configure(auth: AuthenticationManagerBuilder) {
         // 使用自定义登录身份认证组件
@@ -29,20 +32,27 @@ open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     }
 
     override fun configure(http: HttpSecurity) {
-        // 禁用 csrf, 由于使用的是JWT，我们这里不需要csrf
-        http.cors().and().csrf().disable()
-            .authorizeRequests()
-            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .antMatchers("/login").permitAll()
-            .antMatchers("/swagger-ui/**").permitAll()
-            .antMatchers("/webjars/**").permitAll()
-            .antMatchers("/v3/**").permitAll()
-            .anyRequest().authenticated()
-            .and().formLogin().loginProcessingUrl("/login")
-        // 退出登录处理器
-        http.logout().logoutSuccessHandler(HttpStatusReturningLogoutSuccessHandler())
-        // 开启登录认证流程过滤器
-        http.addFilterBefore(JwtLoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter::class.java)
+        if (interceptorDebug) {
+            http.authorizeRequests().anyRequest().permitAll().and().logout().permitAll();
+        } else {
+            // 禁用 csrf, 由于使用的是JWT，我们这里不需要csrf
+            http.cors().and().csrf().disable()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/v3/**").permitAll()
+                .anyRequest().authenticated()
+                .and().formLogin().loginProcessingUrl("/login")
+            // 退出登录处理器
+            http.logout().logoutSuccessHandler(HttpStatusReturningLogoutSuccessHandler())
+            // 开启登录认证流程过滤器
+            http.addFilterBefore(
+                JwtLoginFilter(authenticationManager(), interceptorDebug),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+        }
     }
 
     @Bean

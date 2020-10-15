@@ -18,12 +18,20 @@ import javax.servlet.http.HttpServletResponse
 
 
 class JwtLoginFilter() : UsernamePasswordAuthenticationFilter() {
+    private var skipAuthenticate = false
 
     constructor(authManager: AuthenticationManager) : this() {
         authenticationManager = authManager
     }
 
+    constructor(authManager: AuthenticationManager, interceptorDebug: Boolean) : this(authManager) {
+        this.skipAuthenticate = interceptorDebug
+    }
+
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
+        if (skipAuthenticate) {
+            return authenticationManager.authenticate(JwtAuthenticationToken("admin", "admin"))
+        }
         // 可以在此覆写尝试进行登录认证的逻辑，登录成功之后等操作不再此方法内
         // 如果使用此过滤器来触发登录认证流程，注意登录请求数据格式的问题
         // 此过滤器的用户名密码默认从request.getParameter()获取，但是这种

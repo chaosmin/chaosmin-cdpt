@@ -12,7 +12,7 @@ import tech.chaosmin.framework.web.service.UserShareService
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-class UserShareProvider(private val userService: UserService) : UserShareService {
+open class UserShareProvider(private val userService: UserService) : UserShareService {
     override fun selectById(id: Long): RestResult<UserShareResponseDTO?> {
         val user = userService.getById(id)
         return if (user != null) {

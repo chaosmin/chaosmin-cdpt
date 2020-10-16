@@ -10,7 +10,7 @@ import tech.chaosmin.framework.domain.response.share.RoleShareResponseDTO
 import javax.servlet.http.HttpServletRequest
 
 @Api(tags = ["角色操作接口"], consumes = "application/json;charset=utf-8")
-@RequestMapping("/role")
+@RequestMapping("/roles")
 interface RoleShareService {
     @GetMapping("/{id}")
     @ApiOperation(value = "根据id查询", response = RoleShareResponseDTO::class)

@@ -10,7 +10,7 @@ import tech.chaosmin.framework.domain.response.share.AuthorityShareResponseDTO
 import javax.servlet.http.HttpServletRequest
 
 @Api(tags = ["权限操作接口"], consumes = "application/json;charset=utf-8")
-@RequestMapping("/authority")
+@RequestMapping("/authorities")
 interface AuthorityShareService {
     @GetMapping("/{id}")
     @ApiOperation(value = "根据id查询", response = AuthorityShareResponseDTO::class)

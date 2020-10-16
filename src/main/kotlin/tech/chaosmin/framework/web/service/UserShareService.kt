@@ -10,7 +10,7 @@ import tech.chaosmin.framework.domain.response.share.UserShareResponseDTO
 import javax.servlet.http.HttpServletRequest
 
 @Api(tags = ["用户操作接口"], consumes = "application/json;charset=utf-8")
-@RequestMapping("/user")
+@RequestMapping("/users")
 interface UserShareService {
     @GetMapping("/{id}")
     @ApiOperation(value = "根据id查询", response = UserShareResponseDTO::class)

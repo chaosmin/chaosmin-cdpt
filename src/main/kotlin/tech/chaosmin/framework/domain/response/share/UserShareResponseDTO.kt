@@ -20,4 +20,7 @@ class UserShareResponseDTO : BaseShareResponseDTO() {
 
     @ApiModelProperty(value = "邮箱")
     var email: String? = null
+
+    @ApiModelProperty(value = "角色")
+    var roles: List<String>? = null
 }

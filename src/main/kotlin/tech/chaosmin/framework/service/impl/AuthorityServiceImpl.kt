@@ -5,16 +5,18 @@ import org.springframework.stereotype.Service
 import tech.chaosmin.framework.dao.AuthorityDAO
 import tech.chaosmin.framework.dao.dataobject.Authority
 import tech.chaosmin.framework.service.AuthorityService
-import java.util.*
 
 @Service
 open class AuthorityServiceImpl : ServiceImpl<AuthorityDAO, Authority>(), AuthorityService {
-    override fun findAuthorities(roleIds: Set<Long>): Set<String> {
-        val permissions: MutableSet<String> = HashSet()
-        permissions.add("sys:user:view")
-        permissions.add("sys:user:add")
-        permissions.add("sys:user:edit")
-        permissions.add("sys:user:delete")
-        return permissions
+    override fun findAuthorities(roleIds: Set<Long>): Set<Authority> {
+        return if (roleIds.isEmpty()) emptySet()
+        else baseMapper.findAuthorities(roleIds)
+    }
+
+    override fun addAuthorities(roleId: Long?, authorityIds: List<Long>?): Set<Authority> {
+        return if (roleId != null && authorityIds != null && authorityIds.isNotEmpty()) {
+            baseMapper.addAuthorities(roleId, authorityIds)
+            baseMapper.selectBatchIds(authorityIds).toSet()
+        } else emptySet()
     }
 }

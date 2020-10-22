@@ -36,8 +36,7 @@
         </then>
     </if>
 
-    <property name="TRACE_LOG_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss:SSS} %5p ${PID:- } [%10.10t] %-42.42(%logger#%line) : %msg%n"/>
+    <property name="TRACE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %5p ${PID:- } [trace=%X{X-B3-traceId:-},span=%X{X-B3-spanId:-}] [%10.10t] %-42.42(%logger#%line) : %msg%n"/>
 
     <property name="log.dir" value="${logging.path}"/>
 
@@ -92,7 +91,7 @@
     <appender class="ch.qos.logback.core.rolling.RollingFileAppender" name="errorAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d [%thread] %-5p [%c] [%F:%L] [trace=%X{X-B3-TraceId:-},span=%X{X-B3-SpanId:-}] - %msg%n</pattern>
+            <pattern>${TRACE_LOG_PATTERN}</pattern>
         </encoder>
         <file>${logging.path}/${logging.errorAppender.fileName}.log</file>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">

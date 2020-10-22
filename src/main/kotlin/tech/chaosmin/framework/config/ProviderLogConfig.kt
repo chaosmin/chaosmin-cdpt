@@ -73,7 +73,7 @@ class ProviderLogConfig {
         val parameterNames = signature.parameterNames
         for (i in args.indices) {
             if (args[i] is MultipartFile) {
-                params[parameterNames[i]] = (i as MultipartFile).getOriginalFilename() //获取文件名
+                params[parameterNames[i]] = (i as MultipartFile).originalFilename ?: ""
             } else if ("request" != parameterNames[i] && !contains(ignoreTypes, args[i])) {
                 params[parameterNames[i]] = args[i]
             }
@@ -83,11 +83,11 @@ class ProviderLogConfig {
         return try {
             val r: Any = onProcess(joinPoint)
             logContent.append(String.format("%-25s: %s", "Provider response param", JsonUtil.encode(r) + lineSeparator))
-            logContent.append(String.format("%-25s: %s", "Provider cost time", (System.currentTimeMillis() - startTime)))
+            logContent.append(String.format("%-25s: %sms", "Provider cost time", (System.currentTimeMillis() - startTime)))
             r
         } catch (ex: java.lang.Exception) {
             logContent.append(String.format("%-25s: %s", "Provider Error", ex.message + lineSeparator))
-            logContent.append(String.format("%-25s: %s", "Provider cost time", (System.currentTimeMillis() - startTime)))
+            logContent.append(String.format("%-25s: %sms", "Provider cost time", (System.currentTimeMillis() - startTime)))
             onException(log, ex)
         } finally {
             log.info(logContent.toString())

@@ -36,7 +36,7 @@
         </then>
     </if>
 
-    <property name="TRACE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %5p ${PID:- } [trace=%X{X-B3-traceId:-},span=%X{X-B3-spanId:-}] [%10.10t] %-42.42(%logger#%line) : %msg%n"/>
+    <property name="TRACE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %5p ${PID:- } [trace=%mdc{TRACE_ID:-}] [%10.10t] %-42.42(%logger#%line) : %msg%n"/>
 
     <property name="log.dir" value="${logging.path}"/>
 

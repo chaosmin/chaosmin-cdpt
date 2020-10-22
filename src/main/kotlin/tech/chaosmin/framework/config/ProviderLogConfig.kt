@@ -82,11 +82,11 @@ class ProviderLogConfig {
         val startTime = System.currentTimeMillis()
         return try {
             val r: Any = onProcess(joinPoint)
-            logContent.append(String.format("%-25s: %s", "Provider response param", JsonUtil.encode(r)))
+            logContent.append(String.format("%-25s: %s", "Provider response param", JsonUtil.encode(r) + lineSeparator))
             logContent.append(String.format("%-25s: %s", "Provider cost time", (System.currentTimeMillis() - startTime)))
             r
         } catch (ex: java.lang.Exception) {
-            logContent.append(String.format("%-25s: %s", "Provider Error", ex.message))
+            logContent.append(String.format("%-25s: %s", "Provider Error", ex.message + lineSeparator))
             logContent.append(String.format("%-25s: %s", "Provider cost time", (System.currentTimeMillis() - startTime)))
             onException(log, ex)
         } finally {

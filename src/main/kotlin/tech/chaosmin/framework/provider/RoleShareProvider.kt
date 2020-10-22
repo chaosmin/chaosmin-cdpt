@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.provider
 
 import com.baomidou.mybatisplus.core.metadata.IPage
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.dao.dataobject.Role
 import tech.chaosmin.framework.domain.RestResult
@@ -37,10 +38,11 @@ open class RoleShareProvider(
         return RestResultExt.successRestResult(page.convert(RoleConvert.INSTANCE::convertToShareResponse))
     }
 
+    @Transactional
     override fun save(requestDTO: RoleShareRequestDTO): RestResult<RoleShareResponseDTO> {
         val role = RoleConvert.INSTANCE.convertToBaseBean(requestDTO)
         return if (roleService.save(role)) {
-            val authorities = authorityService.addAuthorities(role.id, requestDTO.authorityIds)
+            val authorities = authorityService.updateAuthorities(role.id, requestDTO.authorityIds)
             val response = RoleConvert.INSTANCE.convertToShareResponse(role)
             response.authorities = authorities.mapNotNull { it.name }
             RestResultExt.successRestResult(response)
@@ -49,10 +51,11 @@ open class RoleShareProvider(
         }
     }
 
+    @Transactional
     override fun update(id: Long, requestDTO: RoleShareRequestDTO): RestResult<RoleShareResponseDTO> {
         val role = RoleConvert.INSTANCE.convertToBaseBean(requestDTO).apply { this.id = id }
         return if (roleService.updateById(role)) {
-            val authorities = authorityService.addAuthorities(role.id, requestDTO.authorityIds)
+            val authorities = authorityService.updateAuthorities(role.id, requestDTO.authorityIds)
             val response = RoleConvert.INSTANCE.convertToShareResponse(roleService.getById(role.id))
             response.authorities = authorities.mapNotNull { it.name }
             RestResultExt.successRestResult(response)
@@ -61,8 +64,10 @@ open class RoleShareProvider(
         }
     }
 
+    @Transactional
     override fun delete(id: Long): RestResult<RoleShareResponseDTO> {
         return if (roleService.removeById(id)) {
+            authorityService.clearAuthorities(id)
             RestResultExt.successRestResult()
         } else {
             RestResultExt.failureRestResult()

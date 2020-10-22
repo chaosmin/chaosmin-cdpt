@@ -2,6 +2,7 @@ package tech.chaosmin.framework.provider
 
 import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.dao.dataobject.User
 import tech.chaosmin.framework.domain.RestResult
@@ -39,12 +40,13 @@ open class UserShareProvider(
         return RestResultExt.successRestResult(page.convert(UserConvert.INSTANCE::convertToShareResponse))
     }
 
+    @Transactional
     override fun save(requestDTO: UserShareRequestDTO): RestResult<UserShareResponseDTO> {
         val user = UserConvert.INSTANCE.convertToBaseBean(requestDTO).apply {
             this.password = passwordEncoder.encode(this.password)
         }
         return if (userService.save(user)) {
-            val roles = roleService.addRoles(user.id, requestDTO.roleIds)
+            val roles = roleService.updateRoles(user.id, requestDTO.roleIds)
             val response = UserConvert.INSTANCE.convertToShareResponse(user)
             response.roles = roles.mapNotNull { it.name }
             RestResultExt.successRestResult(response)
@@ -53,10 +55,11 @@ open class UserShareProvider(
         }
     }
 
+    @Transactional
     override fun update(id: Long, requestDTO: UserShareRequestDTO): RestResult<UserShareResponseDTO> {
         val user = UserConvert.INSTANCE.convertToBaseBean(requestDTO).apply { this.id = id }
         return if (userService.updateById(user)) {
-            val roles = roleService.addRoles(user.id, requestDTO.roleIds)
+            val roles = roleService.updateRoles(user.id, requestDTO.roleIds)
             val response = UserConvert.INSTANCE.convertToShareResponse(userService.getById(user.id))
             response.roles = roles.mapNotNull { it.name }
             RestResultExt.successRestResult(response)
@@ -65,8 +68,10 @@ open class UserShareProvider(
         }
     }
 
+    @Transactional
     override fun delete(id: Long): RestResult<UserShareResponseDTO> {
         return if (userService.removeById(id)) {
+            roleService.clearRoles(id)
             RestResultExt.successRestResult()
         } else {
             RestResultExt.failureRestResult()

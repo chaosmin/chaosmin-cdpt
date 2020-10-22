@@ -65,8 +65,8 @@ object RequestUtil {
             values.drop(1).forEach { field.add("""`${it.upperCamel()}`""") }
             when (operation.toUpperCase()) {
                 OPERATE_PAGE -> {
-                    if (values[1] == "NUM") page.current = value.toLong()
-                    else if (values[1] == "SIZE") page.size = value.toLong()
+                    if (values[1].toUpperCase() == "NUM") page.current = value.toLong()
+                    else if (values[1].toUpperCase() == "SIZE") page.size = value.toLong()
                 }
                 OPERATE_ORDER -> wrapper.orderBy(true, value == "1", field.toString())
                 OPERATE_EQ -> wrapper.eq(field.toString(), value)

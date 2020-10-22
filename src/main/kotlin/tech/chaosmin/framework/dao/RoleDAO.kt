@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.dao
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper
+import org.apache.ibatis.annotations.Delete
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Param
 import org.apache.ibatis.annotations.Select
@@ -16,4 +17,10 @@ interface RoleDAO : BaseMapper<Role> {
                 + "(#{userId},#{id}) </foreach></script>"]
     )
     fun addRoles(@Param("userId") userId: Long, @Param("roleIds") roleIds: List<Long>)
+
+    @Delete(value = ["<script> delete from user_role where user_id = \${userId} and role_id in <foreach collection='roleIds' item='id' separator=',' open='(' close=')'>#{id}</foreach></script>"])
+    fun removeRoles(@Param("userId") userId: Long, @Param("roleIds") roleIds: List<Long>)
+
+    @Delete(value = ["delete from user_role where user_id = \${userId}"])
+    fun clearRoles(@Param("userId") userId: Long)
 }

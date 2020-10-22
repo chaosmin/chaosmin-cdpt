@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.provider
 
 import com.baomidou.mybatisplus.core.metadata.IPage
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.dao.dataobject.Authority
 import tech.chaosmin.framework.domain.RestResult
@@ -33,6 +34,7 @@ open class AuthorityShareProvider(
         return RestResultExt.successRestResult(page.convert(AuthorityConvert.INSTANCE::convertToShareResponse))
     }
 
+    @Transactional
     override fun save(requestDTO: AuthorityShareRequestDTO): RestResult<AuthorityShareResponseDTO> {
         val authority = AuthorityConvert.INSTANCE.convertToBaseBean(requestDTO)
         return if (authorityService.save(authority)) {
@@ -43,6 +45,7 @@ open class AuthorityShareProvider(
         }
     }
 
+    @Transactional
     override fun update(id: Long, requestDTO: AuthorityShareRequestDTO): RestResult<AuthorityShareResponseDTO> {
         val authority = AuthorityConvert.INSTANCE.convertToBaseBean(requestDTO).apply { this.id = id }
         return if (authorityService.updateById(authority)) {
@@ -53,6 +56,7 @@ open class AuthorityShareProvider(
         }
     }
 
+    @Transactional
     override fun delete(id: Long): RestResult<AuthorityShareResponseDTO> {
         return if (authorityService.removeById(id)) {
             RestResultExt.successRestResult()

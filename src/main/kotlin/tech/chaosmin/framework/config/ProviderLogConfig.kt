@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.multipart.MultipartFile
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.utils.JsonUtil
@@ -22,7 +23,11 @@ import kotlin.reflect.KClass
 @Component
 @ConditionalOnProperty(prefix = "log.provider", name = ["enable"], havingValue = "true", matchIfMissing = false)
 class ProviderLogConfig {
-    private val ignoreTypes: Array<KClass<*>> = arrayOf(RequestFacade::class, ServletRequest::class, ServletResponse::class)
+    private val ignoreTypes: Array<KClass<*>> = arrayOf(
+        RequestFacade::class,
+        ServletRequest::class,
+        ServletResponse::class
+    )
     private val log: Logger = LoggerFactory.getLogger(ProviderLogConfig::class.java)
 
     @Around("execution(public * tech.chaosmin.framework.provider.*.*(..))")
@@ -61,27 +66,28 @@ class ProviderLogConfig {
             url += reqMappingFunc.apply(methodReqMapping)
         }
 
-        // if (method.name.isNotBlank()) {
-        //     url += "/${method.name}"
-        // }
-
         logContent.append(String.format("%-25s: %s", "Provider URL", url + lineSeparator))
 
         val params = HashMap<String, Any>()
         val args = joinPoint.args
         val parameterNames = signature.parameterNames
         for (i in args.indices) {
-            if ("request" != parameterNames[i] && !contains(ignoreTypes, args[i])) {
+            if (args[i] is MultipartFile) {
+                params[parameterNames[i]] = (i as MultipartFile).getOriginalFilename() //获取文件名
+            } else if ("request" != parameterNames[i] && !contains(ignoreTypes, args[i])) {
                 params[parameterNames[i]] = args[i]
             }
         }
         logContent.append(String.format("%-25s: %s", "Provider request param", JsonUtil.encode(params) + lineSeparator))
+        val startTime = System.currentTimeMillis()
         return try {
             val r: Any = onProcess(joinPoint)
-            logContent.append(String.format("%-25s: %s", "Provider response param", JsonUtil.encode(r)))
+            logContent.append(String.format("%-25s: %s", "Provider response param", JsonUtil.encode(r) + lineSeparator))
+            logContent.append(String.format("%-25s: %s", "Provider cost time", (System.currentTimeMillis() - startTime)))
             r
         } catch (ex: java.lang.Exception) {
-            logContent.append(String.format("%-25s: %s", "Provider Error", ex.message))
+            logContent.append(String.format("%-25s: %s", "Provider Error", ex.message + lineSeparator))
+            logContent.append(String.format("%-25s: %s", "Provider cost time", (System.currentTimeMillis() - startTime)))
             onException(log, ex)
         } finally {
             log.info(logContent.toString())

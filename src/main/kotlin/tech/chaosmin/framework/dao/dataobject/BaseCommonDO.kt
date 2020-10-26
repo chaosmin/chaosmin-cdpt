@@ -6,7 +6,7 @@ import java.util.*
 
 open class BaseCommonDO(
     @TableId(type = IdType.AUTO) var id: Long?,
-    @TableLogic val isDeleted: Int
+    @TableLogic var isDeleted: Int = 0
 ) : Serializable {
     @TableField(fill = FieldFill.INSERT)
     var createTime: Date? = null

@@ -72,11 +72,7 @@ class ProviderLogConfig {
         val args = joinPoint.args
         val parameterNames = signature.parameterNames
         for (i in args.indices) {
-            if (args[i] is MultipartFile) {
-                params[parameterNames[i]] = (i as MultipartFile).originalFilename ?: ""
-            } else if ("request" != parameterNames[i] && !contains(ignoreTypes, args[i])) {
-                params[parameterNames[i]] = args[i]
-            }
+            addRequestParam(args[i], parameterNames[i], params)
         }
         logContent.append(String.format("%-25s: %s", "Provider request param", JsonUtil.encode(params) + lineSeparator))
         val startTime = System.currentTimeMillis()
@@ -105,6 +101,18 @@ class ProviderLogConfig {
     private fun contains(classes: Array<KClass<*>>, entity: Any?): Boolean {
         if (entity == null) return false
         return classes.any { entity.javaClass.name == it.qualifiedName }
+    }
+
+    private fun addRequestParam(param: Any?, paramName: String, params: HashMap<String, Any>) {
+        if (param != null) {
+            if (param is Array<*>) {
+                param.forEachIndexed { i, v -> addRequestParam(v, "${paramName}[$i]", params) }
+            } else if (param is MultipartFile) {
+                params[paramName] = param.originalFilename ?: ""
+            } else if ("request" != paramName && !contains(ignoreTypes, param)) {
+                params[paramName] = param
+            }
+        }
     }
 
     private fun onException(log: Logger, ex: Exception): RestResult<Void> {

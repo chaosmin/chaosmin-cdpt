@@ -13,6 +13,7 @@ import org.springframework.web.servlet.NoHandlerFoundException
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt.failureRestResult
 import tech.chaosmin.framework.domain.RestResultExt.noPermissionRestResult
+import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.AuthenticationException
 import tech.chaosmin.framework.exception.PermissionException
 import tech.chaosmin.framework.exception.ResourceNotExistException
@@ -104,7 +105,7 @@ class GlobalControllerAdvice {
     @ExceptionHandler(AuthenticationException::class)
     fun handleAuthenticationException(e: AuthenticationException): RestResult<Void> {
         logger.error("捕获到认证异常", e)
-        return RestResult(RestResult.TOKEN_INVALID_CODE, e.message ?: "invalid token")
+        return RestResult(ErrorCodeEnum.TOKEN_INVALID.code, e.message ?: "invalid token")
     }
 
     /**

@@ -63,6 +63,10 @@ dependencies {
     kapt("org.mapstruct:mapstruct-processor:${Vers.Deps.mapStructVersion}")
     implementation("cn.hutool:hutool-all:${Vers.Deps.hutoolVersion}")
     implementation("com.google.guava:guava:${Vers.Deps.guavaVersion}")
+    implementation("io.jsonwebtoken:jjwt:${Vers.Deps.jwtVersion}")
+    implementation("org.apache.poi:poi:${Vers.Deps.poiVersion}")
+
+    // implementation("com.opencsv:opencsv:${Vers.Deps.opencsvVersion}")
 
     // config discovery
     implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")

@@ -9,7 +9,20 @@ data class RestResult<T>(
     var data: T? = null,
     var meta: Any = "",
     var success: Boolean = true
-) : Serializable
+) : Serializable {
+    fun mapper(result: RestResult<*>): RestResult<T> {
+        this.success = result.success
+        this.code = result.code
+        this.msg = result.msg
+        return this
+    }
+
+    fun success(data: T? = null): RestResult<T> {
+        this.success = true
+        this.data = data
+        return this
+    }
+}
 
 object RestResultExt {
     private const val OPT_SUCCESS = "Request success."

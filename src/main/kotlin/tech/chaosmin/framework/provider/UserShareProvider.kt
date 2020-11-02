@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RestController
+import tech.chaosmin.framework.dao.convert.UserConvert
 import tech.chaosmin.framework.dao.dataobject.User
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
-import tech.chaosmin.framework.domain.convert.UserConvert
 import tech.chaosmin.framework.domain.request.share.UserShareRequestDTO
 import tech.chaosmin.framework.domain.response.share.UserShareResponseDTO
 import tech.chaosmin.framework.service.RoleService

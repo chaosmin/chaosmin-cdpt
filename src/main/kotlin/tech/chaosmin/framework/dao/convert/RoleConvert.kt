@@ -1,4 +1,4 @@
-package tech.chaosmin.framework.domain.convert
+package tech.chaosmin.framework.dao.convert
 
 import org.mapstruct.Mapper
 import org.mapstruct.factory.Mappers

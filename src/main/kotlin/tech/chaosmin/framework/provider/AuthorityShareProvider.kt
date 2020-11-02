@@ -3,10 +3,10 @@ package tech.chaosmin.framework.provider
 import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RestController
+import tech.chaosmin.framework.dao.convert.AuthorityConvert
 import tech.chaosmin.framework.dao.dataobject.Authority
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
-import tech.chaosmin.framework.domain.convert.AuthorityConvert
 import tech.chaosmin.framework.domain.request.share.AuthorityShareRequestDTO
 import tech.chaosmin.framework.domain.response.share.AuthorityShareResponseDTO
 import tech.chaosmin.framework.service.AuthorityService

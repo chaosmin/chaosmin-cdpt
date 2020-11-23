@@ -10,13 +10,13 @@ import tech.chaosmin.framework.domain.response.share.UserShareResponseDTO
 import javax.servlet.http.HttpServletRequest
 
 @Api(tags = ["用户操作接口"], consumes = "application/json;charset=utf-8")
-@RequestMapping("/users")
+@RequestMapping("/\${application.version}/api/users")
 interface UserShareService {
     @GetMapping("/{id}")
     @ApiOperation(value = "根据id查询", response = UserShareResponseDTO::class)
     fun selectById(@PathVariable("id") id: Long): RestResult<UserShareResponseDTO?>
 
-    @GetMapping("/page")
+    @GetMapping
     @ApiOperation(value = "分页查询查询")
     fun page(request: HttpServletRequest): RestResult<IPage<UserShareResponseDTO>>
 

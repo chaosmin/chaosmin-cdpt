@@ -81,7 +81,7 @@ open class WebSecurityConfig(
                     // 支持所有源的访问
                     Header("Access-control-Allow-Origin", "*"),
                     // 使ajax请求能够取到header中的jwt token信息
-                    Header("Access-Control-Expose-Headers", "Authorization")
+                    Header("Access-Control-Expose-Headers", JwtTokenUtil.TOKEN_HEADER)
                 )
             )
         )

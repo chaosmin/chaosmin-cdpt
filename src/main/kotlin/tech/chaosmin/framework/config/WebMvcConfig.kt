@@ -18,6 +18,7 @@ open class WebMvcConfig(
             registry
                 .addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
+                .excludePathPatterns("/error")
                 .excludePathPatterns("/auth/**")
                 .excludePathPatterns("/event/**")
                 .excludePathPatterns("/login")

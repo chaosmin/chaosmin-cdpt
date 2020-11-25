@@ -11,7 +11,7 @@ import org.apache.ibatis.reflection.MetaObject
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import tech.chaosmin.framework.domain.auth.AuthContextHolder
+import tech.chaosmin.framework.utils.SecurityUtil
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -66,7 +66,7 @@ open class DatasourceConfig {
     open fun metaObjectHandler() = object : MetaObjectHandler {
         override fun insertFill(metaObject: MetaObject) {
             val timestamp = Date()
-            val username = AuthContextHolder.getAuthentication()?.username ?: "anonymous"
+            val username = SecurityUtil.getUsername()
             this.setFieldValByName("createTime", timestamp, metaObject)
             this.setFieldValByName("creator", username, metaObject)
             this.setFieldValByName("updateTime", timestamp, metaObject)
@@ -75,7 +75,7 @@ open class DatasourceConfig {
 
         override fun updateFill(metaObject: MetaObject) {
             val timestamp = Date()
-            val username = AuthContextHolder.getAuthentication()?.username ?: "anonymous"
+            val username = SecurityUtil.getUsername()
             this.setFieldValByName("updateTime", timestamp, metaObject)
             this.setFieldValByName("updater", username, metaObject)
         }

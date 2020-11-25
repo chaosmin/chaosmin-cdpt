@@ -33,9 +33,8 @@ swagger:
   packages: tech.chaosmin.framework.provider
 
 server:
-  global-anonymous: true
+  global-anonymous: false
   interceptor:
-    debug: true
     except:
       - /swagger-ui/**
       - /login

@@ -7,17 +7,27 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import tech.chaosmin.framework.domain.auth.GrantedAuthorityImpl
 import tech.chaosmin.framework.domain.auth.JwtAuthenticationToken
+import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
+import tech.chaosmin.framework.exception.FrameworkException
 import java.io.Serializable
 import java.util.*
-import javax.servlet.http.HttpServletRequest
 
 
 object JwtTokenUtil : Serializable {
-    private const val USERNAME: String = Claims.SUBJECT
-    private const val CREATED = "created"
+    const val TOKEN_HEADER = "Authorization"
+    const val TOKEN_PREFIX = "Bearer "
+
+    private const val ISS = "chaosmin"
+    private const val APP_SECRET_KEY = "chaosmin_secret"
+    private const val USERNAME = "username"
     private const val AUTHORITIES = "authorities"
-    private const val SECRET = "abcdefgh"
+    private const val CREATED = "created"
+
+    // The normal expire time is 12 hours
     private const val EXPIRE_TIME = (12 * 60 * 60 * 1000).toLong()
+
+    // The expire time for remember me is 7 days
+    private const val EXPIRE_TIME_REMEMBER = (7 * 2 * EXPIRE_TIME)
 
     /**
      * 生成令牌
@@ -25,88 +35,29 @@ object JwtTokenUtil : Serializable {
      * @param authentication 用户
      * @return 令牌
      */
-    fun generateToken(authentication: Authentication): String? {
+    fun generateToken(authentication: Authentication, isRememberMe: Boolean = false): String? {
         val claims: MutableMap<String, Any?> = HashMap(3)
-        claims[USERNAME] = SecurityUtil.getUsername(authentication)
+        val username = SecurityUtil.getUsername(authentication)
+        claims[USERNAME] = username
         claims[CREATED] = Date()
         claims[AUTHORITIES] = authentication.authorities
-        return generateToken(claims)
+        return generateToken(username, claims, isRememberMe)
     }
 
     /**
-     * 从数据声明生成令牌
-     *
-     * @param claims 数据声明
-     * @return 令牌
-     */
-    private fun generateToken(claims: Map<String, Any?>): String? {
-        val expirationDate = Date(System.currentTimeMillis() + EXPIRE_TIME)
-        return Jwts.builder().setClaims(claims).setExpiration(expirationDate).signWith(SignatureAlgorithm.HS512, SECRET)
-            .compact()
-    }
-
-    /**
-     * 从令牌中获取用户名
+     * 刷新令牌
      *
      * @param token 令牌
-     * @return 用户名
+     * @return
      */
-    private fun getUsernameFromToken(token: String): String? {
+    fun refreshToken(token: String): String? {
         return try {
-            getClaimsFromToken(token)?.subject
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    /**
-     * 根据请求令牌获取登录认证信息
-     *
-     * @param token 令牌
-     * @return 用户名
-     */
-    fun getAuthenticationFromToken(request: HttpServletRequest): Authentication? {
-        var authentication: Authentication? = null
-        // 获取请求携带的令牌
-        val token = getToken(request)
-        if (token != null) {
-            // 请求令牌不能为空
-            if (SecurityUtil.getAuthentication() == null) {
-                // 上下文中Authentication为空
-                val claims = getClaimsFromToken(token) ?: return null
-                val username = claims.subject ?: return null
-                if (isTokenExpired(token)) {
-                    return null
-                }
-                val authors = claims[AUTHORITIES]
-                val authorities = mutableListOf<GrantedAuthority>()
-                if (authors != null && authors is List<*>) {
-                    for (obj in authors) {
-                        val authority = JsonUtil.encode((obj as Map<*, *>)["authority"])
-                        authorities.add(GrantedAuthorityImpl(authority))
-                    }
-                }
-                authentication = JwtAuthenticationToken(username, null, authorities, token)
-            } else {
-                if (validateToken(token, SecurityUtil.getUsername())
-                ) {
-                    // 如果上下文中Authentication非空，且请求令牌合法，直接返回当前登录认证信息
-                    authentication = SecurityUtil.getAuthentication()
-                }
-            }
-        }
-        return authentication
-    }
-
-    /**
-     * 从令牌中获取数据声明
-     *
-     * @param token 令牌
-     * @return 数据声明
-     */
-    private fun getClaimsFromToken(token: String): Claims? {
-        return try {
-            Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).body
+            val claims = getClaimsFromToken(token)
+            if (claims != null) {
+                val username = claims.subject
+                claims[CREATED] = Date()
+                generateToken(username, claims, false)
+            } else null
         } catch (e: java.lang.Exception) {
             null
         }
@@ -125,20 +76,73 @@ object JwtTokenUtil : Serializable {
     }
 
     /**
-     * 刷新令牌
+     * 根据请求令牌获取登录认证信息
+     *
+     * @param request 请求
+     * @return 用户信息
+     */
+    fun getAuthenticationFromToken(tokenHeader: String): Authentication? {
+        var authentication: Authentication? = null
+        // 获取请求携带的令牌
+        val token = getToken(tokenHeader)
+        if (token != null) {
+            // 请求令牌不能为空
+            if (SecurityUtil.getAuthentication() == null) {
+                // 上下文中Authentication为空
+                val claims = getClaimsFromToken(token) ?: return null
+                val username = claims[USERNAME] ?: return null
+                if (isTokenExpired(token)) {
+                    return null
+                }
+                val authors = claims[AUTHORITIES]
+                val authorities = mutableListOf<GrantedAuthority>()
+                if (authors != null && authors is List<*>) {
+                    for (obj in authors) {
+                        val authority = JsonUtil.encode((obj as Map<*, *>)["authority"])
+                        authorities.add(GrantedAuthorityImpl(authority))
+                    }
+                }
+                authentication = JwtAuthenticationToken(username, null, authorities, token)
+            } else {
+                if (validateToken(token, SecurityUtil.getUsername())) {
+                    // 如果上下文中Authentication非空，且请求令牌合法，直接返回当前登录认证信息
+                    authentication = SecurityUtil.getAuthentication()
+                }
+            }
+        }
+        return authentication
+    }
+
+    /**
+     * 从数据声明生成令牌
+     *
+     * @param claims 数据声明
+     * @return 令牌
+     */
+    private fun generateToken(username: String?, claims: Map<String, Any?>, isRememberMe: Boolean): String? {
+        val expireTime = if (isRememberMe) EXPIRE_TIME_REMEMBER else EXPIRE_TIME
+        val expirationDate = Date(System.currentTimeMillis() + expireTime)
+        return Jwts.builder()
+            .setIssuer(ISS)
+            .setSubject(username)
+            .setIssuedAt(Date())
+            .setClaims(claims)
+            .setExpiration(expirationDate)
+            .signWith(SignatureAlgorithm.HS512, APP_SECRET_KEY)
+            .compact()
+    }
+
+    /**
+     * 从令牌中获取用户名
      *
      * @param token 令牌
-     * @return
+     * @return 用户名
      */
-    fun refreshToken(token: String): String? {
+    private fun getUsernameFromToken(token: String): String? {
         return try {
-            val claims = getClaimsFromToken(token)
-            if (claims != null) {
-                claims[CREATED] = Date()
-                generateToken(claims)
-            } else null
-        } catch (e: java.lang.Exception) {
-            null
+            getClaimsFromToken(token)?.subject
+        } catch (e: Exception) {
+            throw FrameworkException(ErrorCodeEnum.FAILURE.code, e)
         }
     }
 
@@ -155,22 +159,35 @@ object JwtTokenUtil : Serializable {
                 val expiration = claims.expiration
                 expiration.before(Date())
             } else false
-        } catch (e: java.lang.Exception) {
-            false
+        } catch (e: Exception) {
+            throw FrameworkException(ErrorCodeEnum.FAILURE.code, e)
+        }
+    }
+
+    /**
+     * 从令牌中获取数据声明
+     *
+     * @param token 令牌
+     * @return 数据声明
+     */
+    private fun getClaimsFromToken(token: String): Claims? {
+        return try {
+            Jwts.parser().setSigningKey(APP_SECRET_KEY).parseClaimsJws(token).body
+        } catch (e: Exception) {
+            throw FrameworkException(ErrorCodeEnum.TOKEN_INVALID.code, e)
         }
     }
 
     /**
      * 获取请求token
      *
-     * @param request
+     * @param tokenHeader 形式为'Bearer xxxxx'的token
      * @return
      */
-    private fun getToken(request: HttpServletRequest): String? {
-        var token = request.getHeader("Authorization") ?: request.getHeader("token")
-        val tokenHead = "Bearer "
-        if (token.contains(tokenHead)) {
-            token = token.substring(tokenHead.length)
+    private fun getToken(tokenHeader: String): String? {
+        var token: String? = tokenHeader
+        if (tokenHeader.contains(TOKEN_PREFIX)) {
+            token = tokenHeader.substring(TOKEN_PREFIX.length).trim()
         }
         if ("" == token) {
             token = null

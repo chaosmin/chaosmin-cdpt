@@ -15,10 +15,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.web.header.Header
+import org.springframework.security.web.header.writers.StaticHeadersWriter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import tech.chaosmin.framework.provider.JwtAuthenticationProvider
+import tech.chaosmin.framework.utils.JwtTokenUtil
 import tech.chaosmin.framework.web.filter.AccessLogFilter
 import tech.chaosmin.framework.web.filter.JWTAuthenticationFilter
 import tech.chaosmin.framework.web.filter.JWTAuthorizationFilter
@@ -45,8 +48,10 @@ open class WebSecurityConfig(
 
     @Bean
     open fun corsConfigurationSource(): CorsConfigurationSource {
+        val configuration = CorsConfiguration().applyPermitDefaultValues()
+        configuration.addExposedHeader(JwtTokenUtil.TOKEN_HEADER)
         val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", CorsConfiguration().applyPermitDefaultValues())
+        source.registerCorsConfiguration("/**", configuration)
         return source
     }
 
@@ -70,5 +75,15 @@ open class WebSecurityConfig(
             .addFilter(JWTAuthorizationFilter(authenticationManager(), globalAnonymous))
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http.headers().addHeaderWriter(
+            StaticHeadersWriter(
+                listOf(
+                    // 支持所有源的访问
+                    Header("Access-control-Allow-Origin", "*"),
+                    // 使ajax请求能够取到header中的jwt token信息
+                    Header("Access-Control-Expose-Headers", "Authorization")
+                )
+            )
+        )
     }
 }

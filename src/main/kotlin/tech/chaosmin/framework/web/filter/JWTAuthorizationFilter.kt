@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 /**
+ * 用户登录鉴权处理器
+ *
  * @author Romani min
  * @since 2020/11/23 18:14
  */

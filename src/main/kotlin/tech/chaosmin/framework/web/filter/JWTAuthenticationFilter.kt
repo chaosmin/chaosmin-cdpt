@@ -6,11 +6,11 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.auth.AnonymousAuthentication
 import tech.chaosmin.framework.domain.auth.JwtAuthenticationToken
 import tech.chaosmin.framework.domain.auth.LoginParameter
 import tech.chaosmin.framework.domain.const.SystemConst.DEFAULT_CHARSET_NAME
-import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
 import tech.chaosmin.framework.utils.HttpUtil
 import tech.chaosmin.framework.utils.JsonUtil
 import tech.chaosmin.framework.utils.JwtTokenUtil
@@ -23,7 +23,11 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-
+/**
+ * 用户登录验证处理器
+ *
+ * @author romani min
+ */
 class JWTAuthenticationFilter(private val globalAnonymous: Boolean) : UsernamePasswordAuthenticationFilter() {
     constructor(authManager: AuthenticationManager, globalAnonymous: Boolean = false) : this(globalAnonymous) {
         authenticationManager = authManager
@@ -60,7 +64,7 @@ class JWTAuthenticationFilter(private val globalAnonymous: Boolean) : UsernamePa
         val generateToken = JwtTokenUtil.generateToken(authResult)
         val authentication = JwtAuthenticationToken(SecurityUtil.getUsername(authResult), null, token = generateToken)
         response.setHeader(JwtTokenUtil.TOKEN_HEADER, "${JwtTokenUtil.TOKEN_PREFIX}$generateToken")
-        HttpUtil.write(response, authentication)
+        HttpUtil.write(response, RestResultExt.successRestResult(authentication))
     }
 
     override fun unsuccessfulAuthentication(
@@ -68,7 +72,7 @@ class JWTAuthenticationFilter(private val globalAnonymous: Boolean) : UsernamePa
         response: HttpServletResponse,
         failed: AuthenticationException
     ) {
-        HttpUtil.write(response, ErrorCodeEnum.AUTHENTICATION_FAILED.code)
+        HttpUtil.write(response, RestResultExt.badCredentialsRestResult())
     }
 
     /**

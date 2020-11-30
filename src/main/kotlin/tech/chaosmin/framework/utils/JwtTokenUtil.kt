@@ -3,6 +3,7 @@ package tech.chaosmin.framework.utils
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import tech.chaosmin.framework.domain.auth.GrantedAuthorityImpl
@@ -14,6 +15,8 @@ import java.util.*
 
 
 object JwtTokenUtil : Serializable {
+    private val logger = LoggerFactory.getLogger(JwtTokenUtil::class.java)
+
     const val TOKEN_HEADER = "Authorization"
     const val TOKEN_PREFIX = "Bearer "
 
@@ -84,33 +87,41 @@ object JwtTokenUtil : Serializable {
     fun getAuthenticationFromToken(tokenHeader: String): Authentication? {
         var authentication: Authentication? = null
         // 获取请求携带的令牌
-        val token = getToken(tokenHeader)
-        if (token != null) {
+        getToken(tokenHeader)?.run {
             // 请求令牌不能为空
             if (SecurityUtil.getAuthentication() == null) {
                 // 上下文中Authentication为空
-                val claims = getClaimsFromToken(token) ?: return null
+                val claims = getClaimsFromToken(this) ?: return null
                 val username = claims[USERNAME] ?: return null
-                if (isTokenExpired(token)) {
+                if (isTokenExpired(this)) {
                     return null
                 }
-                val authors = claims[AUTHORITIES]
-                val authorities = mutableListOf<GrantedAuthority>()
-                if (authors != null && authors is List<*>) {
-                    for (obj in authors) {
-                        val authority = JsonUtil.encode((obj as Map<*, *>)["authority"])
-                        authorities.add(GrantedAuthorityImpl(authority))
-                    }
-                }
-                authentication = JwtAuthenticationToken(username, null, authorities, token)
+                authentication = JwtAuthenticationToken(username, null, generateAuthorities(claims[AUTHORITIES]), this)
             } else {
-                if (validateToken(token, SecurityUtil.getUsername())) {
+                if (validateToken(this, SecurityUtil.getUsername())) {
                     // 如果上下文中Authentication非空，且请求令牌合法，直接返回当前登录认证信息
                     authentication = SecurityUtil.getAuthentication()
                 }
             }
         }
         return authentication
+    }
+
+    /**
+     * 从claims数据中恢复用户的菜单权限
+     *
+     * @param authors claims信息数据
+     * @return 用户菜单列表
+     */
+    private fun generateAuthorities(authors: Any?): List<GrantedAuthority> {
+        val authorities = mutableListOf<GrantedAuthority>()
+        if (authors != null && authors is List<*>) {
+            for (obj in authors) {
+                val authority = JsonUtil.encode((obj as Map<*, *>)["authority"])
+                authorities.add(GrantedAuthorityImpl(authority))
+            }
+        }
+        return authorities
     }
 
     /**
@@ -161,6 +172,8 @@ object JwtTokenUtil : Serializable {
             } else false
         } catch (e: Exception) {
             throw FrameworkException(ErrorCodeEnum.FAILURE.code, e)
+        }.also {
+            if (it) logger.warn("$token has been expired")
         }
     }
 

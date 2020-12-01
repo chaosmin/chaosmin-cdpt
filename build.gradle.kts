@@ -37,6 +37,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-data-redis:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-mail:${Vers.Deps.springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-configuration-processor:${Vers.Deps.springBootVersion}")
 
     // jackson
     implementation("com.fasterxml.jackson.core:jackson-core:${Vers.Deps.jacksonVersion}")

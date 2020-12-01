@@ -2,7 +2,6 @@ package tech.chaosmin.framework.config
 
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -20,7 +19,6 @@ import java.util.*
 @Configuration
 @Import(BeanValidatorPluginsConfiguration::class)
 @ConditionalOnProperty(prefix = "swagger", value = ["enable"], havingValue = "true", matchIfMissing = false)
-@EnableConfigurationProperties(ApplicationParam::class, SwaggerParam::class)
 open class SpringFoxConfig(
     private val applicationParam: ApplicationParam,
     private val swaggerParam: SwaggerParam

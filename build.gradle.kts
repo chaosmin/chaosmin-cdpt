@@ -38,7 +38,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-mail:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-security:${Vers.Deps.springBootVersion}")
-    implementation("org.springframework.boot:spring-boot-configuration-processor:${Vers.Deps.springBootVersion}")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:${Vers.Deps.springBootVersion}")
 
     // jackson
     implementation("com.fasterxml.jackson.core:jackson-core:${Vers.Deps.jacksonVersion}")
@@ -102,6 +102,6 @@ tasks.jacocoTestReport {
         xml.isEnabled = true
         csv.isEnabled = false
         html.isEnabled = false
-        html.destination = file("${buildDir}/jacocoHtml")
+        // html.destination = file("${buildDir}/jacocoHtml")
     }
 }

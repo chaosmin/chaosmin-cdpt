@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.domain.const
 
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component
 
 /**
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Component
  */
 @Component
 @ConfigurationProperties("spring.application")
-open class ApplicationParam {
+@EnableConfigurationProperties(ApplicationParam::class)
+object ApplicationParam {
     var name = ""
     var version = ""
     var description = ""

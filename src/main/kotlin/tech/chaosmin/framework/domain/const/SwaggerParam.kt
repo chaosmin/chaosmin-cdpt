@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.domain.const
 
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component
 
 /**
@@ -9,12 +10,13 @@ import org.springframework.stereotype.Component
  */
 @Component
 @ConfigurationProperties("swagger")
-class SwaggerParam {
+@EnableConfigurationProperties(SwaggerParam::class)
+object SwaggerParam {
     var enable: Boolean = false
     var packages: String = ""
     var contact: ConTact = ConTact()
 
-    inner class ConTact {
+    class ConTact {
         var name: String = ""
         var url: String = ""
         var email: String = ""

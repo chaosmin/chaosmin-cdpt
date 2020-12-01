@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.domain.const
 
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component
 
 /**
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Component
  */
 @Component
 @ConfigurationProperties("server.limit")
-open class ServerLimitParam {
+@EnableConfigurationProperties(ServerLimitParam::class)
+object ServerLimitParam {
     var permitsPerSecond: Double = 1.0
     var tps: Long = 10
     var limitType = "DROP"

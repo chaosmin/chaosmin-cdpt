@@ -22,15 +22,14 @@ log:
   provider:
     enable: true
 
-contact:
-  name: Romani min
-  url: http://chaosmin.tech
-  email: minchao1029@hotmail.com
-  website: http://blog.chaosmin.tech
-
 swagger:
   enable: true
   packages: tech.chaosmin.framework.provider
+  contact:
+    name: Romani min
+    url: http://chaosmin.tech
+    email: minchao1029@hotmail.com
+    website: http://blog.chaosmin.tech
 
 server:
   global-anonymous: false

@@ -1,0 +1,16 @@
+package tech.chaosmin.framework.domain.const
+
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.stereotype.Component
+
+/**
+ * @author Romani min
+ * @since 2020/11/30 20:20
+ */
+@Component
+@ConfigurationProperties("server.limit")
+open class ServerLimitParam {
+    var permitsPerSecond: Double = 1.0
+    var tps: Long = 10
+    var limitType = "DROP"
+}

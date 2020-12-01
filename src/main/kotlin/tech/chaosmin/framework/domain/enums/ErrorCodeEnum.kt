@@ -4,5 +4,7 @@ enum class ErrorCodeEnum(val code: String, val msg: String) {
     SUCCESS("SUCCESS", "SUCCESS"),
     TOKEN_INVALID("TOKEN_0001", "TOKEN_INVALID"),
     NO_PERMISSION("PERMISSION_0001", "NO_PERMISSION"),
-    FAILURE("SYS_00001", "FAILURE")
+    FAILURE("SYS_00001", "FAILURE"),
+
+    REQUEST_LIMITED("API_00001", "服务器请求达到上限")
 }

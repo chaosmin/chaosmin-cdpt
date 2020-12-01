@@ -2,7 +2,6 @@ package tech.chaosmin.framework.web.interceptor
 
 import cn.hutool.core.util.EnumUtil
 import com.google.common.util.concurrent.RateLimiter
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import tech.chaosmin.framework.domain.const.ServerLimitParam
@@ -17,11 +16,10 @@ import javax.servlet.http.HttpServletResponse
  * @since 2020/11/30 17:53
  */
 @Component
-@EnableConfigurationProperties(ServerLimitParam::class)
-class LimitInterceptor(private val serverLimitParam: ServerLimitParam) : HandlerInterceptorAdapter() {
+@Suppress("UnstableApiUsage")
+class LimitInterceptor(serverLimitParam: ServerLimitParam) : HandlerInterceptorAdapter() {
     enum class LimitType { DROP, WAIT }
 
-    @Suppress("UnstableApiUsage")
     private val limiter: RateLimiter =
         RateLimiter.create(serverLimitParam.permitsPerSecond, serverLimitParam.tps, TimeUnit.SECONDS)
     private val limitType: LimitType =

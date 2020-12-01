@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority
 import tech.chaosmin.framework.domain.auth.GrantedAuthorityImpl
 import tech.chaosmin.framework.domain.auth.JwtAuthenticationToken
 import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
-import tech.chaosmin.framework.exception.FrameworkException
+import tech.chaosmin.framework.exception.AuthenticationException
 import java.io.Serializable
 import java.util.*
 
@@ -81,7 +81,7 @@ object JwtTokenUtil : Serializable {
     /**
      * 根据请求令牌获取登录认证信息
      *
-     * @param request 请求
+     * @param tokenHeader 请求TOKEN
      * @return 用户信息
      */
     fun getAuthenticationFromToken(tokenHeader: String): Authentication? {
@@ -153,7 +153,7 @@ object JwtTokenUtil : Serializable {
         return try {
             getClaimsFromToken(token)?.subject
         } catch (e: Exception) {
-            throw FrameworkException(ErrorCodeEnum.FAILURE.code, e)
+            throw AuthenticationException(ErrorCodeEnum.FAILURE.code, e)
         }
     }
 
@@ -171,7 +171,7 @@ object JwtTokenUtil : Serializable {
                 expiration.before(Date())
             } else false
         } catch (e: Exception) {
-            throw FrameworkException(ErrorCodeEnum.FAILURE.code, e)
+            throw AuthenticationException(ErrorCodeEnum.FAILURE.code, e)
         }.also {
             if (it) logger.warn("$token has been expired")
         }
@@ -187,7 +187,7 @@ object JwtTokenUtil : Serializable {
         return try {
             Jwts.parser().setSigningKey(APP_SECRET_KEY).parseClaimsJws(token).body
         } catch (e: Exception) {
-            throw FrameworkException(ErrorCodeEnum.TOKEN_INVALID.code, e)
+            throw AuthenticationException(ErrorCodeEnum.TOKEN_INVALID.code, e)
         }
     }
 

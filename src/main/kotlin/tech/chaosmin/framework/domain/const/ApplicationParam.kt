@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
  * @since 2020/11/30 20:44
  */
 @Component
-@ConfigurationProperties("spring.application")
+@ConfigurationProperties("application")
 @EnableConfigurationProperties(ApplicationParam::class)
 object ApplicationParam {
     var name = ""

@@ -1,5 +1,9 @@
 application:
+  name: chaosmin-user
   version: v1
+  description: chaosmin-user
+  license: Apache License 2.0
+  licenseUrl: https://github.com/chaosmin/chaosmin-framework/blob/master/LICENSE
 
 spring:
   datasource:

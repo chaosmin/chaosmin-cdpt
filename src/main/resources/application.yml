@@ -37,6 +37,10 @@ swagger:
 
 server:
   global-anonymous: false
+  limit:
+    permitsPerSecond: 10
+    tps: 1
+    limitType: DROP
   interceptor:
     except:
       - /swagger-ui/**

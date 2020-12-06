@@ -11,6 +11,9 @@ spring:
     url: jdbc:p6spy:mysql://127.0.0.1:3306/chaosmin_user?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: app_user
     password: bEza26gqbXiVWTy9
+  redis:
+    host: 127.0.0.1
+    port: 6379
   output:
     ansi:
       enabled: always
@@ -44,4 +47,4 @@ server:
   interceptor:
     except:
       - /swagger-ui/**
-      - /login
+      - /auth/login

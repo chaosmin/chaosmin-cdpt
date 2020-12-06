@@ -2,7 +2,6 @@ package tech.chaosmin.framework.config
 
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -29,10 +28,7 @@ import tech.chaosmin.framework.web.filter.JWTAuthorizationFilter
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-open class WebSecurityConfig(
-    @Qualifier("userDetailsServiceImpl") private val userDetailsService: UserDetailsService,
-    @Value("\${server.global-anonymous:false}") @Volatile var globalAnonymous: Boolean
-) :
+open class WebSecurityConfig(@Qualifier("userDetailsServiceImpl") private val userDetailsService: UserDetailsService) :
     WebSecurityConfigurerAdapter() {
     private val logger = LoggerFactory.getLogger(AccessLogFilter::class.java)
 
@@ -61,7 +57,7 @@ open class WebSecurityConfig(
     }
 
     override fun configure(http: HttpSecurity) {
-        logger.info("WebSecurityConfig.globalAnonymous switch: $globalAnonymous")
+        // logger.info("WebSecurityConfig.globalAnonymous switch: $globalAnonymous")
         // 禁用 csrf, 由于使用的是JWT，我们这里不需要csrf
         http.cors().and().csrf().disable()
             .authorizeRequests()
@@ -71,8 +67,8 @@ open class WebSecurityConfig(
             .antMatchers("/webjars/**").permitAll()
             .anyRequest().authenticated()
             .and()
-            .addFilter(JWTAuthenticationFilter(authenticationManager(), globalAnonymous))
-            .addFilter(JWTAuthorizationFilter(authenticationManager(), globalAnonymous))
+            .addFilter(JWTAuthenticationFilter(authenticationManager()))
+            .addFilter(JWTAuthorizationFilter(authenticationManager()))
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         http.headers().addHeaderWriter(

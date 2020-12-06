@@ -6,7 +6,6 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import tech.chaosmin.framework.domain.RestResultExt
-import tech.chaosmin.framework.domain.auth.AnonymousAuthentication
 import tech.chaosmin.framework.utils.HttpUtil
 import tech.chaosmin.framework.utils.JwtTokenUtil
 import javax.servlet.FilterChain
@@ -19,13 +18,9 @@ import javax.servlet.http.HttpServletResponse
  * @author Romani min
  * @since 2020/11/23 18:14
  */
-class JWTAuthorizationFilter(authManager: AuthenticationManager, private val globalAnonymous: Boolean = false) :
+class JWTAuthorizationFilter(authManager: AuthenticationManager) :
     BasicAuthenticationFilter(authManager, JWTAuthenticationEntryPoint()) {
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
-        if (globalAnonymous) {
-            SecurityContextHolder.getContext().authentication = AnonymousAuthentication
-            return
-        }
         val tokenHeader = request.getHeader(JwtTokenUtil.TOKEN_HEADER)
         if (tokenHeader == null || !tokenHeader.startsWith(JwtTokenUtil.TOKEN_PREFIX)) {
             chain.doFilter(request, response)

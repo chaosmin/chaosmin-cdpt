@@ -14,6 +14,7 @@ import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spring.web.plugins.Docket
 import tech.chaosmin.framework.domain.const.ApplicationParam
 import tech.chaosmin.framework.domain.const.SwaggerParam
+import tech.chaosmin.framework.domain.const.SystemConst.INIT_SUCCESSFULLY
 import tech.chaosmin.framework.utils.JsonUtil
 import java.util.*
 
@@ -28,18 +29,19 @@ open class SpringFoxConfig(
 
     @Bean
     open fun apiDocket(): Docket {
-        logger.info(">> Init apiDocket: ${swaggerParam.enable}.")
         if (swaggerParam.enable) {
             logger.info("Application param information: \n${JsonUtil.encode(applicationParam, true)}")
             logger.info("Swagger param information: \n${JsonUtil.encode(swaggerParam, true)}")
         }
-        return Docket(DocumentationType.SWAGGER_2)
+        val docket = Docket(DocumentationType.SWAGGER_2)
             .enable(swaggerParam.enable)
             .select()
             .apis(RequestHandlerSelectors.basePackage(swaggerParam.packages))
             .paths(PathSelectors.any())
             .build()
             .apiInfo(apiInfo())
+        logger.info(INIT_SUCCESSFULLY, docket.javaClass.name)
+        return docket
     }
 
     private fun apiInfo(): ApiInfo {

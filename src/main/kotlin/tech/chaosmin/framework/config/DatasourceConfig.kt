@@ -11,7 +11,8 @@ import org.apache.ibatis.reflection.MetaObject
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import tech.chaosmin.framework.domain.auth.AuthContextHolder
+import tech.chaosmin.framework.domain.const.SystemConst.INIT_SUCCESSFULLY
+import tech.chaosmin.framework.utils.SecurityUtil
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -26,8 +27,9 @@ open class DatasourceConfig {
      */
     @Bean
     open fun oracleKeyGenerator(): OracleKeyGenerator {
-        logger.info(">> init oracleKeyGenerator.")
-        return OracleKeyGenerator()
+        val oracleKeyGenerator = OracleKeyGenerator()
+        logger.info(INIT_SUCCESSFULLY, oracleKeyGenerator.javaClass.name)
+        return oracleKeyGenerator
     }
 
     /**
@@ -35,8 +37,9 @@ open class DatasourceConfig {
      */
     @Bean
     open fun optimisticLockerInterceptor(): OptimisticLockerInterceptor {
-        logger.info(">> init optimisticLockerInterceptor.")
-        return OptimisticLockerInterceptor()
+        val optimisticLockerInterceptor = OptimisticLockerInterceptor()
+        logger.info(INIT_SUCCESSFULLY, optimisticLockerInterceptor.javaClass.name)
+        return optimisticLockerInterceptor
     }
 
     /**
@@ -44,10 +47,8 @@ open class DatasourceConfig {
      */
     @Bean
     open fun paginationInterceptor(): PaginationInterceptor {
-        logger.info(">> init paginationInterceptor.")
         val paginationInterceptor = PaginationInterceptor()
-        return if (systemTables.isNullOrEmpty()) paginationInterceptor
-        else {
+        if (!systemTables.isNullOrEmpty()) {
             val sqlParserList = ArrayList<ISqlParser>()
             // 攻击 SQL 阻断解析器、加入解析链
             sqlParserList.add(object : BlockAttackSqlParser() {
@@ -60,13 +61,15 @@ open class DatasourceConfig {
             })
             paginationInterceptor.apply { this.sqlParserList = sqlParserList }
         }
+        logger.info(INIT_SUCCESSFULLY, paginationInterceptor.javaClass.name)
+        return paginationInterceptor
     }
 
     @Bean
     open fun metaObjectHandler() = object : MetaObjectHandler {
         override fun insertFill(metaObject: MetaObject) {
             val timestamp = Date()
-            val username = AuthContextHolder.getAuthentication()?.username ?: "anonymous"
+            val username = SecurityUtil.getUsername()
             this.setFieldValByName("createTime", timestamp, metaObject)
             this.setFieldValByName("creator", username, metaObject)
             this.setFieldValByName("updateTime", timestamp, metaObject)
@@ -75,7 +78,7 @@ open class DatasourceConfig {
 
         override fun updateFill(metaObject: MetaObject) {
             val timestamp = Date()
-            val username = AuthContextHolder.getAuthentication()?.username ?: "anonymous"
+            val username = SecurityUtil.getUsername()
             this.setFieldValByName("updateTime", timestamp, metaObject)
             this.setFieldValByName("updater", username, metaObject)
         }

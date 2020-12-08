@@ -9,12 +9,26 @@ data class RestResult<T>(
     var data: T? = null,
     var meta: Any = "",
     var success: Boolean = true
-) : Serializable
+) : Serializable {
+    fun mapper(result: RestResult<*>): RestResult<T> {
+        this.success = result.success
+        this.code = result.code
+        this.msg = result.msg
+        return this
+    }
+
+    fun success(data: T? = null): RestResult<T> {
+        this.success = true
+        this.data = data
+        return this
+    }
+}
 
 object RestResultExt {
     private const val OPT_SUCCESS = "Request success."
     private const val OPT_FAILED = "Request failed."
     private const val UNAUTHORIZED_OPERATION = "Unauthorized operation."
+    private const val BAD_CREDENTIALS = "Bad credentials."
 
     fun <T> successRestResult() = RestResult<T>(ErrorCodeEnum.SUCCESS.code, OPT_SUCCESS)
     fun <T> successRestResult(msg: String) = RestResult<T>(ErrorCodeEnum.SUCCESS.code, msg)
@@ -30,11 +44,9 @@ object RestResultExt {
     fun <T> failureRestResult(msg: String, data: T) = RestResult(ErrorCodeEnum.FAILURE.code, msg, data)
     fun <T> failureRestResult(msg: String, data: T, meta: Any) = RestResult(ErrorCodeEnum.FAILURE.code, msg, data, meta)
 
-    fun <T> noPermissionRestResult() = RestResult<T>(ErrorCodeEnum.NO_PERMISSION.code, UNAUTHORIZED_OPERATION)
-    fun <T> noPermissionRestResult(msg: String) = RestResult<T>(ErrorCodeEnum.NO_PERMISSION.code, msg)
-    fun <T> noPermissionRestResult(data: T) = RestResult(ErrorCodeEnum.NO_PERMISSION.code, UNAUTHORIZED_OPERATION, data)
-    fun <T> noPermissionRestResult(data: T, meta: Any) = RestResult(ErrorCodeEnum.NO_PERMISSION.code, UNAUTHORIZED_OPERATION, data, meta)
+    fun noPermissionRestResult(msg: String = UNAUTHORIZED_OPERATION) =
+        RestResult<Void>(ErrorCodeEnum.NO_PERMISSION.code, msg)
 
-    fun <T> noPermissionRestResult(msg: String, data: T) = RestResult(ErrorCodeEnum.NO_PERMISSION.code, msg, data)
-    fun <T> noPermissionRestResult(msg: String, data: T, meta: Any) = RestResult(ErrorCodeEnum.NO_PERMISSION.code, msg, data, meta)
+    fun badCredentialsRestResult(msg: String = BAD_CREDENTIALS) =
+        RestResult<Void>(ErrorCodeEnum.AUTHENTICATION_FAILED.code, msg)
 }

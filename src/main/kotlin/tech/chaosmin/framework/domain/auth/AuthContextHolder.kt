@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.domain.auth
 
 import org.springframework.core.NamedInheritableThreadLocal
+import org.springframework.security.core.Authentication
 
 /**
  * 登录用户信息ContextHolder

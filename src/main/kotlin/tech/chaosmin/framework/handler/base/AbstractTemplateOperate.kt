@@ -9,7 +9,7 @@ import tech.chaosmin.framework.utils.JsonUtil
 import java.io.Serializable
 
 abstract class AbstractTemplateOperate<P, R>(
-    private val logicName: String? = "",
+    internal val logicName: String? = "",
     private val errorCode: String = ErrorCodeEnum.FAILURE.code
 ) :
     Serializable, Operate<P, R> {

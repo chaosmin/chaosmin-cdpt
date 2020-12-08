@@ -38,7 +38,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-mail:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-security:${Vers.Deps.springBootVersion}")
-    implementation("org.springframework.boot:spring-boot-configuration-processor:${Vers.Deps.springBootVersion}")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:${Vers.Deps.springBootVersion}")
 
     // jackson
     implementation("com.fasterxml.jackson.core:jackson-core:${Vers.Deps.jacksonVersion}")
@@ -66,6 +66,9 @@ dependencies {
     implementation("cn.hutool:hutool-all:${Vers.Deps.hutoolVersion}")
     implementation("com.google.guava:guava:${Vers.Deps.guavaVersion}")
     implementation("io.jsonwebtoken:jjwt:${Vers.Deps.jwtVersion}")
+    implementation("org.apache.poi:poi:${Vers.Deps.poiVersion}")
+
+    // implementation("com.opencsv:opencsv:${Vers.Deps.opencsvVersion}")
 
     // config discovery
     // implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")
@@ -83,10 +86,11 @@ dependencies {
 
     // test
     testImplementation("org.springframework.boot:spring-boot-starter-test:${Vers.Deps.springBootVersion}")
+    testImplementation("org.springframework.security:spring-security-test:${Vers.Deps.springBootVersion}")
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.withType<Test> {
@@ -98,6 +102,6 @@ tasks.jacocoTestReport {
         xml.isEnabled = true
         csv.isEnabled = false
         html.isEnabled = false
-        html.destination = file("${buildDir}/jacocoHtml")
+        // html.destination = file("${buildDir}/jacocoHtml")
     }
 }

@@ -10,13 +10,13 @@ import tech.chaosmin.framework.domain.response.share.AuthorityShareResponseDTO
 import javax.servlet.http.HttpServletRequest
 
 @Api(tags = ["权限操作接口"], consumes = "application/json;charset=utf-8")
-@RequestMapping("/authorities")
+@RequestMapping("/\${application.version}/api/authorities")
 interface AuthorityShareService {
     @GetMapping("/{id}")
     @ApiOperation(value = "根据id查询", response = AuthorityShareResponseDTO::class)
     fun selectById(@PathVariable("id") id: Long): RestResult<AuthorityShareResponseDTO?>
 
-    @GetMapping("/page")
+    @GetMapping
     @ApiOperation(value = "分页查询查询")
     fun page(request: HttpServletRequest): RestResult<IPage<AuthorityShareResponseDTO>>
 

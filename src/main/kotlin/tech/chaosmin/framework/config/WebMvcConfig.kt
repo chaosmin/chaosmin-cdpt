@@ -1,30 +1,28 @@
 package tech.chaosmin.framework.config
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import tech.chaosmin.framework.web.interceptor.AuthInterceptor
+import tech.chaosmin.framework.web.interceptor.LimitInterceptor
 
 @Configuration
+
 open class WebMvcConfig(
     private val authInterceptor: AuthInterceptor,
-    @Value("\${server.interceptor.debug:false}") @Volatile var interceptorDebug: Boolean
+    private val limitInterceptor: LimitInterceptor
 ) : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
-        if (!interceptorDebug) {
-            registry
-                .addInterceptor(authInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/auth/**")
-                .excludePathPatterns("/event/**")
-                .excludePathPatterns("/login")
-                .excludePathPatterns("/swagger-ui/**")
-                .excludePathPatterns("/ddl-change")
-                .excludePathPatterns("/system/ping-without-auth")
-        }
+        registry.addInterceptor(authInterceptor)
+            .addPathPatterns("/**")
+            .excludePathPatterns("/auth/**")
+            .excludePathPatterns("/event/**")
+            .excludePathPatterns("/ddl-change")
+            .excludePathPatterns("/system/ping-without-auth")
+        registry.addInterceptor(limitInterceptor)
+            .addPathPatterns("/**")
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {

@@ -1,0 +1,79 @@
+{
+  "properties": [
+    {
+      "name": "application.name",
+      "type": "java.lang.String",
+      "description": "Description for application.name."
+    },
+    {
+      "name": "application.version",
+      "type": "java.lang.String",
+      "description": "Description for application.version."
+    },
+    {
+      "name": "application.description",
+      "type": "java.lang.String",
+      "description": "Description for application.description."
+    },
+    {
+      "name": "application.license",
+      "type": "java.lang.String",
+      "description": "Description for application.license."
+    },
+    {
+      "name": "application.licenseUrl",
+      "type": "java.lang.String",
+      "description": "Description for application.licenseUrl."
+    },
+    {
+      "name": "log.access.enable",
+      "type": "java.lang.String",
+      "description": "Description for log.access.enable."
+    },
+    {
+      "name": "log.provider.enable",
+      "type": "java.lang.String",
+      "description": "Description for log.provider.enable."
+    },
+    {
+      "name": "swagger.enable",
+      "type": "java.lang.String",
+      "description": "Description for swagger.enable."
+    },
+    {
+      "name": "swagger.packages",
+      "type": "java.lang.String",
+      "description": "Description for swagger.packages."
+    },
+    {
+      "name": "swagger.contact.name",
+      "type": "java.lang.String",
+      "description": "Description for swagger.contact.name."
+    },
+    {
+      "name": "swagger.contact.url",
+      "type": "java.lang.String",
+      "description": "Description for swagger.contact.url."
+    },
+    {
+      "name": "swagger.contact.email",
+      "type": "java.lang.String",
+      "description": "Description for swagger.contact.email."
+    },
+    {
+      "name": "swagger.contact.website",
+      "type": "java.lang.String",
+      "description": "Description for swagger.contact.website."
+    },
+    {
+      "name": "server.global-anonymous",
+      "type": "java.lang.String",
+      "description": "Description for server.global-anonymous."
+    },
+    {
+      "name": "server.interceptor.except",
+      "type": "java.lang.String",
+      "description": "Description for server.interceptor.except."
+    }
+  ]
+}

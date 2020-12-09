@@ -1,13 +1,11 @@
 package tech.chaosmin.framework.dao.dataobject
 
-import tech.chaosmin.framework.domain.enums.BasicStatusEnum
-
 /**
- * 产品责任包
+ * 费率表
  * @author Romani min
  * @since 2020/12/8 15:57
  */
-class Package(id: Long? = null) : BaseCommonDO(id) {
+class RateTable(id: Long? = null) : BaseCommonDO(id) {
     // 代码
     var code: String? = null
 
@@ -15,5 +13,5 @@ class Package(id: Long? = null) : BaseCommonDO(id) {
     var name: String? = null
 
     // 状态
-    var status: BasicStatusEnum? = null
+    var remark: String? = null
 }

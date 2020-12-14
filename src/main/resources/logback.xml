@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="600 seconds" debug="false">
     <property name="logging.level" value="INFO"/>
-    <property name="project.name" value="chaosmin-user"/>
+    <property name="project.name" value="chaosmin-cdpt"/>
 
     <include resource="logback-file-appender.xml"/>
 

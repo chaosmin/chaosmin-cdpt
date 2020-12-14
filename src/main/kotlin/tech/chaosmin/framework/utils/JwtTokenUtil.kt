@@ -153,7 +153,7 @@ object JwtTokenUtil : Serializable {
         return try {
             getClaimsFromToken(token)?.subject
         } catch (e: Exception) {
-            throw AuthenticationException(ErrorCodeEnum.FAILURE.code, e)
+            throw AuthenticationException(ErrorCodeEnum.TOKEN_INVALID.code, e)
         }
     }
 
@@ -171,7 +171,7 @@ object JwtTokenUtil : Serializable {
                 expiration.before(Date())
             } else false
         } catch (e: Exception) {
-            throw AuthenticationException(ErrorCodeEnum.FAILURE.code, e)
+            throw AuthenticationException(ErrorCodeEnum.TOKEN_EXPIRED.code, e)
         }.also {
             if (it) logger.warn("$token has been expired")
         }

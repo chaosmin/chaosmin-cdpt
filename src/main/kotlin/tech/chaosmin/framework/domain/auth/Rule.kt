@@ -19,12 +19,12 @@ data class Rule(val order: Int, val expr: JsonNode) {
         // anonymous 直接返回
         val url = resource.url.toUpperCase()
         val method = resource.httpMethod.toUpperCase()
-        val allowHttpMethods = expr[HTTP_METHOD].textValue().toUpperCase()
-        if (!allowHttpMethods.contains(method)) {
-            logger.warn("[rule-check] reject: allow[{}], method[{}]", allowHttpMethods, method)
+        val allowMethod = expr[HTTP_METHOD][method]
+        if (allowMethod == null) {
+            logger.warn("[rule-check] reject: method[{}] is not allowed", method)
             return@Predicate false
         }
-        val allowUrls = expr[REQUEST_URL].map { it.textValue().toUpperCase() }
+        val allowUrls = allowMethod[REQUEST_URL].map { it.textValue().toUpperCase() }
         if (allowUrls.none { pathMatcher.match(it, url) }) {
             logger.warn("[rule-check] reject: allow[$method]{}, url[{}]", allowUrls, url)
             return@Predicate false

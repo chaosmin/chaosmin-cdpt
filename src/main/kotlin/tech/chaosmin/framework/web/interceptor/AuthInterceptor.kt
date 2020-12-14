@@ -39,10 +39,10 @@ class AuthInterceptor(
             ?: throw AuthenticationException(ErrorCodeEnum.NO_TOKEN.code)
         val authentication = JwtTokenUtil.getAuthenticationFromToken(token)
             ?: throw PermissionException(ErrorCodeEnum.NO_PERMISSION.code)
-        AuthContextHolder.setAuthentication(authentication)
         if (!authService.canAccess(authentication, action)) {
             throw PermissionException(ErrorCodeEnum.NO_PERMISSION.code)
         }
+        AuthContextHolder.setAuthentication(authentication)
         return true
     }
 

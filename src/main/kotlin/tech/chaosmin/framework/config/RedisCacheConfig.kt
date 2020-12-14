@@ -11,7 +11,6 @@ import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.*
-import tech.chaosmin.framework.domain.auth.ComposeMode
 import tech.chaosmin.framework.domain.auth.Rule
 import tech.chaosmin.framework.domain.const.ApplicationParam
 import tech.chaosmin.framework.domain.const.SystemConst.DEFAULT_CACHE_EXPIRE_TIME
@@ -43,20 +42,11 @@ open class RedisCacheConfig(private val applicationParam: ApplicationParam) : Ca
     }
 
     @Bean
-    open fun authoritiesCacheTemplate(redisConnectionFactory: RedisConnectionFactory): RedisTemplate<String, List<Pair<Rule, ComposeMode>>> {
+    open fun authoritiesCacheTemplate(redisConnectionFactory: RedisConnectionFactory): RedisTemplate<String, Rule> {
         val objectMapper = JsonUtil.objectMapper
-        val template = RedisTemplate<String, List<Pair<Rule, ComposeMode>>>()
+        val template = RedisTemplate<String, Rule>()
         template.setConnectionFactory(redisConnectionFactory)
-        val serializer = Jackson2JsonRedisSerializer<List<Pair<Rule, ComposeMode>>>(
-            objectMapper.typeFactory.constructCollectionType(
-                List::class.java,
-                objectMapper.typeFactory.constructParametricType(
-                    Pair::class.java,
-                    Rule::class.java,
-                    ComposeMode::class.java
-                )
-            )
-        )
+        val serializer = Jackson2JsonRedisSerializer(Rule::class.java)
         serializer.setObjectMapper(objectMapper)
         template.keySerializer = StringRedisSerializer()
         template.hashValueSerializer = serializer

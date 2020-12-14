@@ -1,10 +1,9 @@
 object Vers {
     object Plugins {
-        const val sonarqubeVersion = "2.7"
-    }
-
-    object App {
+        const val hidetakeSSHVersion = "2.10.1"
         const val kotlinVersion = "1.3.72"
+        const val sonarqubeVersion = "2.7"
+        const val springBootVersion = "2.3.2.RELEASE"
     }
 
     object Deps {

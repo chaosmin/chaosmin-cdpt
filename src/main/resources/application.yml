@@ -1,7 +1,7 @@
 application:
   name: chaosmin-user
   version: v1
-  description: chaosmin-user
+  description: chaosmin-user demo for every micro service
   license: Apache License 2.0
   licenseUrl: https://github.com/chaosmin/chaosmin-framework/blob/master/LICENSE
 
@@ -41,8 +41,8 @@ swagger:
 server:
   global-anonymous: false
   limit:
-    permitsPerSecond: 10
-    tps: 1
+    permitsPerSecond: 1000
+    tps: 1000
     limitType: DROP
   interceptor:
     except:

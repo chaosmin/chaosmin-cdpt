@@ -11,4 +11,7 @@ class DepartmentShareResponseDTO : BaseShareResponseDTO() {
 
     @ApiModelProperty(value = "名称")
     var name: String? = null
+
+    @ApiModelProperty(value = "部门状态")
+    var status: Int? = null
 }

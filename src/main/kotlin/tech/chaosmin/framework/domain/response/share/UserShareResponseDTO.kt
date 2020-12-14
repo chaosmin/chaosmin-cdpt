@@ -15,6 +15,9 @@ class UserShareResponseDTO : BaseShareResponseDTO() {
     @ApiModelProperty(value = "登录名")
     var loginName: String? = null
 
+    @ApiModelProperty(value = "用户状态")
+    var status: Int? = null
+
     @ApiModelProperty(value = "电话")
     var phone: String? = null
 

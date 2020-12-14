@@ -15,9 +15,7 @@ import tech.chaosmin.framework.web.service.AuthorityShareService
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-open class AuthorityShareProvider(
-    private val authorityService: AuthorityService
-) : AuthorityShareService {
+open class AuthorityShareProvider(private val authorityService: AuthorityService) : AuthorityShareService {
     override fun selectById(id: Long): RestResult<AuthorityShareResponseDTO?> {
         val authority = authorityService.getById(id)
         return if (authority != null) {

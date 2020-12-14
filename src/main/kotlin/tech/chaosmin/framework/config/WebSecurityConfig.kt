@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -62,9 +63,7 @@ open class WebSecurityConfig(@Qualifier("userDetailsServiceImpl") private val us
         http.cors().and().csrf().disable()
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .antMatchers("/login").permitAll()
-            .antMatchers("/swagger-ui/**").permitAll()
-            .antMatchers("/webjars/**").permitAll()
+            .antMatchers("/auth/login").permitAll()
             .anyRequest().authenticated()
             .and()
             .addFilter(JWTAuthenticationFilter(authenticationManager()))
@@ -80,6 +79,13 @@ open class WebSecurityConfig(@Qualifier("userDetailsServiceImpl") private val us
                     Header("Access-Control-Expose-Headers", JwtTokenUtil.TOKEN_HEADER)
                 )
             )
+        )
+    }
+
+    override fun configure(web: WebSecurity) {
+        web.ignoring().antMatchers(
+            "/swagger-ui.html", "/swagger-ui/*", "/swagger-resources/**",
+            "/v2/api-docs", "/v3/api-docs", "/webjars/**"
         )
     }
 }

@@ -58,7 +58,7 @@ class GlobalControllerAdvice {
     @ExceptionHandler(MissingServletRequestParameterException::class)
     fun handleMissingServletRequestParameterException(e: MissingServletRequestParameterException): RestResult<Void> {
         logger.error("捕获到请求参数缺失异常", e)
-        return failureRestResult(e.message ?: "incomplete params")
+        return failureRestResult(e.message)
     }
 
     /**
@@ -105,7 +105,7 @@ class GlobalControllerAdvice {
     @ExceptionHandler(AuthenticationException::class)
     fun handleAuthenticationException(e: AuthenticationException): RestResult<Void> {
         logger.error("捕获到认证异常", e)
-        return RestResult(ErrorCodeEnum.TOKEN_INVALID.code, e.message ?: "invalid token")
+        return RestResult(e.message ?: ErrorCodeEnum.TOKEN_INVALID.code)
     }
 
     /**

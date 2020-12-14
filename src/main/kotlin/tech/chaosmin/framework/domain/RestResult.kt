@@ -5,7 +5,7 @@ import java.io.Serializable
 
 data class RestResult<T>(
     var code: String,
-    var msg: String,
+    var msg: String? = null,
     var data: T? = null,
     var meta: Any = "",
     var success: Boolean = true

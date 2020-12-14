@@ -86,7 +86,6 @@ dependencies {
 
     // test
     testImplementation("org.springframework.boot:spring-boot-starter-test:${Vers.Deps.springBootVersion}")
-    testImplementation("org.springframework.security:spring-security-test:${Vers.Deps.springBootVersion}")
 }
 
 tasks.withType<KotlinCompile> {

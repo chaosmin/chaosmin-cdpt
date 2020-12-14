@@ -21,7 +21,7 @@ abstract class AbstractTemplateOperate<P, R>(
 
     protected open fun exceptionDetail(arg: P, result: RestResult<R>, exception: Exception) {
         result.code = errorCode
-        if (result.msg.isBlank()) {
+        if (result.msg?.isBlank() != false) {
             result.msg = "$logicName handler exception"
         }
         //如果以FrameworkException抛出的异常以此为主

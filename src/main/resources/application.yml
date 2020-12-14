@@ -1,16 +1,16 @@
 application:
-  name: chaosmin-user
+  name: chaosmin-cdpt
   version: v1
-  description: chaosmin-user demo for every micro service
+  description: 出单平台
   license: Apache License 2.0
   licenseUrl: https://github.com/chaosmin/chaosmin-framework/blob/master/LICENSE
 
 spring:
   datasource:
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-    url: jdbc:p6spy:mysql://127.0.0.1:3306/chaosmin_user?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: app_user
-    password: bEza26gqbXiVWTy9
+    url: jdbc:p6spy:mysql://rm-uf6e9i0tl60ppsyb61250100m.mysql.rds.aliyuncs.com:3306/chaosmin_cdpt?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: minchao
+    password: gqsLFoKh38DlQigI
   redis:
     host: 127.0.0.1
     port: 6379

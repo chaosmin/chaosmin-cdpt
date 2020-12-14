@@ -1,10 +1,14 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
     base
-    kotlin("jvm") version Vers.App.kotlinVersion
-    id("org.jetbrains.kotlin.kapt") version Vers.App.kotlinVersion
+    kotlin("jvm") version Vers.Plugins.kotlinVersion
+    id("org.jetbrains.kotlin.kapt") version Vers.Plugins.kotlinVersion
     id("org.sonarqube") version Vers.Plugins.sonarqubeVersion
+    id("org.hidetake.ssh") version Vers.Plugins.hidetakeSSHVersion
+    id("org.springframework.boot") version Vers.Plugins.springBootVersion
     maven
     jacoco
 }
@@ -102,5 +106,25 @@ tasks.jacocoTestReport {
         csv.isEnabled = false
         html.isEnabled = false
         // html.destination = file("${buildDir}/jacocoHtml")
+    }
+}
+
+tasks {
+    getByName<BootJar>("bootJar") {
+        println("准备打包项目...")
+        archiveName = "app.jar"
+        mainClassName = "tech.chaosmin.framework.ApplicationKt"
+    }
+
+    getByName<BootRun>("bootRun") {
+        main = "tech.chaosmin.framework.ApplicationKt"
+        args("--spring.profiles.active=demo")
+    }
+}
+
+tasks.create("deploy") {
+    dependsOn("bootJar").doLast {
+        println("准备部署...")
+        println("项目部署成功!")
     }
 }

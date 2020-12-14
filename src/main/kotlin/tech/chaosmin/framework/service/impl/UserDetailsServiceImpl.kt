@@ -26,7 +26,7 @@ class UserDetailsServiceImpl(
         return userService.findByLoginName(username)?.run {
             // 用户权限列表，根据用户拥有的权限标识与如 @PreAuthorize("hasAuthority('sys:menu:view')") 标注的接口对比，决定是否可以调用接口
             val roleIds = roleService.findRoles(this.id!!).mapNotNull { it.id }.toSet()
-            val permissions = authorityService.findAuthorities(roleIds).map { "${it.httpMethod} ${it.url}" }
+            val permissions = authorityService.findAuthorities(roleIds).map { it.authority }
             val accountNonExpired = this.status != null && this.status == UserStatusEnum.VALID.code
             val credentialsNonExpired = true
             val accountNonLocked = if (this.departmentId != null) {

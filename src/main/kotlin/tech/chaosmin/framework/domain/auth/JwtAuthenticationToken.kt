@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority
 
 open class JwtAuthenticationToken(
     principal: Any?,
-    credentials: Any?,
+    credentials: Any? = null,
     authorities: Collection<GrantedAuthority> = emptyList(),
     var token: String? = null
 ) : UsernamePasswordAuthenticationToken(principal, credentials, authorities)

@@ -51,7 +51,7 @@ open class AuthorityServiceImpl(private val stringRedisTemplate: StringRedisTemp
                 val method = authority.split(" ")[0]
                 val url = authority.split(" ")[1]
                 return baseMapper.selectOne(Wrappers.query(Authority(method, url)))?.also {
-                    stringRedisTemplate.opsForValue().set(cacheKey, JsonUtil.encode(authority), ttl, timeUnit)
+                    stringRedisTemplate.opsForValue().set(cacheKey, JsonUtil.encode(it), ttl, timeUnit)
                 }
             }
         }

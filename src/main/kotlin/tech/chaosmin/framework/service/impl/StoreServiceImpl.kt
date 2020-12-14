@@ -9,6 +9,7 @@ import tech.chaosmin.framework.domain.const.SystemConst.DEFAULT_CACHE_EXPIRE_TIM
 import tech.chaosmin.framework.domain.const.SystemConst.HTTP_METHOD
 import tech.chaosmin.framework.domain.const.SystemConst.REQUEST_URL
 import tech.chaosmin.framework.service.StoreService
+import tech.chaosmin.framework.utils.SecurityUtil
 import java.util.concurrent.TimeUnit
 
 
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit
 class StoreServiceImpl(private val authoritiesCacheTemplate: RedisTemplate<String, Rule>) : StoreService {
 
     override fun fetchRuleWithComposeModes(authentication: Authentication): Rule {
-        val username = authentication.principal.toString()
+        val username = SecurityUtil.getUsername(authentication)
         val cache = authoritiesCacheTemplate.opsForValue().get(username)
         if (cache != null) {
             return cache

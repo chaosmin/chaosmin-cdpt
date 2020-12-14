@@ -63,16 +63,14 @@ class JWTAuthenticationFilter(authManager: AuthenticationManager) : UsernamePass
         // 生成并返回token给客户端，后续访问携带此token
         val generateToken = JwtTokenUtil.generateToken(authResult)
         val username = SecurityUtil.getUsername(authResult)
-        if (username.isNullOrBlank()) {
+        if (username.isBlank()) {
             throw FrameworkException(ErrorCodeEnum.USER_NOT_FOUND.code)
         }
         // 清除一下用户的菜单列表缓存
         SpringUtil.getBean(StoreService::class.java).clear(username)
-        val authentication = JwtAuthenticationToken(username, null, token = generateToken)
         val authorityService = SpringUtil.getBean(AuthorityService::class.java)
-        authentication.details = authResult.authorities.map {
-            authorityService.findAuthorities(it.authority)
-        }
+        val authorities = authResult.authorities.mapNotNull { authorityService.findAuthorities(it.authority) }
+        val authentication = JwtAuthenticationToken(username, authorities = authorities, token = generateToken)
         response.setHeader(JwtTokenUtil.TOKEN_HEADER, "${JwtTokenUtil.TOKEN_PREFIX}$generateToken")
         HttpUtil.write(response, RestResultExt.successRestResult(authentication))
     }

@@ -7,7 +7,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.utils.HttpUtil
 import tech.chaosmin.framework.utils.JwtTokenUtil
-import tech.chaosmin.framework.utils.SecurityUtil
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -26,8 +25,7 @@ class JWTAuthorizationFilter(authManager: AuthenticationManager) :
             chain.doFilter(request, response)
             return
         }
-        val authentication = JwtTokenUtil.getAuthenticationFromToken(tokenHeader)
-        SecurityUtil.setAuthentication(authentication!!)
+        JwtTokenUtil.getAuthenticationFromToken(tokenHeader)
         super.doFilterInternal(request, response, chain)
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails
 class JwtUserDetails(
     username: String,
     password: String,
-    authorities: Collection<GrantedAuthority>,
+    authorities: Collection<GrantedAuthority> = emptyList(),
     enabled: Boolean = true,
     accountNonExpired: Boolean = true,
     credentialsNonExpired: Boolean = true,

@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import tech.chaosmin.framework.domain.auth.GrantedAuthorityImpl
 import tech.chaosmin.framework.domain.auth.JwtAuthenticationToken
+import tech.chaosmin.framework.domain.auth.JwtUserDetails
 import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.AuthenticationException
 import java.io.Serializable
@@ -92,11 +93,16 @@ object JwtTokenUtil : Serializable {
             if (SecurityUtil.getAuthentication() == null) {
                 // 上下文中Authentication为空
                 val claims = getClaimsFromToken(this) ?: return null
-                val username = claims[USERNAME] ?: return null
+                val username = claims[USERNAME]?.toString() ?: return null
                 if (isTokenExpired(this)) {
                     return null
                 }
-                authentication = JwtAuthenticationToken(username, null, generateAuthorities(claims[AUTHORITIES]), this)
+                authentication = JwtAuthenticationToken(
+                    JwtUserDetails(username, ""),
+                    authorities = generateAuthorities(claims[AUTHORITIES]),
+                    token = this
+                )
+                SecurityUtil.setAuthentication(authentication!!)
             } else {
                 if (validateToken(this, SecurityUtil.getUsername())) {
                     // 如果上下文中Authentication非空，且请求令牌合法，直接返回当前登录认证信息

@@ -151,7 +151,7 @@ object JwtTokenUtil : Serializable {
      */
     private fun getUsernameFromToken(token: String): String? {
         return try {
-            getClaimsFromToken(token)?.subject
+            getClaimsFromToken(token)?.get(USERNAME)?.toString()
         } catch (e: Exception) {
             throw AuthenticationException(ErrorCodeEnum.TOKEN_INVALID.code, e)
         }

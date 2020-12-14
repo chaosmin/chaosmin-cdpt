@@ -5,7 +5,6 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.auth.JwtAuthenticationToken
@@ -54,7 +53,7 @@ class JWTAuthenticationFilter(authManager: AuthenticationManager) : UsernamePass
         chain: FilterChain, authResult: Authentication
     ) {
         // 存储登录认证信息到上下文
-        SecurityContextHolder.getContext().authentication = authResult
+        SecurityUtil.setAuthentication(authResult)
         // 记住我服务
         rememberMeServices.loginSuccess(request, response, authResult)
         // 触发事件监听器

@@ -2,12 +2,12 @@ package tech.chaosmin.framework.web.filter
 
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.core.AuthenticationException
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.utils.HttpUtil
 import tech.chaosmin.framework.utils.JwtTokenUtil
+import tech.chaosmin.framework.utils.SecurityUtil
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -26,7 +26,8 @@ class JWTAuthorizationFilter(authManager: AuthenticationManager) :
             chain.doFilter(request, response)
             return
         }
-        SecurityContextHolder.getContext().authentication = JwtTokenUtil.getAuthenticationFromToken(tokenHeader)
+        val authentication = JwtTokenUtil.getAuthenticationFromToken(tokenHeader)
+        SecurityUtil.setAuthentication(authentication!!)
         super.doFilterInternal(request, response, chain)
     }
 }

@@ -58,7 +58,7 @@ class GlobalControllerAdvice {
     @ExceptionHandler(MissingServletRequestParameterException::class)
     fun handleMissingServletRequestParameterException(e: MissingServletRequestParameterException): RestResult<Void> {
         logger.error("捕获到请求参数缺失异常", e)
-        return failureRestResult(msg = e.message)
+        return failureRestResult(msg = e.message ?: "missing request parameters")
     }
 
     /**
@@ -68,7 +68,7 @@ class GlobalControllerAdvice {
     fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): RestResult<Void> {
         val message = e.bindingResult.allErrors.joinToString { "${it.defaultMessage};" }
         logger.error("捕获到参数校验异常: {}", message, e)
-        return failureRestResult(msg = message)
+        return failureRestResult(msg = message ?: "invalid request parameters")
     }
 
     /**
@@ -87,7 +87,7 @@ class GlobalControllerAdvice {
     fun handleBindException(e: BindException): RestResult<Void> {
         val message = e.bindingResult.allErrors.joinToString { "${it.defaultMessage};" }
         logger.error("捕获到参数绑定异常: {}", message, e)
-        return failureRestResult(msg = message)
+        return failureRestResult(msg = message ?: "invalid request parameters")
     }
 
     /**

@@ -31,7 +31,7 @@ class GlobalControllerAdvice {
     fun handleNoHandlerFoundException(e: NoHandlerFoundException): RestResult<Void> {
         logger.error("捕获到NoHandlerFoundException", e)
         val message = "API: ${e.requestURL} url not found"
-        return failureRestResult(message)
+        return failureRestResult(msg = message)
     }
 
     /**
@@ -40,7 +40,7 @@ class GlobalControllerAdvice {
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
     fun handleHttpRequestMethodNotSupportedException(e: HttpRequestMethodNotSupportedException): RestResult<Void> {
         logger.error("捕获到HttpRequestMethodNotSupportedException", e)
-        return failureRestResult(e.message ?: "http method not supported")
+        return failureRestResult(msg = e.message ?: "http method not supported")
     }
 
     /**
@@ -49,7 +49,7 @@ class GlobalControllerAdvice {
     @ExceptionHandler(HttpMessageConversionException::class)
     fun handleHttpMessageConversionException(e: HttpMessageConversionException): RestResult<Void> {
         logger.error("捕获到请求参数异常", e)
-        return failureRestResult(e.message ?: "invalid params")
+        return failureRestResult(msg = e.message ?: "invalid parameters")
     }
 
     /**
@@ -58,7 +58,7 @@ class GlobalControllerAdvice {
     @ExceptionHandler(MissingServletRequestParameterException::class)
     fun handleMissingServletRequestParameterException(e: MissingServletRequestParameterException): RestResult<Void> {
         logger.error("捕获到请求参数缺失异常", e)
-        return failureRestResult(e.message)
+        return failureRestResult(msg = e.message)
     }
 
     /**
@@ -68,7 +68,7 @@ class GlobalControllerAdvice {
     fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): RestResult<Void> {
         val message = e.bindingResult.allErrors.joinToString { "${it.defaultMessage};" }
         logger.error("捕获到参数校验异常: {}", message, e)
-        return failureRestResult(message)
+        return failureRestResult(msg = message)
     }
 
     /**
@@ -87,7 +87,7 @@ class GlobalControllerAdvice {
     fun handleBindException(e: BindException): RestResult<Void> {
         val message = e.bindingResult.allErrors.joinToString { "${it.defaultMessage};" }
         logger.error("捕获到参数绑定异常: {}", message, e)
-        return failureRestResult(message)
+        return failureRestResult(msg = message)
     }
 
     /**
@@ -96,7 +96,7 @@ class GlobalControllerAdvice {
     @ExceptionHandler(ResourceNotExistException::class)
     fun handleResourceNotExistException(e: ResourceNotExistException): RestResult<Void> {
         logger.error("捕获到资源不存在异常", e)
-        return failureRestResult(e.message ?: "resource not exist")
+        return failureRestResult(msg = e.message ?: "resource not exist")
     }
 
     /**
@@ -114,7 +114,7 @@ class GlobalControllerAdvice {
     @ExceptionHandler(PermissionException::class)
     fun handlePermissionException(e: PermissionException): RestResult<Void> {
         logger.error("捕获到权限异常", e)
-        return noPermissionRestResult(e.message ?: "permission deny")
+        return noPermissionRestResult(msg = e.message ?: "permission deny")
     }
 
     /**
@@ -124,6 +124,6 @@ class GlobalControllerAdvice {
     fun handleThrowable(e: Throwable): RestResult<Void> {
         logger.error("捕获到未知异常: {}", e.javaClass.name)
         logger.error(e.message, e)
-        return failureRestResult(e.message ?: "unknown error")
+        return failureRestResult(msg = e.message ?: "unknown error")
     }
 }

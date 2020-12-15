@@ -1,6 +1,5 @@
 package tech.chaosmin.framework.web.filter
 
-import cn.hutool.extra.spring.SpringUtil
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent
 import org.springframework.security.core.Authentication
@@ -12,8 +11,6 @@ import tech.chaosmin.framework.domain.auth.LoginParameter
 import tech.chaosmin.framework.domain.const.SystemConst.DEFAULT_CHARSET_NAME
 import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.FrameworkException
-import tech.chaosmin.framework.service.AuthorityService
-import tech.chaosmin.framework.service.StoreService
 import tech.chaosmin.framework.utils.HttpUtil
 import tech.chaosmin.framework.utils.JsonUtil
 import tech.chaosmin.framework.utils.JwtTokenUtil
@@ -67,10 +64,11 @@ class JWTAuthenticationFilter(authManager: AuthenticationManager) : UsernamePass
             throw FrameworkException(ErrorCodeEnum.USER_NOT_FOUND.code)
         }
         // 清除一下用户的菜单列表缓存
-        SpringUtil.getBean(StoreService::class.java).clear(username)
-        val authorityService = SpringUtil.getBean(AuthorityService::class.java)
-        val authorities = authResult.authorities.mapNotNull { authorityService.findAuthorities(it.authority) }
-        val authentication = JwtAuthenticationToken(username, authorities = authorities, token = generateToken)
+        // SpringUtil.getBean(StoreService::class.java).clear(username)
+        // val authorityService = SpringUtil.getBean(AuthorityService::class.java)
+        // val authorities = authResult.authorities.mapNotNull { authorityService.findAuthorities(it.authority) }
+        // val authentication = JwtAuthenticationToken(username, authorities = authorities, token = generateToken)
+        val authentication = JwtAuthenticationToken(username, token = generateToken)
         response.setHeader(JwtTokenUtil.TOKEN_HEADER, "${JwtTokenUtil.TOKEN_PREFIX}$generateToken")
         HttpUtil.write(response, RestResultExt.successRestResult(authentication))
     }

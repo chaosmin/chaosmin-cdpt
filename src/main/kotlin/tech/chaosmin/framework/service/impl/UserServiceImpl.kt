@@ -12,4 +12,9 @@ open class UserServiceImpl : ServiceImpl<UserDAO, User>(), UserService {
     override fun findByLoginName(loginName: String): User? {
         return baseMapper.selectOne(Wrappers.query<User>().eq("login_name", loginName))
     }
+
+    override fun countByDepartmentId(departmentId: Long): Int {
+        val eq = Wrappers.query<User>().eq("department_id", departmentId)
+        return baseMapper.selectCount(eq)
+    }
 }

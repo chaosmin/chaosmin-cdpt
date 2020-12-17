@@ -6,6 +6,9 @@ import java.io.Serializable
 import java.util.*
 
 open class BaseShareResponseDTO : Serializable {
+    @ApiModelProperty(value = "主键")
+    var id: Long? = null
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "创建时间")
     var createTime: Date? = null

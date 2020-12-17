@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
+import tech.chaosmin.framework.domain.auth.JwtUserDetails
 import tech.chaosmin.framework.domain.const.SystemConst
 
 object SecurityUtil {
@@ -11,6 +12,10 @@ object SecurityUtil {
 
     fun getUsername(): String {
         return getUsername(getAuthentication())
+    }
+
+    fun getDepartment(): Long? {
+        return getDepartment(getAuthentication())
     }
 
     fun getUsername(authentication: Authentication?): String {
@@ -22,6 +27,16 @@ object SecurityUtil {
             }
         }
         return username
+    }
+
+    fun getDepartment(authentication: Authentication?): Long? {
+        if (authentication != null) {
+            val principal: Any = authentication.principal
+            if (principal is JwtUserDetails) {
+                return principal.department
+            }
+        }
+        return null
     }
 
     fun setAuthentication(authentication: Authentication) {

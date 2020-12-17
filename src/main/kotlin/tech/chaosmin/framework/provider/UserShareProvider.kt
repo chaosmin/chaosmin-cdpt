@@ -10,6 +10,7 @@ import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.request.share.UserShareRequestDTO
 import tech.chaosmin.framework.domain.response.share.UserShareResponseDTO
+import tech.chaosmin.framework.handler.logic.UserPageLogic
 import tech.chaosmin.framework.service.RoleService
 import tech.chaosmin.framework.service.UserService
 import tech.chaosmin.framework.utils.RequestUtil
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest
 open class UserShareProvider(
     private val userService: UserService,
     private val roleService: RoleService,
+    private val userPageLogic: UserPageLogic,
     private val passwordEncoder: BCryptPasswordEncoder
 ) : UserShareService {
     override fun selectById(id: Long): RestResult<UserShareResponseDTO?> {
@@ -36,8 +38,8 @@ open class UserShareProvider(
 
     override fun page(request: HttpServletRequest): RestResult<IPage<UserShareResponseDTO>> {
         val queryCondition = RequestUtil.getQueryCondition<User>(request)
-        val page = userService.page(queryCondition.page, queryCondition.wrapper)
-        return RestResultExt.successRestResult(page.convert(UserConvert.INSTANCE::convertToShareResponse))
+        val result = userPageLogic.run(queryCondition)
+        return RestResultExt.successRestResult(result)
     }
 
     @Transactional

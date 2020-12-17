@@ -14,4 +14,7 @@ class DepartmentShareResponseDTO : BaseShareResponseDTO() {
 
     @ApiModelProperty(value = "部门状态")
     var status: Int? = null
+
+    @ApiModelProperty(value = "部门人数")
+    var numberOfPeople: Int? = null
 }

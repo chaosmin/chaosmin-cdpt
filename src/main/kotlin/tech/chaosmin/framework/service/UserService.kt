@@ -5,4 +5,6 @@ import tech.chaosmin.framework.dao.dataobject.User
 
 interface UserService : IService<User> {
     fun findByLoginName(loginName: String): User?
+
+    fun countByDepartmentId(departmentId: Long): Int
 }

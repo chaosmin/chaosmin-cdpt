@@ -6,9 +6,6 @@ import tech.chaosmin.framework.domain.response.share.base.BaseShareResponseDTO
 
 @ApiModel("用户接口返回参数")
 class UserShareResponseDTO : BaseShareResponseDTO() {
-    @ApiModelProperty(value = "主键")
-    var id: Long? = null
-
     @ApiModelProperty(value = "用户名")
     var username: String? = null
 

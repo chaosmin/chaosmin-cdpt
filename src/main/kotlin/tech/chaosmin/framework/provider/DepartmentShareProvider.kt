@@ -9,6 +9,7 @@ import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.request.share.DepartmentShareRequestDTO
 import tech.chaosmin.framework.domain.response.share.DepartmentShareResponseDTO
+import tech.chaosmin.framework.handler.logic.DepartmentPageLogic
 import tech.chaosmin.framework.service.DepartmentService
 import tech.chaosmin.framework.utils.RequestUtil
 import tech.chaosmin.framework.web.service.DepartmentShareService
@@ -19,7 +20,10 @@ import javax.servlet.http.HttpServletRequest
  * @since 2020/12/10 13:48
  */
 @RestController
-open class DepartmentShareProvider(private val departmentService: DepartmentService) : DepartmentShareService {
+open class DepartmentShareProvider(
+    private val departmentService: DepartmentService,
+    private val departmentPageLogic: DepartmentPageLogic
+) : DepartmentShareService {
     override fun selectById(id: Long): RestResult<DepartmentShareResponseDTO?> {
         val department = departmentService.getById(id)
         return if (department != null) {
@@ -32,8 +36,8 @@ open class DepartmentShareProvider(private val departmentService: DepartmentServ
 
     override fun page(request: HttpServletRequest): RestResult<IPage<DepartmentShareResponseDTO>> {
         val queryCondition = RequestUtil.getQueryCondition<Department>(request)
-        val page = departmentService.page(queryCondition.page, queryCondition.wrapper)
-        return RestResultExt.successRestResult(page.convert(DepartmentConvert.INSTANCE::convertToShareResponse))
+        val result = departmentPageLogic.run(queryCondition)
+        return RestResultExt.successRestResult(result)
     }
 
     @Transactional

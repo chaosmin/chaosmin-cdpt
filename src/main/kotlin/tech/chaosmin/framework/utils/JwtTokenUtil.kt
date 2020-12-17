@@ -24,6 +24,7 @@ object JwtTokenUtil : Serializable {
     private const val ISS = "chaosmin"
     private const val APP_SECRET_KEY = "chaosmin_secret"
     private const val USERNAME = "username"
+    private const val DEPARTMENT = "department"
     private const val AUTHORITIES = "authorities"
     private const val CREATED = "created"
 
@@ -43,6 +44,7 @@ object JwtTokenUtil : Serializable {
         val claims: MutableMap<String, Any?> = HashMap(3)
         val username = SecurityUtil.getUsername(authentication)
         claims[USERNAME] = username
+        claims[DEPARTMENT] = SecurityUtil.getDepartment(authentication)
         claims[CREATED] = Date()
         claims[AUTHORITIES] = authentication.authorities
         return generateToken(username, claims, isRememberMe)
@@ -98,7 +100,7 @@ object JwtTokenUtil : Serializable {
                     return null
                 }
                 authentication = JwtAuthenticationToken(
-                    JwtUserDetails(username, ""),
+                    JwtUserDetails(username, "", claims[DEPARTMENT]?.toString()?.toLong()),
                     authorities = generateAuthorities(claims[AUTHORITIES]),
                     token = this
                 )

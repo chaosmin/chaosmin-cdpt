@@ -36,6 +36,7 @@ class UserDetailsServiceImpl(
             JwtUserDetails(
                 username,
                 this.password!!,
+                this.departmentId,
                 permissions.map { GrantedAuthorityImpl(it) },
                 accountNonExpired && credentialsNonExpired && accountNonLocked,
                 accountNonExpired,

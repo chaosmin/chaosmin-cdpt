@@ -57,7 +57,12 @@ open class UserShareProvider(
 
     @Transactional
     override fun update(id: Long, requestDTO: UserShareRequestDTO): RestResult<UserShareResponseDTO> {
-        val user = UserConvert.INSTANCE.convertToBaseBean(requestDTO).apply { this.id = id }
+        val user = UserConvert.INSTANCE.convertToBaseBean(requestDTO).apply {
+            this.id = id
+            if (!this.password.isNullOrBlank()) {
+                this.password = passwordEncoder.encode(this.password)
+            }
+        }
         return if (userService.updateById(user)) {
             val roles = roleService.updateRoles(user.id, requestDTO.roleIds)
             val response = UserConvert.INSTANCE.convertToShareResponse(userService.getById(user.id))

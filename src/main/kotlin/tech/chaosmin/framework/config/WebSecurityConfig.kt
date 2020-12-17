@@ -17,9 +17,6 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.header.Header
 import org.springframework.security.web.header.writers.StaticHeadersWriter
-import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import tech.chaosmin.framework.provider.JwtAuthenticationProvider
 import tech.chaosmin.framework.utils.JwtTokenUtil
 import tech.chaosmin.framework.web.filter.AccessLogFilter
@@ -41,15 +38,6 @@ open class WebSecurityConfig(@Qualifier("userDetailsServiceImpl") private val us
     @Bean
     open fun passwordEncoder(): BCryptPasswordEncoder {
         return BCryptPasswordEncoder()
-    }
-
-    @Bean
-    open fun corsConfigurationSource(): CorsConfigurationSource {
-        val configuration = CorsConfiguration().applyPermitDefaultValues()
-        configuration.addExposedHeader(JwtTokenUtil.TOKEN_HEADER)
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
-        return source
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {

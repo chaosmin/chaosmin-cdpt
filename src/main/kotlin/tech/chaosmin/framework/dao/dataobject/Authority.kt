@@ -6,6 +6,12 @@ import org.springframework.security.core.GrantedAuthority
 import tech.chaosmin.framework.domain.enums.HttpMethodEnum
 
 class Authority(id: Long? = null) : BaseCommonDO(id, 0), GrantedAuthority {
+    // 父权限ID
+    var parentId: Long? = null
+
+    // 类型
+    var type: Int? = null
+
     // 权限编码
     var code: String? = null
 

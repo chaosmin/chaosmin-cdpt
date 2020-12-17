@@ -7,6 +7,12 @@ import java.io.Serializable
 
 @ApiModel("权限接口请求参数")
 class AuthorityShareRequestDTO : Serializable {
+    @ApiModelProperty(value = "父权限ID")
+    var parentId: Long? = null
+
+    @ApiModelProperty(value = "权限类型")
+    var type: Int? = null
+
     @ApiModelProperty(value = "编号")
     var code: String? = null
 

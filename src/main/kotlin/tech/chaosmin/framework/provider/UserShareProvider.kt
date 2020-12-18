@@ -48,9 +48,11 @@ open class UserShareProvider(
             this.password = passwordEncoder.encode(this.password)
         }
         return if (userService.save(user)) {
-            val roles = roleService.updateRoles(user.id, requestDTO.roleIds)
             val response = UserConvert.INSTANCE.convertToShareResponse(user)
-            response.roles = roles.mapNotNull { it.name }
+            if (requestDTO.roleId != null) {
+                val roles = roleService.updateRoles(user.id, listOf(requestDTO.roleId!!))
+                response.roles = roles.mapNotNull { it.name }
+            }
             RestResultExt.successRestResult(response)
         } else {
             RestResultExt.failureRestResult()
@@ -66,9 +68,11 @@ open class UserShareProvider(
             }
         }
         return if (userService.updateById(user)) {
-            val roles = roleService.updateRoles(user.id, requestDTO.roleIds)
             val response = UserConvert.INSTANCE.convertToShareResponse(userService.getById(user.id))
-            response.roles = roles.mapNotNull { it.name }
+            if (requestDTO.roleId != null) {
+                val roles = roleService.updateRoles(user.id, listOf(requestDTO.roleId!!))
+                response.roles = roles.mapNotNull { it.name }
+            }
             RestResultExt.successRestResult(response)
         } else {
             RestResultExt.failureRestResult()

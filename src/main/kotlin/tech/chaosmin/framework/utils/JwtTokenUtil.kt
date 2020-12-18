@@ -98,7 +98,7 @@ object JwtTokenUtil : Serializable {
                 // 上下文中Authentication为空
                 val claims = getClaimsFromToken(this) ?: return null
                 val username = claims[USERNAME]?.toString() ?: return null
-                val department = claims[DEPARTMENT] as Long?
+                val department = claims[DEPARTMENT]?.toString()?.toLong()
                 @Suppress("UNCHECKED_CAST") val roles = claims[ROLES] as List<String>
                 if (isTokenExpired(this)) {
                     return null

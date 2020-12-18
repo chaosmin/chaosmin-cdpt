@@ -27,6 +27,6 @@ class UserShareRequestDTO : Serializable {
     @ApiModelProperty(value = "邮箱")
     var email: String? = null
 
-    @ApiModelProperty(value = "角色ID集合")
-    var roleIds: List<Long>? = null
+    @ApiModelProperty(value = "角色ID")
+    var roleId: Long? = null
 }

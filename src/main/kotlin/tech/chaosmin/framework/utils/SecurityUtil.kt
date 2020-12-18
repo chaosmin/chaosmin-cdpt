@@ -3,37 +3,33 @@ package tech.chaosmin.framework.utils
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
 import tech.chaosmin.framework.domain.auth.JwtUserDetails
 import tech.chaosmin.framework.domain.const.SystemConst
+import tech.chaosmin.framework.domain.response.UserDetails
 
 object SecurityUtil {
     private val logger = LoggerFactory.getLogger(SecurityUtil::class.java)
 
-    fun getUsername(): String {
-        return getUsername(getAuthentication())
-    }
+    fun getUsername(): String = getUsername(getAuthentication())
 
-    fun getDepartment(): Long? {
-        return getDepartment(getAuthentication())
-    }
+    fun getUserDetails(): UserDetails? = getUserDetails(getAuthentication())
 
     fun getUsername(authentication: Authentication?): String {
         var username: String = SystemConst.ANONYMOUS
         if (authentication != null) {
             val principal: Any = authentication.principal
-            if (principal is UserDetails) {
+            if (principal is JwtUserDetails) {
                 username = principal.username
             }
         }
         return username
     }
 
-    fun getDepartment(authentication: Authentication?): Long? {
+    fun getUserDetails(authentication: Authentication?): UserDetails? {
         if (authentication != null) {
             val principal: Any = authentication.principal
             if (principal is JwtUserDetails) {
-                return principal.department
+                return UserDetails(principal.department, principal.username, principal.roles)
             }
         }
         return null

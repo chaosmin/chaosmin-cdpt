@@ -13,11 +13,7 @@ import tech.chaosmin.framework.web.service.AuthShareService
 @RestController
 open class AuthShareProvider : AuthShareService {
     override fun getUserInfo(): RestResult<UserDetailShareResponseDTO> {
-        val response = UserDetailShareResponseDTO()
-        response.roles = listOf("admin")
-        response.avatar = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
-        response.introduction = "I am a super administrator"
-        return RestResultExt.successRestResult(response)
+        return RestResultExt.successRestResult(UserDetailShareResponseDTO())
     }
 
     override fun logout(): RestResult<Void> {

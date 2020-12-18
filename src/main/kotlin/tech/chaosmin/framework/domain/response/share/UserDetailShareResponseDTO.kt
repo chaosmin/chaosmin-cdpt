@@ -14,7 +14,11 @@ class UserDetailShareResponseDTO {
     var introduction: String? = null
 
     init {
-        this.departmentId = SecurityUtil.getDepartment()
-        this.name = SecurityUtil.getUsername()
+        val userDetails = SecurityUtil.getUserDetails()
+        this.departmentId = userDetails?.departmentId
+        this.name = userDetails?.name
+        this.roles = userDetails?.roles
+        this.avatar = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
+        this.introduction = ""
     }
 }

@@ -23,8 +23,9 @@ object JwtTokenUtil : Serializable {
 
     private const val ISS = "chaosmin"
     private const val APP_SECRET_KEY = "chaosmin_secret"
-    private const val USERNAME = "username"
     private const val DEPARTMENT = "department"
+    private const val USERNAME = "username"
+    private const val ROLES = "roles"
     private const val AUTHORITIES = "authorities"
     private const val CREATED = "created"
 
@@ -42,12 +43,13 @@ object JwtTokenUtil : Serializable {
      */
     fun generateToken(authentication: Authentication, isRememberMe: Boolean = false): String? {
         val claims: MutableMap<String, Any?> = HashMap(3)
-        val username = SecurityUtil.getUsername(authentication)
-        claims[USERNAME] = username
-        claims[DEPARTMENT] = SecurityUtil.getDepartment(authentication)
-        claims[CREATED] = Date()
+        val userDetails = SecurityUtil.getUserDetails(authentication)
+        claims[USERNAME] = userDetails?.name
+        claims[DEPARTMENT] = userDetails?.departmentId
+        claims[ROLES] = userDetails?.roles
         claims[AUTHORITIES] = authentication.authorities
-        return generateToken(username, claims, isRememberMe)
+        claims[CREATED] = Date()
+        return generateToken(userDetails?.name, claims, isRememberMe)
     }
 
     /**
@@ -96,11 +98,13 @@ object JwtTokenUtil : Serializable {
                 // 上下文中Authentication为空
                 val claims = getClaimsFromToken(this) ?: return null
                 val username = claims[USERNAME]?.toString() ?: return null
+                val department = claims[DEPARTMENT] as Long?
+                @Suppress("UNCHECKED_CAST") val roles = claims[ROLES] as List<String>
                 if (isTokenExpired(this)) {
                     return null
                 }
                 authentication = JwtAuthenticationToken(
-                    JwtUserDetails(username, "", claims[DEPARTMENT]?.toString()?.toLong()),
+                    JwtUserDetails(username, "", department, roles),
                     authorities = generateAuthorities(claims[AUTHORITIES]),
                     token = this
                 )

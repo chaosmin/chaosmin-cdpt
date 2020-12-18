@@ -8,6 +8,7 @@ class JwtUserDetails(
     username: String,
     password: String,
     var department: Long?,
+    var roles: List<String>,
     authorities: Collection<GrantedAuthority> = emptyList(),
     enabled: Boolean = true,
     accountNonExpired: Boolean = true,

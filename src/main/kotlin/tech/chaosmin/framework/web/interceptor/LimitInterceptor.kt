@@ -2,7 +2,6 @@ package tech.chaosmin.framework.web.interceptor
 
 import cn.hutool.core.util.EnumUtil
 import com.google.common.util.concurrent.RateLimiter
-import org.springframework.stereotype.Component
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import tech.chaosmin.framework.domain.const.ServerLimitParam
 import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletResponse
  * @author Romani min
  * @since 2020/11/30 17:53
  */
-@Component
 @Suppress("UnstableApiUsage")
 class LimitInterceptor(serverLimitParam: ServerLimitParam) : HandlerInterceptorAdapter() {
     enum class LimitType { DROP, WAIT }

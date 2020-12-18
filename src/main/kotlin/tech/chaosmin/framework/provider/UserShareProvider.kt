@@ -27,9 +27,7 @@ open class UserShareProvider(
     override fun selectById(id: Long): RestResult<UserShareResponseDTO?> {
         val user = userService.getById(id)
         return if (user != null) {
-            val roles = roleService.findRoles(id)
             val response = UserConvert.INSTANCE.convertToShareResponse(user)
-            response.roles = roles.mapNotNull { it.name }
             RestResultExt.successRestResult(response)
         } else {
             RestResultExt.successRestResult()
@@ -50,8 +48,7 @@ open class UserShareProvider(
         return if (userService.save(user)) {
             val response = UserConvert.INSTANCE.convertToShareResponse(user)
             if (requestDTO.roleId != null) {
-                val roles = roleService.updateRoles(user.id, listOf(requestDTO.roleId!!))
-                response.roles = roles.mapNotNull { it.name }
+                roleService.updateRoles(user.id, listOf(requestDTO.roleId!!))
             }
             RestResultExt.successRestResult(response)
         } else {
@@ -70,8 +67,7 @@ open class UserShareProvider(
         return if (userService.updateById(user)) {
             val response = UserConvert.INSTANCE.convertToShareResponse(userService.getById(user.id))
             if (requestDTO.roleId != null) {
-                val roles = roleService.updateRoles(user.id, listOf(requestDTO.roleId!!))
-                response.roles = roles.mapNotNull { it.name }
+                roleService.updateRoles(user.id, listOf(requestDTO.roleId!!))
             }
             RestResultExt.successRestResult(response)
         } else {

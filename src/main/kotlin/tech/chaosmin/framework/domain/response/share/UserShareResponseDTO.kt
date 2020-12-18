@@ -6,6 +6,12 @@ import tech.chaosmin.framework.domain.response.share.base.BaseShareResponseDTO
 
 @ApiModel("用户接口返回参数")
 class UserShareResponseDTO : BaseShareResponseDTO() {
+    @ApiModelProperty(value = "机构ID")
+    var departmentId: Long? = null
+
+    @ApiModelProperty("机构")
+    var department: String? = null
+
     @ApiModelProperty(value = "用户名")
     var username: String? = null
 
@@ -21,6 +27,9 @@ class UserShareResponseDTO : BaseShareResponseDTO() {
     @ApiModelProperty(value = "邮箱")
     var email: String? = null
 
+    @ApiModelProperty(value = "角色ID")
+    var roleId: Long? = null
+
     @ApiModelProperty(value = "角色")
-    var roles: List<String>? = null
+    var role: String? = null
 }

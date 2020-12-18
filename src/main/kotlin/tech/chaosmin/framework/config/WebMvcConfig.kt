@@ -1,21 +1,14 @@
 package tech.chaosmin.framework.config
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import tech.chaosmin.framework.web.interceptor.AuthInterceptor
-import tech.chaosmin.framework.web.interceptor.LimitInterceptor
 
 @Configuration
 
-open class WebMvcConfig(
-    private val authInterceptor: AuthInterceptor,
-    private val limitInterceptor: LimitInterceptor
-) : WebMvcConfigurer {
-    @Value("\${application.version}")
-    private var version: String? = null
+open class WebMvcConfig(private val authInterceptor: AuthInterceptor) : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(authInterceptor)
@@ -25,9 +18,9 @@ open class WebMvcConfig(
             .excludePathPatterns("/event/**")
             .excludePathPatterns("/ddl-change")
             .excludePathPatterns("/system/ping-without-auth")
-        registry.addInterceptor(limitInterceptor)
-            .addPathPatterns("/${version}/api/**")
-            .excludePathPatterns("/swagger**/**", "/webjars/**", "/v3/**", "/doc.html")
+        // registry.addInterceptor(limitInterceptor)
+        //     .addPathPatterns("/${version}/api/**")
+        //     .excludePathPatterns("/swagger**/**", "/webjars/**", "/v3/**", "/doc.html")
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {

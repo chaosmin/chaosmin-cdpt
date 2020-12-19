@@ -1,2 +1,2 @@
-rootProject.name = "chaosmin-framework"
+rootProject.name = "chaosmin-cdpt"
 

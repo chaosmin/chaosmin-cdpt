@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.request.AuthorityReq
 import tech.chaosmin.framework.domain.response.AuthorityResp
+import tech.chaosmin.framework.domain.response.AuthorityTreeNodeResp
 import javax.servlet.http.HttpServletRequest
 
 @Api(tags = ["权限操作接口"], consumes = "application/json;charset=utf-8")
@@ -15,6 +16,10 @@ interface AuthorityShareService {
     @GetMapping("/{id}")
     @ApiOperation(value = "根据id查询", response = AuthorityResp::class)
     fun selectById(@PathVariable("id") id: Long): RestResult<AuthorityResp?>
+
+    @GetMapping("/tree")
+    @ApiOperation(value = "查询权限的树状图结构")
+    fun selectTree(): RestResult<List<AuthorityTreeNodeResp>>
 
     @GetMapping
     @ApiOperation(value = "分页查询查询")

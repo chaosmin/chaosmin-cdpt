@@ -9,6 +9,7 @@ import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.request.AuthorityReq
 import tech.chaosmin.framework.domain.response.AuthorityResp
+import tech.chaosmin.framework.domain.response.AuthorityTreeNodeResp
 import tech.chaosmin.framework.service.AuthorityService
 import tech.chaosmin.framework.utils.RequestUtil
 import tech.chaosmin.framework.web.service.AuthorityShareService
@@ -24,6 +25,12 @@ open class AuthorityShareProvider(private val authorityService: AuthorityService
         } else {
             RestResultExt.successRestResult()
         }
+    }
+
+    override fun selectTree(): RestResult<List<AuthorityTreeNodeResp>> {
+        val list = authorityService.list()
+        val root = list.filter { it.parentId == null }.map { AuthorityTreeNodeResp(it, list) }
+        return RestResultExt.successRestResult(root)
     }
 
     override fun page(request: HttpServletRequest): RestResult<IPage<AuthorityResp>> {

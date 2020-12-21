@@ -16,5 +16,5 @@ class RoleResp : BaseResp() {
     var priority: Int? = null
 
     @ApiModelProperty(value = "权限")
-    var authorities: List<String>? = null
+    var authorityIds: List<Long>? = null
 }

@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.*
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.request.RoleReq
-import tech.chaosmin.framework.domain.response.RoleAuthorityResp
 import tech.chaosmin.framework.domain.response.RoleResp
 import javax.servlet.http.HttpServletRequest
 
@@ -16,10 +15,6 @@ interface RoleShareService {
     @GetMapping("/{id}")
     @ApiOperation(value = "根据id查询", response = RoleResp::class)
     fun selectById(@PathVariable("id") id: Long): RestResult<RoleResp?>
-
-    @GetMapping("/{id}/authorities")
-    @ApiOperation(value = "查询指定id的角色权限", response = RoleResp::class)
-    fun roleAuthorities(@PathVariable("id") id: Long): RestResult<List<RoleAuthorityResp>>
 
     @GetMapping
     @ApiOperation(value = "分页查询查询")

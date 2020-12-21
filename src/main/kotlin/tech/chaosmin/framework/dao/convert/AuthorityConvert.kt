@@ -3,8 +3,8 @@ package tech.chaosmin.framework.dao.convert
 import org.mapstruct.Mapper
 import org.mapstruct.factory.Mappers
 import tech.chaosmin.framework.dao.dataobject.Authority
-import tech.chaosmin.framework.domain.request.share.AuthorityShareRequestDTO
-import tech.chaosmin.framework.domain.response.share.AuthorityShareResponseDTO
+import tech.chaosmin.framework.domain.request.AuthorityReq
+import tech.chaosmin.framework.domain.response.AuthorityResp
 
 @Mapper
 interface AuthorityConvert {
@@ -12,9 +12,9 @@ interface AuthorityConvert {
         val INSTANCE: AuthorityConvert = Mappers.getMapper(AuthorityConvert::class.java)
     }
 
-    fun convertToShareResponse(authority: Authority): AuthorityShareResponseDTO
+    fun convert2Resp(authority: Authority): AuthorityResp
 
-    fun convertToShareResponse(authorities: List<Authority>): List<AuthorityShareResponseDTO>
+    fun convert2Resp(authorities: List<Authority>): List<AuthorityResp>
 
-    fun convertToBaseBean(requestDTO: AuthorityShareRequestDTO): Authority
+    fun convert2Entity(req: AuthorityReq): Authority
 }

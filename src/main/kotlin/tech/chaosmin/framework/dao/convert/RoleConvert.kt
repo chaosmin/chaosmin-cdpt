@@ -3,8 +3,8 @@ package tech.chaosmin.framework.dao.convert
 import org.mapstruct.Mapper
 import org.mapstruct.factory.Mappers
 import tech.chaosmin.framework.dao.dataobject.Role
-import tech.chaosmin.framework.domain.request.share.RoleShareRequestDTO
-import tech.chaosmin.framework.domain.response.share.RoleShareResponseDTO
+import tech.chaosmin.framework.domain.request.RoleReq
+import tech.chaosmin.framework.domain.response.RoleResp
 
 @Mapper
 interface RoleConvert {
@@ -12,9 +12,9 @@ interface RoleConvert {
         val INSTANCE: RoleConvert = Mappers.getMapper(RoleConvert::class.java)
     }
 
-    fun convertToShareResponse(role: Role): RoleShareResponseDTO
+    fun convert2Resp(role: Role): RoleResp
 
-    fun convertToShareResponse(roles: List<Role>): List<RoleShareResponseDTO>
+    fun convert2Resp(roles: List<Role>): List<RoleResp>
 
-    fun convertToBaseBean(requestDTO: RoleShareRequestDTO): Role
+    fun convert2Entity(req: RoleReq): Role
 }

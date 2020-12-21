@@ -1,11 +1,11 @@
-package tech.chaosmin.framework.domain.response.share
+package tech.chaosmin.framework.domain.response
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
-import tech.chaosmin.framework.domain.response.share.base.BaseShareResponseDTO
+import tech.chaosmin.framework.domain.response.base.BaseResp
 
 @ApiModel("部门接口返回参数")
-class DepartmentShareResponseDTO : BaseShareResponseDTO() {
+class DepartmentResp : BaseResp() {
     @ApiModelProperty(value = "编号")
     var code: String? = null
 

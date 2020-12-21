@@ -1,13 +1,16 @@
-package tech.chaosmin.framework.domain.request.share
+package tech.chaosmin.framework.domain.response
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
-import java.io.Serializable
+import tech.chaosmin.framework.domain.response.base.BaseResp
 
-@ApiModel("用户接口请求参数")
-class UserShareRequestDTO : Serializable {
-    @ApiModelProperty(value = "所属部门ID")
+@ApiModel("用户接口返回参数")
+class UserResp : BaseResp() {
+    @ApiModelProperty(value = "机构ID")
     var departmentId: Long? = null
+
+    @ApiModelProperty("机构")
+    var department: String? = null
 
     @ApiModelProperty(value = "用户名")
     var username: String? = null
@@ -18,9 +21,6 @@ class UserShareRequestDTO : Serializable {
     @ApiModelProperty(value = "用户状态")
     var status: Int? = null
 
-    @ApiModelProperty(value = "登录密码")
-    var password: String? = null
-
     @ApiModelProperty(value = "电话")
     var phone: String? = null
 
@@ -29,4 +29,7 @@ class UserShareRequestDTO : Serializable {
 
     @ApiModelProperty(value = "角色ID")
     var roleId: Long? = null
+
+    @ApiModelProperty(value = "角色")
+    var role: String? = null
 }

@@ -2,7 +2,7 @@ package tech.chaosmin.framework.utils
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
-import tech.chaosmin.framework.domain.PageQueryDTO
+import tech.chaosmin.framework.domain.PageQuery
 import tech.chaosmin.framework.utils.StringUtil.upperCamel
 import java.util.*
 import javax.servlet.http.HttpServletRequest
@@ -51,9 +51,9 @@ object RequestUtil {
      * T 查询的base bean type
      *
      * @param request HTTP请求体
-     * @return [PageQueryDTO]
+     * @return [PageQuery]
      */
-    fun <T> getQueryCondition(request: HttpServletRequest): PageQueryDTO<T> {
+    fun <T> getQueryCondition(request: HttpServletRequest): PageQuery<T> {
         val parameterMap = request.parameterMap
         val page = Page<T>(0, 10)
         val wrapper = QueryWrapper<T>()
@@ -87,6 +87,6 @@ object RequestUtil {
                 }
             }
         }
-        return PageQueryDTO(page, wrapper)
+        return PageQuery(page, wrapper)
     }
 }

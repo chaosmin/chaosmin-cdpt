@@ -5,14 +5,14 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import tech.chaosmin.framework.domain.auth.JwtUserDetails
 import tech.chaosmin.framework.domain.const.SystemConst
-import tech.chaosmin.framework.domain.response.UserDetails
+import tech.chaosmin.framework.domain.response.UserDetailResp
 
 object SecurityUtil {
     private val logger = LoggerFactory.getLogger(SecurityUtil::class.java)
 
     fun getUsername(): String = getUsername(getAuthentication())
 
-    fun getUserDetails(): UserDetails? = getUserDetails(getAuthentication())
+    fun getUserDetails(): UserDetailResp? = getUserDetails(getAuthentication())
 
     fun getUsername(authentication: Authentication?): String {
         var username: String = SystemConst.ANONYMOUS
@@ -25,11 +25,11 @@ object SecurityUtil {
         return username
     }
 
-    fun getUserDetails(authentication: Authentication?): UserDetails? {
+    fun getUserDetails(authentication: Authentication?): UserDetailResp? {
         if (authentication != null) {
             val principal: Any = authentication.principal
             if (principal is JwtUserDetails) {
-                return UserDetails(principal.department, principal.username, principal.roles)
+                return UserDetailResp(principal)
             }
         }
         return null

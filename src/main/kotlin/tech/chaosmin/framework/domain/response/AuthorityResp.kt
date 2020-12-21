@@ -1,18 +1,12 @@
-package tech.chaosmin.framework.domain.request.share
+package tech.chaosmin.framework.domain.response
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.domain.enums.HttpMethodEnum
-import java.io.Serializable
+import tech.chaosmin.framework.domain.response.base.BaseResp
 
-@ApiModel("权限接口请求参数")
-class AuthorityShareRequestDTO : Serializable {
-    @ApiModelProperty(value = "父权限ID")
-    var parentId: Long? = null
-
-    @ApiModelProperty(value = "权限类型")
-    var type: Int? = null
-
+@ApiModel("权限接口返回参数")
+class AuthorityResp : BaseResp() {
     @ApiModelProperty(value = "编号")
     var code: String? = null
 

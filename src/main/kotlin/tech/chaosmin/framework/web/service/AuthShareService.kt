@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import springfox.documentation.annotations.ApiIgnore
 import tech.chaosmin.framework.domain.RestResult
-import tech.chaosmin.framework.domain.response.share.UserDetailShareResponseDTO
+import tech.chaosmin.framework.domain.response.UserDetailResp
 
 /**
  * @author Romani min
@@ -15,7 +15,7 @@ import tech.chaosmin.framework.domain.response.share.UserDetailShareResponseDTO
 @RequestMapping("/auth")
 interface AuthShareService {
     @GetMapping("/user/info")
-    fun getUserInfo(): RestResult<UserDetailShareResponseDTO>
+    fun getUserInfo(): RestResult<UserDetailResp>
 
     @PostMapping("/user/logout")
     fun logout(): RestResult<Void>

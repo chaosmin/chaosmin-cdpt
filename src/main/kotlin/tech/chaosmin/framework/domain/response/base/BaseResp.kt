@@ -1,11 +1,11 @@
-package tech.chaosmin.framework.domain.response.share.base
+package tech.chaosmin.framework.domain.response.base
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.annotations.ApiModelProperty
 import java.io.Serializable
 import java.util.*
 
-open class BaseShareResponseDTO : Serializable {
+open class BaseResp : Serializable {
     @ApiModelProperty(value = "主键")
     var id: Long? = null
 

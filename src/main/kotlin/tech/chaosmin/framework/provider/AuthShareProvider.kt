@@ -3,7 +3,7 @@ package tech.chaosmin.framework.provider
 import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
-import tech.chaosmin.framework.domain.response.share.UserDetailShareResponseDTO
+import tech.chaosmin.framework.domain.response.UserDetailResp
 import tech.chaosmin.framework.web.service.AuthShareService
 
 /**
@@ -12,8 +12,8 @@ import tech.chaosmin.framework.web.service.AuthShareService
  */
 @RestController
 open class AuthShareProvider : AuthShareService {
-    override fun getUserInfo(): RestResult<UserDetailShareResponseDTO> {
-        return RestResultExt.successRestResult(UserDetailShareResponseDTO())
+    override fun getUserInfo(): RestResult<UserDetailResp> {
+        return RestResultExt.successRestResult(UserDetailResp())
     }
 
     override fun logout(): RestResult<Void> {

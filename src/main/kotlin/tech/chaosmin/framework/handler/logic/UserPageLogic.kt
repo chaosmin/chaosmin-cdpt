@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.dao.convert.UserConvert
 import tech.chaosmin.framework.dao.dataobject.User
-import tech.chaosmin.framework.domain.PageQueryDTO
-import tech.chaosmin.framework.domain.response.share.UserShareResponseDTO
+import tech.chaosmin.framework.domain.PageQuery
+import tech.chaosmin.framework.domain.response.UserResp
 import tech.chaosmin.framework.service.DepartmentService
 import tech.chaosmin.framework.service.RoleService
 import tech.chaosmin.framework.service.UserService
@@ -20,9 +20,9 @@ class UserPageLogic(
     private val departmentService: DepartmentService,
     private val roleService: RoleService
 ) {
-    fun run(cond: PageQueryDTO<User>): IPage<UserShareResponseDTO> {
+    fun run(cond: PageQuery<User>): IPage<UserResp> {
         val page = userService.page(cond.page, cond.wrapper)
-        val result = page.convert(UserConvert.INSTANCE::convertToShareResponse)
+        val result = page.convert(UserConvert.INSTANCE::convert2Resp)
         result.records.forEach { record ->
             val department = departmentService.getById(record.departmentId)
             record.department = department?.name

@@ -1,23 +1,22 @@
-package tech.chaosmin.framework.domain.response.share
+package tech.chaosmin.framework.domain.response
 
-import tech.chaosmin.framework.utils.SecurityUtil
+import tech.chaosmin.framework.domain.auth.JwtUserDetails
 
 /**
  * @author Romani min
  * @since 2020/12/15 13:02
  */
-class UserDetailShareResponseDTO {
+class UserDetailResp() {
     var departmentId: Long? = null
     var name: String? = null
     var roles: List<String>? = null
     var avatar: String? = null
     var introduction: String? = null
 
-    init {
-        val userDetails = SecurityUtil.getUserDetails()
-        this.departmentId = userDetails?.departmentId
-        this.name = userDetails?.name
-        this.roles = userDetails?.roles
+    constructor(principal: JwtUserDetails) : this() {
+        this.departmentId = principal.department
+        this.name = principal.username
+        this.roles = principal.roles
         this.avatar = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
         this.introduction = ""
     }

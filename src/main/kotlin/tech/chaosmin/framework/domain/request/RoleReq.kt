@@ -1,11 +1,11 @@
-package tech.chaosmin.framework.domain.request.share
+package tech.chaosmin.framework.domain.request
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import java.io.Serializable
 
 @ApiModel("角色接口请求参数")
-class RoleShareRequestDTO : Serializable {
+class RoleReq : Serializable {
     @ApiModelProperty(value = "编号")
     var code: String? = null
 

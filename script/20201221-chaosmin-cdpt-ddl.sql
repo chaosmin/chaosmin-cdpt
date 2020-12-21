@@ -58,17 +58,18 @@ create table product_category_relation
 
 create table product_plan
 (
-    id          bigint auto_increment primary key,
-    product_id  bigint                             not null comment '产品ID',
-    plan_code   varchar(64)                        not null comment '计划代码',
-    plan_name   varchar(64)                        null comment '计划名称',
-    status      int      default 0                 not null comment '计划状态 0-暂存/1-有效/2-下架',
-    create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    creator     varchar(64)                        null comment '创建人',
-    update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    updater     varchar(64)                        null comment '更新人',
-    extra_info  varchar(128)                       null comment '扩展信息',
-    is_deleted  smallint default 0                 not null comment '是否删除'
+    id               bigint auto_increment primary key,
+    product_id       bigint                             not null comment '产品ID',
+    plan_code        varchar(64)                        not null comment '计划代码',
+    plan_name        varchar(64)                        null comment '计划名称',
+    primary_coverage varchar(64)                        null comment '主险保额',
+    status           int      default 0                 not null comment '计划状态 0-暂存/1-有效/2-下架',
+    create_time      datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    creator          varchar(64)                        null comment '创建人',
+    update_time      datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    updater          varchar(64)                        null comment '更新人',
+    extra_info       varchar(128)                       null comment '扩展信息',
+    is_deleted       smallint default 0                 not null comment '是否删除'
 ) comment '产品计划表' charset = utf8;
 
 create table liability_category

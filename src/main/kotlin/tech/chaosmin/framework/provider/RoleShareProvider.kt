@@ -8,6 +8,7 @@ import tech.chaosmin.framework.dao.dataobject.Role
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.request.RoleReq
+import tech.chaosmin.framework.domain.response.RoleAuthorityResp
 import tech.chaosmin.framework.domain.response.RoleResp
 import tech.chaosmin.framework.service.AuthorityService
 import tech.chaosmin.framework.service.RoleService
@@ -32,8 +33,11 @@ open class RoleShareProvider(
         }
     }
 
-    override fun roleAuthorities(id: Long): RestResult<Void> {
-        TODO("Not yet implemented")
+    override fun roleAuthorities(id: Long): RestResult<List<RoleAuthorityResp>> {
+        val authorities = authorityService.list()
+        val assigned = authorityService.findAuthorities(setOf(id)).toList()
+        val root = authorities.filter { it.parentId == null }.map { RoleAuthorityResp(it, assigned, authorities) }
+        return RestResultExt.successRestResult(root)
     }
 
     override fun page(request: HttpServletRequest): RestResult<IPage<RoleResp>> {

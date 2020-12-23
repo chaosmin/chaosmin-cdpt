@@ -2,10 +2,11 @@ package tech.chaosmin.framework.domain.request
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import tech.chaosmin.framework.domain.request.base.BaseReq
 import java.io.Serializable
 
 @ApiModel("用户接口请求参数")
-class UserReq : Serializable {
+class UserReq : BaseReq() {
     @ApiModelProperty(value = "所属部门ID")
     var departmentId: Long? = null
 

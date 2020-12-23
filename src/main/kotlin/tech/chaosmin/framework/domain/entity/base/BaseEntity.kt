@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.domain.entity.base
 
 import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
+import java.util.*
 
 /**
  * @author Romani min
@@ -8,6 +9,13 @@ import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
  */
 open class BaseEntity(var id: Long? = null) {
     var modifyType: ModifyTypeEnum? = null
+
+    var createTime: Date? = null
+    var creator: String? = null
+    var updateTime: Date? = null
+    var updater: String? = null
+    var extraInfo: String? = null
+    var deleted: Int? = null
 
     fun save() {
         this.modifyType = ModifyTypeEnum.SAVE

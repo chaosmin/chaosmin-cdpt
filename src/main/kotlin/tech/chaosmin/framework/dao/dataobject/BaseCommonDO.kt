@@ -7,7 +7,9 @@ import java.util.*
 
 open class BaseCommonDO(
     @TableId(type = IdType.AUTO) var id: Long?,
-    @TableLogic var isDeleted: Int = 0
+    @TableLogic
+    @TableField(value = "is_deleted")
+    var deleted: Int = 0
 ) : Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT)

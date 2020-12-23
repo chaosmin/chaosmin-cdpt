@@ -3,10 +3,11 @@ package tech.chaosmin.framework.domain.request
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.domain.enums.HttpMethodEnum
+import tech.chaosmin.framework.domain.request.base.BaseReq
 import java.io.Serializable
 
 @ApiModel("权限接口请求参数")
-class AuthorityReq : Serializable {
+class AuthorityReq : BaseReq() {
     @ApiModelProperty(value = "父权限ID")
     var parentId: Long? = null
 

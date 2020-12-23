@@ -6,7 +6,6 @@ import tech.chaosmin.framework.dao.dataobject.User
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.entity.UserEntity
-import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
 import tech.chaosmin.framework.domain.request.UserReq
 import tech.chaosmin.framework.domain.response.UserResp
 import tech.chaosmin.framework.handler.ModifyUserHandler
@@ -35,19 +34,19 @@ open class UserShareProvider(
 
     override fun save(req: UserReq): RestResult<UserResp> {
         val user = UserConvert.INSTANCE.convert2Entity(req)
-        user.modifyType = ModifyTypeEnum.SAVE
+        user.save()
         return RestResultExt.execute(modifyUserHandler, user, UserConvert::class.java)
     }
 
     override fun update(id: Long, req: UserReq): RestResult<UserResp> {
         val user = UserConvert.INSTANCE.convert2Entity(req)
-        user.modifyType = ModifyTypeEnum.UPDATE
+        user.update(id)
         return RestResultExt.execute(modifyUserHandler, user, UserConvert::class.java)
     }
 
     override fun delete(id: Long): RestResult<UserResp> {
         val user = UserEntity(id)
-        user.modifyType = ModifyTypeEnum.REMOVE
+        user.remove()
         return RestResultExt.execute(modifyUserHandler, user, UserConvert::class.java)
     }
 }

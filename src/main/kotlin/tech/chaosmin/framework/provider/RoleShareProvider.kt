@@ -6,7 +6,6 @@ import tech.chaosmin.framework.dao.dataobject.Role
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.entity.RoleEntity
-import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
 import tech.chaosmin.framework.domain.request.RoleReq
 import tech.chaosmin.framework.domain.response.RoleResp
 import tech.chaosmin.framework.handler.ModifyRoleHandler
@@ -35,19 +34,19 @@ open class RoleShareProvider(
 
     override fun save(req: RoleReq): RestResult<RoleResp> {
         val role = RoleConvert.INSTANCE.convert2Entity(req)
-        role.modifyType = ModifyTypeEnum.SAVE
+        role.save()
         return RestResultExt.execute(modifyRoleHandler, role, RoleConvert::class.java)
     }
 
     override fun update(id: Long, req: RoleReq): RestResult<RoleResp> {
         val role = RoleConvert.INSTANCE.convert2Entity(req)
-        role.modifyType = ModifyTypeEnum.UPDATE
+        role.update(id)
         return RestResultExt.execute(modifyRoleHandler, role, RoleConvert::class.java)
     }
 
     override fun delete(id: Long): RestResult<RoleResp> {
         val role = RoleEntity(id)
-        role.modifyType = ModifyTypeEnum.REMOVE
+        role.remove()
         return RestResultExt.execute(modifyRoleHandler, role, RoleConvert::class.java)
     }
 }

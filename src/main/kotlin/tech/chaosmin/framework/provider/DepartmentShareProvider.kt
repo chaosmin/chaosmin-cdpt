@@ -1,14 +1,11 @@
 package tech.chaosmin.framework.provider
 
 import com.baomidou.mybatisplus.core.metadata.IPage
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.dao.dataobject.Department
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.entity.DepartmentEntity
-import tech.chaosmin.framework.domain.entity.UserEntity
-import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
 import tech.chaosmin.framework.domain.request.DepartmentReq
 import tech.chaosmin.framework.domain.response.DepartmentResp
 import tech.chaosmin.framework.handler.ModifyDepartmentHandler
@@ -41,19 +38,19 @@ open class DepartmentShareProvider(
 
     override fun save(req: DepartmentReq): RestResult<DepartmentResp> {
         val department = DepartmentConvert.INSTANCE.convert2Entity(req)
-        department.modifyType = ModifyTypeEnum.SAVE
+        department.save()
         return RestResultExt.execute(modifyDepartmentHandler, department, DepartmentConvert::class.java)
     }
 
     override fun update(id: Long, req: DepartmentReq): RestResult<DepartmentResp> {
         val department = DepartmentConvert.INSTANCE.convert2Entity(req).apply { this.id = id }
-        department.modifyType = ModifyTypeEnum.UPDATE
+        department.update(id)
         return RestResultExt.execute(modifyDepartmentHandler, department, DepartmentConvert::class.java)
     }
 
     override fun delete(id: Long): RestResult<DepartmentResp> {
         val department = DepartmentEntity(id)
-        department.modifyType = ModifyTypeEnum.REMOVE
+        department.remove()
         return RestResultExt.execute(modifyDepartmentHandler, department, DepartmentConvert::class.java)
     }
 }

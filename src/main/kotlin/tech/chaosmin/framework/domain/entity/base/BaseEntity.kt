@@ -8,4 +8,17 @@ import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
  */
 open class BaseEntity(var id: Long? = null) {
     var modifyType: ModifyTypeEnum? = null
+
+    fun save() {
+        this.modifyType = ModifyTypeEnum.SAVE
+    }
+
+    fun update(id: Long) {
+        this.modifyType = ModifyTypeEnum.UPDATE
+        this.id = id
+    }
+
+    fun remove() {
+        this.modifyType = ModifyTypeEnum.REMOVE
+    }
 }

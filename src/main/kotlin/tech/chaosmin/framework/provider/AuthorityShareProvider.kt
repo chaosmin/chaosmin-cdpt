@@ -6,7 +6,6 @@ import tech.chaosmin.framework.dao.dataobject.Authority
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.entity.AuthorityEntity
-import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
 import tech.chaosmin.framework.domain.request.AuthorityReq
 import tech.chaosmin.framework.domain.response.AuthorityResp
 import tech.chaosmin.framework.domain.response.AuthorityTreeNodeResp
@@ -40,20 +39,19 @@ open class AuthorityShareProvider(
 
     override fun save(req: AuthorityReq): RestResult<AuthorityResp> {
         val authority = AuthorityConvert.INSTANCE.convert2Entity(req)
-        authority.modifyType = ModifyTypeEnum.SAVE
+        authority.save()
         return RestResultExt.execute(modifyAuthorityHandler, authority, AuthorityConvert::class.java)
     }
 
     override fun update(id: Long, req: AuthorityReq): RestResult<AuthorityResp> {
         val authority = AuthorityConvert.INSTANCE.convert2Entity(req).apply { this.id = id }
-        authority.modifyType = ModifyTypeEnum.UPDATE
+        authority.update(id)
         return RestResultExt.execute(modifyAuthorityHandler, authority, AuthorityConvert::class.java)
     }
 
     override fun delete(id: Long): RestResult<AuthorityResp> {
         val authority = AuthorityEntity(id)
-        authority.modifyType = ModifyTypeEnum.REMOVE
+        authority.remove()
         return RestResultExt.execute(modifyAuthorityHandler, authority, AuthorityConvert::class.java)
     }
-
 }

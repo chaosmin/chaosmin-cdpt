@@ -43,7 +43,7 @@ open class DepartmentShareProvider(
     }
 
     override fun update(id: Long, req: DepartmentReq): RestResult<DepartmentResp> {
-        val department = DepartmentConvert.INSTANCE.convert2Entity(req).apply { this.id = id }
+        val department = DepartmentConvert.INSTANCE.convert2Entity(req)
         department.update(id)
         return RestResultExt.execute(modifyDepartmentHandler, department, DepartmentConvert::class.java)
     }

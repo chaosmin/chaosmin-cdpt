@@ -44,7 +44,7 @@ open class AuthorityShareProvider(
     }
 
     override fun update(id: Long, req: AuthorityReq): RestResult<AuthorityResp> {
-        val authority = AuthorityConvert.INSTANCE.convert2Entity(req).apply { this.id = id }
+        val authority = AuthorityConvert.INSTANCE.convert2Entity(req)
         authority.update(id)
         return RestResultExt.execute(modifyAuthorityHandler, authority, AuthorityConvert::class.java)
     }

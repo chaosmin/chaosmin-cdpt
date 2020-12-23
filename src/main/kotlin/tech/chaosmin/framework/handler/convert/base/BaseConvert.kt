@@ -2,12 +2,15 @@ package tech.chaosmin.framework.handler.convert.base
 
 import org.mapstruct.Mapping
 import org.mapstruct.Mappings
+import tech.chaosmin.framework.domain.entity.base.BaseEntity
+import tech.chaosmin.framework.domain.request.base.BaseReq
+import tech.chaosmin.framework.domain.response.base.BaseResp
 
 /**
  * @author Romani min
  * @since 2020/12/23 16:31
  */
-interface BaseConvert<E, RE, RQ> {
+interface BaseConvert<E : BaseEntity, RE : BaseReq, RQ : BaseResp> {
     fun convert2Resp(source: E): RQ
 
     fun convert2Resp(source: List<E>): List<RQ>

@@ -9,7 +9,7 @@ import tech.chaosmin.framework.domain.request.ProductReq
 import tech.chaosmin.framework.domain.response.ProductResp
 import javax.servlet.http.HttpServletRequest
 
-@Api(tags = ["保险公司操作接口"], consumes = "application/json;charset=utf-8")
+@Api(tags = ["产品操作接口"], consumes = "application/json;charset=utf-8")
 @RequestMapping("/\${application.version}/api/products")
 interface ProductShareService {
     @GetMapping("/{id}")

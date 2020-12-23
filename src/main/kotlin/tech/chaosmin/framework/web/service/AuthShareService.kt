@@ -11,12 +11,13 @@ import tech.chaosmin.framework.domain.response.UserDetailResp
  * @author Romani min
  * @since 2020/12/15 13:00
  */
-@ApiIgnore
 @RequestMapping("/auth")
 interface AuthShareService {
+    @ApiIgnore
     @GetMapping("/user/info")
     fun getUserInfo(): RestResult<UserDetailResp>
 
+    @ApiIgnore
     @PostMapping("/user/logout")
     fun logout(): RestResult<Void>
 }

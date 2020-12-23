@@ -1,72 +1,59 @@
 package tech.chaosmin.framework.provider
 
 import com.baomidou.mybatisplus.core.metadata.IPage
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RestController
-import tech.chaosmin.framework.dao.convert.AuthorityConvert
 import tech.chaosmin.framework.dao.dataobject.Authority
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
+import tech.chaosmin.framework.domain.entity.AuthorityEntity
+import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
 import tech.chaosmin.framework.domain.request.AuthorityReq
 import tech.chaosmin.framework.domain.response.AuthorityResp
 import tech.chaosmin.framework.domain.response.AuthorityTreeNodeResp
-import tech.chaosmin.framework.service.AuthorityService
+import tech.chaosmin.framework.handler.ModifyAuthorityHandler
+import tech.chaosmin.framework.handler.convert.AuthorityConvert
+import tech.chaosmin.framework.handler.logic.AuthorityQueryLogic
 import tech.chaosmin.framework.utils.RequestUtil
 import tech.chaosmin.framework.web.service.AuthorityShareService
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-open class AuthorityShareProvider(private val authorityService: AuthorityService) : AuthorityShareService {
+open class AuthorityShareProvider(
+    private val authorityQueryLogic: AuthorityQueryLogic,
+    private val modifyAuthorityHandler: ModifyAuthorityHandler
+) : AuthorityShareService {
     override fun selectById(id: Long): RestResult<AuthorityResp?> {
-        val authority = authorityService.getById(id)
-        return if (authority != null) {
-            val response = AuthorityConvert.INSTANCE.convert2Resp(authority)
-            RestResultExt.successRestResult(response)
-        } else {
-            RestResultExt.successRestResult()
-        }
+        val authority = authorityQueryLogic.get(id)
+        return if (authority == null) RestResultExt.successRestResult()
+        else RestResultExt.successRestResult(AuthorityConvert.INSTANCE.convert2Resp(authority))
     }
 
     override fun selectTree(): RestResult<List<AuthorityTreeNodeResp>> {
-        val list = authorityService.list()
-        val root = list.filter { it.parentId == null }.map { AuthorityTreeNodeResp(it, list) }
-        return RestResultExt.successRestResult(root)
+        return RestResultExt.successRestResult(authorityQueryLogic.tree())
     }
 
     override fun page(request: HttpServletRequest): RestResult<IPage<AuthorityResp>> {
         val queryCondition = RequestUtil.getQueryCondition<Authority>(request)
-        val page = authorityService.page(queryCondition.page, queryCondition.wrapper)
+        val page = authorityQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(AuthorityConvert.INSTANCE::convert2Resp))
     }
 
-    @Transactional
     override fun save(req: AuthorityReq): RestResult<AuthorityResp> {
         val authority = AuthorityConvert.INSTANCE.convert2Entity(req)
-        return if (authorityService.save(authority)) {
-            val response = AuthorityConvert.INSTANCE.convert2Resp(authority)
-            RestResultExt.successRestResult(response)
-        } else {
-            RestResultExt.failureRestResult()
-        }
+        authority.modifyType = ModifyTypeEnum.SAVE
+        return RestResultExt.execute(modifyAuthorityHandler, authority, AuthorityConvert::class.java)
     }
 
-    @Transactional
     override fun update(id: Long, req: AuthorityReq): RestResult<AuthorityResp> {
         val authority = AuthorityConvert.INSTANCE.convert2Entity(req).apply { this.id = id }
-        return if (authorityService.updateById(authority)) {
-            val response = AuthorityConvert.INSTANCE.convert2Resp(authorityService.getById(authority.id))
-            RestResultExt.successRestResult(response)
-        } else {
-            RestResultExt.failureRestResult()
-        }
+        authority.modifyType = ModifyTypeEnum.UPDATE
+        return RestResultExt.execute(modifyAuthorityHandler, authority, AuthorityConvert::class.java)
     }
 
-    @Transactional
     override fun delete(id: Long): RestResult<AuthorityResp> {
-        return if (authorityService.removeById(id)) {
-            RestResultExt.successRestResult()
-        } else {
-            RestResultExt.failureRestResult()
-        }
+        val authority = AuthorityEntity(id)
+        authority.modifyType = ModifyTypeEnum.REMOVE
+        return RestResultExt.execute(modifyAuthorityHandler, authority, AuthorityConvert::class.java)
     }
+
 }

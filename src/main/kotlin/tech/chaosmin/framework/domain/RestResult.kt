@@ -1,6 +1,9 @@
 package tech.chaosmin.framework.domain
 
+import org.mapstruct.factory.Mappers
 import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
+import tech.chaosmin.framework.handler.base.Operate
+import tech.chaosmin.framework.handler.convert.base.BaseConvert
 import java.io.Serializable
 
 data class RestResult<T>(
@@ -29,6 +32,13 @@ object RestResultExt {
     private const val OPT_FAILED = "Request failed."
     private const val UNAUTHORIZED_OPERATION = "Unauthorized operation."
     private const val BAD_CREDENTIALS = "Bad credentials."
+
+    fun <C : BaseConvert<E, RE, RQ>, E, RE, RQ> execute(func: Operate<E, E>, req: E, clazz: Class<C>): RestResult<RQ> {
+        val result = func.operate(req)
+        return if (result.success && result.data != null) {
+            successRestResult(Mappers.getMapper(clazz).convert2Resp(result.data!!))
+        } else failureRestResult()
+    }
 
     fun <T> successRestResult() = RestResult<T>(ErrorCodeEnum.SUCCESS.code, OPT_SUCCESS)
     fun <T> successRestResult(msg: String) = RestResult<T>(ErrorCodeEnum.SUCCESS.code, msg)

@@ -16,5 +16,5 @@ class RoleReq : Serializable {
     var priority: Int? = null
 
     @ApiModelProperty(value = "权限ID集合")
-    var authorityIds: List<Long>? = null
+    var authorityIds: Set<Long>? = null
 }

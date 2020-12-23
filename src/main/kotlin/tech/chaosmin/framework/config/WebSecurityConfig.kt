@@ -17,7 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.header.Header
 import org.springframework.security.web.header.writers.StaticHeadersWriter
-import tech.chaosmin.framework.provider.JwtAuthenticationProvider
+import tech.chaosmin.framework.service.impl.JwtAuthenticationImpl
 import tech.chaosmin.framework.utils.JwtTokenUtil
 import tech.chaosmin.framework.web.filter.AccessLogFilter
 import tech.chaosmin.framework.web.filter.JWTAuthenticationFilter
@@ -42,7 +42,7 @@ open class WebSecurityConfig(@Qualifier("userDetailsServiceImpl") private val us
 
     override fun configure(auth: AuthenticationManagerBuilder) {
         // 使用自定义登录身份认证组件
-        auth.authenticationProvider(JwtAuthenticationProvider(userDetailsService, passwordEncoder()))
+        auth.authenticationProvider(JwtAuthenticationImpl(userDetailsService, passwordEncoder()))
     }
 
     override fun configure(http: HttpSecurity) {

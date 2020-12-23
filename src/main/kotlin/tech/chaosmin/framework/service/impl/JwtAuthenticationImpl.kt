@@ -1,4 +1,4 @@
-package tech.chaosmin.framework.provider
+package tech.chaosmin.framework.service.impl
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
-class JwtAuthenticationProvider() : DaoAuthenticationProvider() {
+class JwtAuthenticationImpl() : DaoAuthenticationProvider() {
 
     constructor(userDetailsService: UserDetailsService, passwordEncoder: BCryptPasswordEncoder) : this() {
         setUserDetailsService(userDetailsService)

@@ -59,8 +59,8 @@ open class AuthorityServiceImpl(private val stringRedisTemplate: StringRedisTemp
     }
 
     @Transactional
-    override fun updateAuthorities(roleId: Long?, authorityIds: List<Long>?): Set<Authority> {
-        return if (roleId != null && authorityIds != null && authorityIds.isNotEmpty()) {
+    override fun updateAuthorities(roleId: Long, authorityIds: List<Long>): Set<Authority> {
+        return if (authorityIds.isNotEmpty()) {
             val assigned = baseMapper.findAuthorities(setOf(roleId)).mapNotNull { it.id }
             (authorityIds - assigned).run {
                 if (this.isNotEmpty()) baseMapper.addAuthorities(roleId, this)

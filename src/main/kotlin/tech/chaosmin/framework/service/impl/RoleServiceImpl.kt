@@ -14,8 +14,8 @@ open class RoleServiceImpl : ServiceImpl<RoleDAO, Role>(), RoleService {
     }
 
     @Transactional
-    override fun updateRoles(userId: Long?, roleIds: List<Long>?): Set<Role> {
-        return if (userId != null && roleIds != null && roleIds.isNotEmpty()) {
+    override fun updateRoles(userId: Long, roleIds: List<Long>): Set<Role> {
+        return if (roleIds.isNotEmpty()) {
             val assigned = baseMapper.findRoles(userId).mapNotNull { it.id }
             (roleIds - assigned).run {
                 if (this.isNotEmpty()) baseMapper.addRoles(userId, this)

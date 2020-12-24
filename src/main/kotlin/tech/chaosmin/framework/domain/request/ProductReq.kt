@@ -12,6 +12,9 @@ import tech.chaosmin.framework.domain.request.base.BaseReq
 
 @ApiModel("产品接口请求参数")
 class ProductReq : BaseReq() {
+    @ApiModelProperty(value = "大类ID")
+    var productCategoryId: Long? = null
+
     @ApiModelProperty(value = "保司ID")
     var partnerId: Long? = null
 

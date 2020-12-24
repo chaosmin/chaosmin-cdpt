@@ -9,6 +9,7 @@ import tech.chaosmin.framework.domain.enums.BasicStatusEnum
  */
 class ProductEntity(id: Long? = null) : BaseEntity(id) {
     var partnerId: Long? = null
+    var partnerName: String? = null
     var productCode: String? = null
     var productName: String? = null
     var productSubName: String? = null

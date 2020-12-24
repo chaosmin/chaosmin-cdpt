@@ -7,6 +7,7 @@ import tech.chaosmin.framework.dao.dataobject.Product
 import tech.chaosmin.framework.domain.PageQuery
 import tech.chaosmin.framework.domain.entity.ProductEntity
 import tech.chaosmin.framework.handler.logic.base.BaseQueryLogic
+import tech.chaosmin.framework.service.PartnerService
 import tech.chaosmin.framework.service.ProductService
 
 /**
@@ -14,7 +15,10 @@ import tech.chaosmin.framework.service.ProductService
  * @since 2020/12/17 15:28
  */
 @Component
-class ProductQueryLogic(private val productService: ProductService) : BaseQueryLogic<ProductEntity, Product> {
+class ProductQueryLogic(
+    private val productService: ProductService,
+    private val partnerService: PartnerService
+) : BaseQueryLogic<ProductEntity, Product> {
 
     override fun get(id: Long): ProductEntity? {
         val product = productService.getById(id)
@@ -24,6 +28,11 @@ class ProductQueryLogic(private val productService: ProductService) : BaseQueryL
 
     override fun page(cond: PageQuery<Product>): IPage<ProductEntity> {
         val page = productService.page(cond.page, cond.wrapper)
-        return page.convert(ProductMapper.INSTANCE::convert2Entity)
+        val result = page.convert(ProductMapper.INSTANCE::convert2Entity)
+        result.records.forEach { record ->
+            val partner = partnerService.getById(record.partnerId)
+            record.partnerName = partner?.name
+        }
+        return result
     }
 }

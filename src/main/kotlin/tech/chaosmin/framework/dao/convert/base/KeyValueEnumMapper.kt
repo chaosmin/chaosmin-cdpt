@@ -9,11 +9,12 @@ import tech.chaosmin.framework.utils.EnumClient
  * @since 2020/12/24 11:36
  */
 class KeyValueEnumMapper {
-    fun getEnumCode(enum: KeyValueEnum): Int {
-        return enum.getCode()
+    fun getEnumCode(enum: KeyValueEnum?): Int? {
+        return enum?.getCode()
     }
 
-    fun <T> getEnum(@TargetType clazz: Class<T>, code: Int): T? where T : Enum<T>, T : KeyValueEnum {
-        return EnumClient.getEnum(clazz, code)
+    fun <T> getEnum(@TargetType clazz: Class<T>, code: Int?): T? where T : Enum<T>, T : KeyValueEnum {
+        return if (code == null) null
+        else EnumClient.getEnum(clazz, code)
     }
 }

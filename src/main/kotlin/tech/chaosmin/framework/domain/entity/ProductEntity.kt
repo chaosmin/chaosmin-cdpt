@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.domain.entity
 
 import tech.chaosmin.framework.domain.entity.base.BaseEntity
+import tech.chaosmin.framework.domain.enums.BasicStatusEnum
 
 /**
  * @author Romani min
@@ -13,5 +14,5 @@ class ProductEntity(id: Long? = null) : BaseEntity(id) {
     var productSubName: String? = null
     var partnerProductNo: String? = null
     var productDesc: String? = null
-    var status: Int? = null
+    var status: BasicStatusEnum? = null
 }

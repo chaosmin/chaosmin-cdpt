@@ -2,8 +2,8 @@ package tech.chaosmin.framework.domain.request
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import tech.chaosmin.framework.domain.enums.UserStatusEnum
 import tech.chaosmin.framework.domain.request.base.BaseReq
-import java.io.Serializable
 
 @ApiModel("用户接口请求参数")
 class UserReq : BaseReq() {
@@ -17,7 +17,7 @@ class UserReq : BaseReq() {
     var loginName: String? = null
 
     @ApiModelProperty(value = "用户状态")
-    var status: Int? = null
+    var status: UserStatusEnum? = null
 
     @ApiModelProperty(value = "登录密码")
     var password: String? = null

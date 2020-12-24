@@ -16,7 +16,7 @@ object Vers {
         const val jwtVersion = "0.9.1"
         const val kotlinCoroutinesVersion = "1.3.8"
         const val logbackVersion = "1.2.3"
-        const val mapStructVersion = "1.3.1.Final"
+        const val mapStructVersion = "1.4.1.Final"
         const val mybatisPlusVersion = "3.3.2"
         const val mysqlConnectorVersion = "8.0.18"
         const val nacosVersion = "0.9.0.RELEASE"

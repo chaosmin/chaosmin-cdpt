@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.domain.entity
 
 import tech.chaosmin.framework.domain.entity.base.BaseEntity
+import tech.chaosmin.framework.domain.enums.DepartmentStatusEnum
 
 /**
  * @author Romani min
@@ -9,7 +10,7 @@ import tech.chaosmin.framework.domain.entity.base.BaseEntity
 class DepartmentEntity(id: Long? = null) : BaseEntity(id) {
     var code: String? = null
     var name: String? = null
-    var status: Int? = null
+    var status: DepartmentStatusEnum? = null
 
     var numberOfPeople: Int? = null
 }

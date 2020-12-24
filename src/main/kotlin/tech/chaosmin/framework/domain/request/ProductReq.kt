@@ -2,6 +2,7 @@ package tech.chaosmin.framework.domain.request
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import tech.chaosmin.framework.domain.enums.BasicStatusEnum
 import tech.chaosmin.framework.domain.request.base.BaseReq
 
 /**
@@ -30,5 +31,5 @@ class ProductReq : BaseReq() {
     var productDesc: String? = null
 
     @ApiModelProperty(value = "产品状态")
-    var status: Int? = null
+    var status: BasicStatusEnum? = null
 }

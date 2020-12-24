@@ -2,6 +2,7 @@ package tech.chaosmin.framework.domain.request
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import tech.chaosmin.framework.domain.enums.DepartmentStatusEnum
 import tech.chaosmin.framework.domain.request.base.BaseReq
 import java.io.Serializable
 
@@ -14,5 +15,5 @@ class DepartmentReq : BaseReq() {
     var name: String? = null
 
     @ApiModelProperty(value = "部门状态")
-    var status: Int? = null
+    var status: DepartmentStatusEnum? = null
 }

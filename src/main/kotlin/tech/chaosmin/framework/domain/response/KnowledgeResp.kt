@@ -2,6 +2,7 @@ package tech.chaosmin.framework.domain.response
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import tech.chaosmin.framework.domain.enums.KnowledgeTypeEnum
 import tech.chaosmin.framework.domain.response.base.BaseResp
 
 /**
@@ -11,7 +12,7 @@ import tech.chaosmin.framework.domain.response.base.BaseResp
 @ApiModel("知识库接口返回参数")
 class KnowledgeResp : BaseResp() {
     @ApiModelProperty(value = "条目类型")
-    var type: Int? = null
+    var type: KnowledgeTypeEnum? = null
 
     @ApiModelProperty(value = "条目编码")
     var knowledgeCode: String? = null

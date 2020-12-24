@@ -28,11 +28,11 @@ class UserDetailsServiceImpl(
             val roleIds = roles.mapNotNull { it.id }.toSet()
             val roleCodes = roles.mapNotNull { it.code }
             val permissions = authorityService.findAuthorities(roleIds).map { it.authority }
-            val accountNonExpired = this.status != null && this.status == UserStatusEnum.VALID.code
+            val accountNonExpired = this.status != null && this.status == UserStatusEnum.VALID.getCode()
             val credentialsNonExpired = true
             val accountNonLocked = if (this.departmentId != null) {
                 val department = departmentService.getById(this.departmentId)
-                department?.status != null && department.status == DepartmentStatusEnum.VALID.code
+                department?.status != null && department.status == DepartmentStatusEnum.VALID.getCode()
             } else true
             JwtUserDetails(
                 username,

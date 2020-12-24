@@ -2,6 +2,7 @@ package tech.chaosmin.framework.domain.response
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import tech.chaosmin.framework.domain.enums.BasicStatusEnum
 import tech.chaosmin.framework.domain.response.base.BaseResp
 
 /**
@@ -29,5 +30,5 @@ class ProductPlanResp : BaseResp() {
     var defaultCommissionRatio: Double? = null
 
     @ApiModelProperty(value = "状态")
-    var status: Int? = null
+    var status: BasicStatusEnum? = null
 }

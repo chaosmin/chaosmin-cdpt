@@ -2,6 +2,7 @@ package tech.chaosmin.framework.domain.response
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import tech.chaosmin.framework.domain.enums.DepartmentStatusEnum
 import tech.chaosmin.framework.domain.response.base.BaseResp
 
 @ApiModel("部门接口返回参数")
@@ -13,7 +14,7 @@ class DepartmentResp : BaseResp() {
     var name: String? = null
 
     @ApiModelProperty(value = "部门状态")
-    var status: Int? = null
+    var status: DepartmentStatusEnum? = null
 
     @ApiModelProperty(value = "部门人数")
     var numberOfPeople: Int? = null

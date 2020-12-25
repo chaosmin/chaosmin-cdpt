@@ -5,6 +5,7 @@ import org.mapstruct.factory.Mappers
 import tech.chaosmin.framework.dao.convert.base.BaseMapper
 import tech.chaosmin.framework.dao.convert.base.KeyValueEnumMapper
 import tech.chaosmin.framework.dao.dataobject.User
+import tech.chaosmin.framework.dao.dataobject.ext.UserExt
 import tech.chaosmin.framework.domain.entity.UserEntity
 
 /**
@@ -16,4 +17,6 @@ interface UserMapper : BaseMapper<UserEntity, User> {
     companion object {
         val INSTANCE: UserMapper = Mappers.getMapper(UserMapper::class.java)
     }
+
+    fun convert2Entity(source: UserExt): UserEntity
 }

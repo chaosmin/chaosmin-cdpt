@@ -1,6 +1,6 @@
 package tech.chaosmin.framework.dao.dataobject
 
-class User(id: Long? = null) : BaseCommonDO(id, 0) {
+open class User(id: Long? = null) : BaseCommonDO(id, 0) {
     // 部门id
     var departmentId: Long? = null
 

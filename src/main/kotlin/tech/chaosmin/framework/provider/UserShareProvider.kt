@@ -2,7 +2,7 @@ package tech.chaosmin.framework.provider
 
 import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.web.bind.annotation.RestController
-import tech.chaosmin.framework.dao.dataobject.User
+import tech.chaosmin.framework.dao.dataobject.ext.UserExt
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.entity.UserEntity
@@ -27,7 +27,7 @@ open class UserShareProvider(
     }
 
     override fun page(request: HttpServletRequest): RestResult<IPage<UserResp>> {
-        val queryCondition = RequestUtil.getQueryCondition<User>(request)
+        val queryCondition = RequestUtil.getQueryCondition<UserExt>(request)
         val page = userQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(UserConvert.INSTANCE::convert2Resp))
     }

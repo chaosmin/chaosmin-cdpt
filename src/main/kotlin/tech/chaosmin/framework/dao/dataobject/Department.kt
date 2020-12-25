@@ -1,6 +1,6 @@
 package tech.chaosmin.framework.dao.dataobject
 
-class Department(id: Long? = null) : BaseCommonDO(id, 0) {
+open class Department(id: Long? = null) : BaseCommonDO(id, 0) {
     // 部门编码
     var code: String? = null
 

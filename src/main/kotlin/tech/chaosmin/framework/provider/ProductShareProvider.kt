@@ -3,6 +3,7 @@ package tech.chaosmin.framework.provider
 import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.dao.dataobject.Product
+import tech.chaosmin.framework.dao.dataobject.ext.ProductExt
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.entity.ProductEntity
@@ -31,7 +32,7 @@ open class ProductShareProvider(
     }
 
     override fun page(request: HttpServletRequest): RestResult<IPage<ProductResp>> {
-        val queryCondition = RequestUtil.getQueryCondition<Product>(request)
+        val queryCondition = RequestUtil.getQueryCondition<ProductExt>(request)
         val page = productQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(ProductConvert.INSTANCE::convert2Resp))
     }

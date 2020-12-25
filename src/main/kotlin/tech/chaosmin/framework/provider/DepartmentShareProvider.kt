@@ -3,6 +3,7 @@ package tech.chaosmin.framework.provider
 import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.dao.dataobject.Department
+import tech.chaosmin.framework.dao.dataobject.ext.DepartmentExt
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.entity.DepartmentEntity
@@ -31,7 +32,7 @@ open class DepartmentShareProvider(
     }
 
     override fun page(request: HttpServletRequest): RestResult<IPage<DepartmentResp>> {
-        val queryCondition = RequestUtil.getQueryCondition<Department>(request)
+        val queryCondition = RequestUtil.getQueryCondition<DepartmentExt>(request)
         val page = departmentQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(DepartmentConvert.INSTANCE::convert2Resp))
     }

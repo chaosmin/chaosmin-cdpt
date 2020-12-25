@@ -3,7 +3,7 @@ package tech.chaosmin.framework.handler.logic
 import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.dao.convert.DepartmentMapper
-import tech.chaosmin.framework.dao.dataobject.Department
+import tech.chaosmin.framework.dao.dataobject.ext.DepartmentExt
 import tech.chaosmin.framework.domain.PageQuery
 import tech.chaosmin.framework.domain.entity.DepartmentEntity
 import tech.chaosmin.framework.handler.logic.base.BaseQueryLogic
@@ -18,7 +18,7 @@ import tech.chaosmin.framework.service.UserService
 class DepartmentQueryLogic(
     private val departmentService: DepartmentService,
     private val userService: UserService
-) : BaseQueryLogic<DepartmentEntity, Department> {
+) : BaseQueryLogic<DepartmentEntity, DepartmentExt> {
 
     override fun get(id: Long): DepartmentEntity? {
         val department = departmentService.getById(id)
@@ -26,12 +26,8 @@ class DepartmentQueryLogic(
         else DepartmentMapper.INSTANCE.convert2Entity(department)
     }
 
-    override fun page(cond: PageQuery<Department>): IPage<DepartmentEntity> {
-        val page = departmentService.page(cond.page, cond.wrapper)
-        val result = page.convert(DepartmentMapper.INSTANCE::convert2Entity)
-        result.records.forEach { record ->
-            record.numberOfPeople = userService.countByDepartmentId(record.id!!)
-        }
-        return result
+    override fun page(cond: PageQuery<DepartmentExt>): IPage<DepartmentEntity> {
+        val page = departmentService.pageExt(cond.page, cond.wrapper)
+        return page.convert(DepartmentMapper.INSTANCE::convert2Entity)
     }
 }

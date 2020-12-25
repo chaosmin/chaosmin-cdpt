@@ -5,7 +5,7 @@ package tech.chaosmin.framework.dao.dataobject
  * @author Romani min
  * @since 2020/12/23 11:06
  */
-class Product(id: Long? = null) : BaseCommonDO(id, 0) {
+open class Product(id: Long? = null) : BaseCommonDO(id, 0) {
     // 保司ID
     var partnerId: Long? = null
 

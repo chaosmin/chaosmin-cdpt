@@ -17,5 +17,5 @@ class DepartmentResp : BaseResp() {
     var status: DepartmentStatusEnum? = null
 
     @ApiModelProperty(value = "部门人数")
-    var numberOfPeople: Int? = null
+    var numberOfUser: Int? = null
 }

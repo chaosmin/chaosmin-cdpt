@@ -34,4 +34,7 @@ class ProductResp : BaseResp() {
 
     @ApiModelProperty(value = "产品状态")
     var status: BasicStatusEnum? = null
+
+    @ApiModelProperty(value = "包含计划数")
+    var numberOfPlan: Int? = null
 }

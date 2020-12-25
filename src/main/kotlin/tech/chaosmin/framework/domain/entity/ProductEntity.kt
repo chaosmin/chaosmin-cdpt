@@ -16,4 +16,5 @@ class ProductEntity(id: Long? = null) : BaseEntity(id) {
     var partnerProductNo: String? = null
     var productDesc: String? = null
     var status: BasicStatusEnum? = null
+    var numberOfPlan: Int? = null
 }

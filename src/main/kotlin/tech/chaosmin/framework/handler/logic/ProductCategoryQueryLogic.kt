@@ -31,6 +31,10 @@ class ProductCategoryQueryLogic(private val productCategoryService: ProductCateg
 
     fun tree(): List<ProductCategoryTreeNodeResp> {
         val list = productCategoryService.list()
-        return list.filter { it.parentId == null }.map { ProductCategoryTreeNodeResp(it, list) }
+        val result = mutableListOf<ProductCategoryTreeNodeResp>()
+        list.groupBy { it.parentName }.forEach { (p, l) ->
+            result.add(ProductCategoryTreeNodeResp(label = p, list = l))
+        }
+        return result
     }
 }

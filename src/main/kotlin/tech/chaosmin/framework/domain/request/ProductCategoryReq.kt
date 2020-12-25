@@ -11,8 +11,8 @@ import tech.chaosmin.framework.domain.request.base.BaseReq
 
 @ApiModel("产品大类接口请求参数")
 class ProductCategoryReq : BaseReq() {
-    @ApiModelProperty(value = "父类ID")
-    var parentId: Long? = null
+    @ApiModelProperty(value = "父类名称")
+    var parentName: String? = null
 
     @ApiModelProperty(value = "大类代码")
     var categoryCode: String? = null
@@ -22,4 +22,7 @@ class ProductCategoryReq : BaseReq() {
 
     @ApiModelProperty(value = "排序")
     var sort: Int? = null
+
+    @ApiModelProperty(value = "是否展示")
+    var isShow: Boolean? = null
 }

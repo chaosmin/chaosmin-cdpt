@@ -15,10 +15,11 @@ create table partner
 create table product_category
 (
     id            bigint auto_increment primary key,
-    parent_id     bigint                             null comment '父级ID',
+    parent_name   varchar(64)                        not null comment '父类名称',
     category_code varchar(64)                        not null comment '分类代码',
     category_name varchar(64)                        null comment '分类名称',
     sort          int      default 0                 not null comment '排序',
+    is_show       int      default 1                 not null comment '是否展示',
     create_time   datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     creator       varchar(64)                        null comment '创建人',
     update_time   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',

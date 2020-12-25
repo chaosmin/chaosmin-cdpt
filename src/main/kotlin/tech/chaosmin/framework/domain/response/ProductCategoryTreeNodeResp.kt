@@ -12,13 +12,15 @@ class ProductCategoryTreeNodeResp() : Serializable {
     var label: String? = null
     var children: List<ProductCategoryTreeNodeResp>? = null
 
-    constructor(category: ProductCategory, list: List<ProductCategory>) : this() {
-        this.categoryId = category.id
-        this.label = category.categoryName
-        this.children = buildChildren(list)
+    constructor(id: Long? = null, label: String?, list: List<ProductCategory>? = null) : this() {
+        this.categoryId = id
+        this.label = label
+        list?.run { children = buildChildren(list) }
     }
 
     private fun buildChildren(list: List<ProductCategory>): List<ProductCategoryTreeNodeResp> {
-        return list.filter { it.parentId == categoryId }.map { ProductCategoryTreeNodeResp(it, list) }
+        return list.map {
+            ProductCategoryTreeNodeResp(it.id, it.categoryName)
+        }
     }
 }

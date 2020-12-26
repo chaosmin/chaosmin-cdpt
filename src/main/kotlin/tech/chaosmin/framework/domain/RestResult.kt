@@ -47,6 +47,10 @@ object RestResultExt {
         } else failureRestResult()
     }
 
+    fun <T> mapper(result: RestResult<*>): RestResult<T> {
+        return RestResult(result.code, result.msg, success = result.success)
+    }
+
     fun <T> successRestResult() = RestResult<T>(ErrorCodeEnum.SUCCESS.code, OPT_SUCCESS)
     fun <T> successRestResult(msg: String) = RestResult<T>(ErrorCodeEnum.SUCCESS.code, msg)
     fun <T> successRestResult(data: T) = RestResult(ErrorCodeEnum.SUCCESS.code, OPT_SUCCESS, data)

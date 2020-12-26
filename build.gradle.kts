@@ -61,7 +61,6 @@ dependencies {
     implementation("com.baomidou:mybatis-plus-boot-starter:${Vers.Deps.mybatisPlusVersion}") {
         exclude("com.alibaba", "fastjson")
     }
-    // implementation("com.github.chaosmin:chaosmin-common:${Vers.Deps.chaosminCommonVersion}")
 
     // common tools
     implementation("commons-codec:commons-codec:${Vers.Deps.commonsCodecVersion}")
@@ -71,8 +70,7 @@ dependencies {
     implementation("com.google.guava:guava:${Vers.Deps.guavaVersion}")
     implementation("io.jsonwebtoken:jjwt:${Vers.Deps.jwtVersion}")
     implementation("org.apache.poi:poi:${Vers.Deps.poiVersion}")
-
-    // implementation("com.opencsv:opencsv:${Vers.Deps.opencsvVersion}")
+    implementation("org.apache.poi:poi-ooxml:${Vers.Deps.poiVersion}")
 
     // config discovery
      implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")

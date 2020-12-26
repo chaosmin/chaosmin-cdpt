@@ -14,6 +14,8 @@ enum class ErrorCodeEnum(val code: String, val msg: String) {
     USER_NOT_FOUND("SYS_10001", "未找到指定用户"),
     AUTHENTICATION_FAILED("SYS_10002", "登录失败"),
 
+    RESOURCE_NOT_EXIST("SYS_20001", "资源不存在"),
+
     PARAM_IS_NULL("PARAMS_00001", "参数不能为空"),
     PARAM_IS_INVALID("PARAMS_00002", "参数不合法"),
 }

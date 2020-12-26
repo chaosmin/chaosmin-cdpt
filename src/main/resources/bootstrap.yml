@@ -26,7 +26,7 @@ spring:
       config:
         enabled: false
       discovery:
-        health-check-path: ${server.servlet.context-path}/actuator/health
+        health-check-path: /actuator/health
         health-check-interval: 15s
         health-check-critical-timeout: 60s
         query-passing: true

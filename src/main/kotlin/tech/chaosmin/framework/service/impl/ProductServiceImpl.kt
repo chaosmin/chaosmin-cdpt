@@ -19,4 +19,8 @@ open class ProductServiceImpl : ServiceImpl<ProductDAO, Product>(), ProductServi
     override fun pageExt(page: Page<ProductExt>, queryWrapper: Wrapper<ProductExt>): IPage<ProductExt> {
         return baseMapper.pageExt(page, queryWrapper)
     }
+
+    override fun setCategories(productId: Long, categoryIds: List<Long>) {
+        baseMapper.addRoles(productId, categoryIds)
+    }
 }

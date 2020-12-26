@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.*
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.request.ProductReq
+import tech.chaosmin.framework.domain.request.UploadFileReq
 import tech.chaosmin.framework.domain.response.ProductResp
 import javax.servlet.http.HttpServletRequest
 
@@ -23,6 +24,10 @@ interface ProductShareService {
     @PostMapping
     @ApiOperation(value = "创建/新增")
     fun save(@RequestBody req: ProductReq): RestResult<ProductResp>
+
+    @PostMapping("/file")
+    @ApiOperation("上传添加")
+    fun upload(req: UploadFileReq): RestResult<ProductResp>
 
     @PutMapping("/{id}")
     @ApiOperation(value = "修改/更新")

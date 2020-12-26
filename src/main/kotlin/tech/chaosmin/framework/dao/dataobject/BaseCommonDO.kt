@@ -6,7 +6,7 @@ import java.io.Serializable
 import java.util.*
 
 open class BaseCommonDO(
-    @TableId(type = IdType.AUTO) var id: Long?,
+    @TableId(value = "id", type = IdType.AUTO) var id: Long?,
     @TableLogic
     @TableField(value = "is_deleted")
     var deleted: Int = 0

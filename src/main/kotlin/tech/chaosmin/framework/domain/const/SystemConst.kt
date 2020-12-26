@@ -12,6 +12,9 @@ object SystemConst {
     const val REQUEST_URL = "url"
     const val ANONYMOUS = "anonymous"
 
+    const val DEFAULT_CURRENCY = "01"
+    const val DEFAULT_COMMISSION_RATIO = 0.1
+
     const val CACHE_NAMESPACE_AUTHORITY = "authority:"
 
     const val INIT_SUCCESSFULLY = ":> The {} was initialized successfully."

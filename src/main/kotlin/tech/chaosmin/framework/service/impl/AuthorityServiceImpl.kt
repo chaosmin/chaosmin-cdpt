@@ -24,16 +24,16 @@ open class AuthorityServiceImpl(private val stringRedisTemplate: StringRedisTemp
 
     }
 
-    @PostConstruct
-    fun readAuthoritiesToCache() {
-        synchronized(this) {
-            baseMapper.selectList(Wrappers.emptyWrapper()).forEach { authority ->
-                val cacheKey = "$CACHE_NAMESPACE_AUTHORITY${authority.httpMethod} ${authority.url}"
-                val cache = JsonUtil.encode(authority)
-                stringRedisTemplate.opsForValue().set(cacheKey, cache, ttl, timeUnit)
-            }
-        }
-    }
+//    @PostConstruct
+//    fun readAuthoritiesToCache() {
+//        synchronized(this) {
+//            baseMapper.selectList(Wrappers.emptyWrapper()).forEach { authority ->
+//                val cacheKey = "$CACHE_NAMESPACE_AUTHORITY${authority.httpMethod} ${authority.url}"
+//                val cache = JsonUtil.encode(authority)
+//                stringRedisTemplate.opsForValue().set(cacheKey, cache, ttl, timeUnit)
+//            }
+//        }
+//    }
 
     override fun findAuthorities(roleIds: Set<Long>): Set<Authority> {
         return if (roleIds.isEmpty()) emptySet()

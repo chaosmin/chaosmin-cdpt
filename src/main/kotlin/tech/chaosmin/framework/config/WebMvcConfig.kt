@@ -17,6 +17,7 @@ open class WebMvcConfig(private val authInterceptor: AuthInterceptor) : WebMvcCo
             .excludePathPatterns("/auth/**")
             .excludePathPatterns("/event/**")
             .excludePathPatterns("/ddl-change")
+            .excludePathPatterns("/actuator/**")
             .excludePathPatterns("/system/ping-without-auth")
         // registry.addInterceptor(limitInterceptor)
         //     .addPathPatterns("/${version}/api/**")

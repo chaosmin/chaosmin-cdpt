@@ -75,10 +75,10 @@ dependencies {
     // implementation("com.opencsv:opencsv:${Vers.Deps.opencsvVersion}")
 
     // config discovery
-    // implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")
-    // implementation("org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}") {
-    //     exclude("com.alibaba", "fastjson")
-    // }
+     implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")
+     implementation("org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}") {
+         exclude("com.alibaba", "fastjson")
+     }
 
     // swagger
     implementation("io.springfox:springfox-boot-starter:${Vers.Deps.swaggerVersion}")

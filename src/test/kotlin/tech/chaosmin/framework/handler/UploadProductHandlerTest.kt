@@ -50,9 +50,9 @@ internal class UploadProductHandlerTest {
 
     @Test
     fun operate() {
-        File("/Users/romani/Desktop/永诚保险_快乐出境险|快乐险.xlsx").inputStream().use {
+        File("/Users/romani/Desktop/永诚保险_快乐出境险.xlsx").inputStream().use {
             val arg = UploadFileReq()
-            arg.file = MockMultipartFile("file", "永诚保险_快乐出境险|快乐险.xlsx", null, it)
+            arg.file = MockMultipartFile("file", "永诚保险_快乐出境险.xlsx", null, it)
             arg.fileName = arg.file?.originalFilename
             val result = uploadProductHandler.operate(arg)
             assertThat(result).isNotNull

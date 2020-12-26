@@ -20,6 +20,7 @@ import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.handler.base.AbstractTemplateOperate
 import tech.chaosmin.framework.service.PartnerService
 import tech.chaosmin.framework.service.ProductCategoryService
+import tech.chaosmin.framework.utils.StringUtil.getCodeFromZh
 import java.util.*
 import javax.annotation.Resource
 
@@ -128,8 +129,11 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
     }
 
     private fun handlePlans(sheet: Sheet, product: ProductEntity) {
-        logger.info("[pd:${product.productCode}] >>> 处理产品计划")
-        product.productName = sheet.sheetName
+        val name = sheet.sheetName
+        val code = "${product.partnerName}${name}".getCodeFromZh()
+        logger.info("[pd:${product.productCode}/${code}] >>> 处理产品计划")
+        product.productName = name
+        product.productCode = code
         val r = sheet.first()
         val plans = (2 until r.count()).map { it to r.getCell(it).stringCellValue }.toMap()
         (1..sheet.lastRowNum).forEach { row ->

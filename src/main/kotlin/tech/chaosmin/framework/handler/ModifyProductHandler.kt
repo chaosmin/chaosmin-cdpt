@@ -1,9 +1,11 @@
 package tech.chaosmin.framework.handler
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.baomidou.mybatisplus.core.toolkit.Wrappers
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tech.chaosmin.framework.dao.convert.ProductMapper
+import tech.chaosmin.framework.dao.dataobject.Product
 import tech.chaosmin.framework.dao.dataobject.ProductAgreement
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.entity.ProductEntity
@@ -35,11 +37,16 @@ open class ModifyProductHandler(
         val product = ProductMapper.INSTANCE.convert2DO(arg)
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> {
+                val queryWrapper = QueryWrapper<Product>().eq("product_code", product.productCode)
+                if (!productService.list(queryWrapper).isNullOrEmpty()) {
+                    throw FrameworkException(ErrorCodeEnum.DATA_ERROR.code, "${product.productCode}已存在.")
+                }
                 productService.save(product)
                 arg.categoryIds?.run { productService.setCategories(product.id!!, this) }
                 productAgreementService.save(ProductAgreement().apply {
                     this.productId = product.id
-                    this.specialAgreement = arg.specialAgreement?.mapIndexed { i, s -> "${i + 1}、$s" }?.joinToString("\n")
+                    this.specialAgreement =
+                        arg.specialAgreement?.mapIndexed { i, s -> "${i + 1}、$s" }?.joinToString("\n")
                     this.notice = arg.notice?.mapIndexed { i, s -> "${i + 1}、$s" }?.joinToString("\n")
                 })
             }

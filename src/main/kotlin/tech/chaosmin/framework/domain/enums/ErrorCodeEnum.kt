@@ -10,6 +10,10 @@ enum class ErrorCodeEnum(val code: String, val msg: String) {
 
     REQUEST_LIMITED("API_00001", "服务器请求达到上限"),
 
+    BUSINESS_ERROR("BIZ_00001", "业务异常"),
+    DATA_ERROR("BIZ_00002", "数据异常"),
+    STATUS_ERROR("BIZ_00003", "状态异常"),
+
     FAILURE("SYS_00001", "请求失败"),
     USER_NOT_FOUND("SYS_10001", "未找到指定用户"),
     AUTHENTICATION_FAILED("SYS_10002", "登录失败"),

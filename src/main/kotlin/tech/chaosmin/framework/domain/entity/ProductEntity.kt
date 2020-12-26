@@ -5,7 +5,7 @@ import tech.chaosmin.framework.domain.const.SystemConst.DEFAULT_CURRENCY
 import tech.chaosmin.framework.domain.entity.base.BaseEntity
 import tech.chaosmin.framework.domain.enums.BasicStatusEnum
 import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
-import java.util.*
+import tech.chaosmin.framework.utils.StringUtil.getCodeFromZh
 
 /**
  * @author Romani min
@@ -34,7 +34,7 @@ class ProductEntity(id: Long? = null) : BaseEntity(id) {
             if (plan == null) {
                 plan = ProductPlanEntity().apply {
                     this.modifyType = ModifyTypeEnum.SAVE
-                    this.planCode = UUID.randomUUID().toString()
+                    this.planCode = planName.getCodeFromZh()
                     this.planName = planName
                     this.currency = DEFAULT_CURRENCY
                     this.defaultCommissionRatio = DEFAULT_COMMISSION_RATIO

@@ -59,7 +59,7 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
         val traceId = UUID.randomUUID().toString()
         val fileNameSplit = arg.fileName!!.substringBeforeLast('.').split('_')
         val partnerName = if (fileNameSplit.size == 2) fileNameSplit[0] else ANONYMOUS
-        val partner = partnerService.list(QueryWrapper<Partner>().like("name", partnerName)).firstOrNull()
+        val partner = partnerService.list(QueryWrapper<Partner>().like("partner_name", partnerName)).firstOrNull()
             ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "保险公司[$partnerName]")
         val categoryNames = if (fileNameSplit.size == 2) fileNameSplit[1].split('|') else arrayListOf(ANONYMOUS)
         val categories = categoryService.list(QueryWrapper<ProductCategory>().`in`("category_name", categoryNames))
@@ -67,7 +67,7 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
         val product = ProductEntity().apply {
             this.modifyType = ModifyTypeEnum.SAVE
             this.partnerId = partner.id
-            this.partnerName = partner.name
+            this.partnerName = partner.partnerName
             this.categoryIds = categories.mapNotNull { it.id }
             this.productCode = traceId
         }
@@ -120,12 +120,14 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
 
     private fun handleSpecialAgreement(sheet: Sheet, product: ProductEntity) {
         logger.info("[pd:${product.productCode}] >>> 处理特别约定")
-        product.specialAgreement = sheet.mapNotNull { it.first().stringCellValue }
+        val specialAgreement = sheet.mapNotNull { it.first().stringCellValue }
+        product.specialAgreement = specialAgreement
     }
 
     private fun handleNotice(sheet: Sheet, product: ProductEntity) {
         logger.info("[pd:${product.productCode}] >>> 处理投保须知")
-        product.notice = sheet.mapNotNull { it.first().stringCellValue }
+        val notice = sheet.mapNotNull { it.first().stringCellValue }
+        product.notice = notice
     }
 
     private fun handlePlans(sheet: Sheet, product: ProductEntity) {

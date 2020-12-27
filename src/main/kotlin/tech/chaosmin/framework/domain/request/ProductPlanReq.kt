@@ -15,6 +15,9 @@ class ProductPlanReq : BaseReq() {
     @ApiModelProperty(value = "产品ID")
     var productId: Long? = null
 
+    @ApiModelProperty(value = "产品名称")
+    var productName: String? = null
+
     @ApiModelProperty(value = "计划编码")
     var planCode: String? = null
 

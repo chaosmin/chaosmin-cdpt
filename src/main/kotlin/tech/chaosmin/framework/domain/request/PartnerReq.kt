@@ -12,10 +12,10 @@ import tech.chaosmin.framework.domain.request.base.BaseReq
 @ApiModel("保险公司接口请求参数")
 class PartnerReq : BaseReq() {
     @ApiModelProperty(value = "保司编码")
-    var code: String? = null
+    var partnerCode: String? = null
 
     @ApiModelProperty(value = "保司名称")
-    var name: String? = null
+    var productName: String? = null
 
     @ApiModelProperty(value = "保司公钥")
     var publicKey: String? = null

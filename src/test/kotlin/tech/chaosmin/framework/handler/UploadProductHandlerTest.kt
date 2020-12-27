@@ -40,7 +40,7 @@ internal class UploadProductHandlerTest {
         MockitoAnnotations.initMocks(this)
 
         partner.id = 1
-        partner.name = "MockPartner"
+        partner.partnerName = "MockPartner"
 
         productCategory.id = 1
 

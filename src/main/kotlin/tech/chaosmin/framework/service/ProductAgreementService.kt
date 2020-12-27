@@ -7,4 +7,6 @@ import tech.chaosmin.framework.dao.dataobject.ProductAgreement
  * @author Romani min
  * @since 2020/12/9 13:50
  */
-interface ProductAgreementService : IService<ProductAgreement>
+interface ProductAgreementService : IService<ProductAgreement> {
+    fun getNoticeText(productId: Long): String
+}

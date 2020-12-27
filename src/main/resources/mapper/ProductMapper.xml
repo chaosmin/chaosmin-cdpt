@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="tech.chaosmin.framework.dao.ProductDAO">
     <select id="pageExt" resultType="tech.chaosmin.framework.dao.dataobject.ext.ProductExt">
-        SELECT pa.name as partner_name, p.*, (select count(*) from product_plan pp where pp.product_id = p.id) as number_of_plan
+        SELECT pa.partner_name, p.*, (select count(*) from product_plan pp where pp.product_id = p.id) as number_of_plan
         FROM product p
         left join partner pa on pa.id = p.partner_id
         left join product_category_relation m on m.product_id = p.id

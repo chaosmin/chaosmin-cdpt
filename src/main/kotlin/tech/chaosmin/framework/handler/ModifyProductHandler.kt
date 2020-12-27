@@ -45,9 +45,14 @@ open class ModifyProductHandler(
                 arg.categoryIds?.run { productService.setCategories(product.id!!, this) }
                 productAgreementService.save(ProductAgreement().apply {
                     this.productId = product.id
-                    this.specialAgreement =
-                        arg.specialAgreement?.mapIndexed { i, s -> "${i + 1}、$s" }?.joinToString("\n")
-                    this.notice = arg.notice?.mapIndexed { i, s -> "${i + 1}、$s" }?.joinToString("\n")
+                    if (!arg.specialAgreement.isNullOrEmpty()) {
+                        val s = arg.specialAgreement?.mapIndexed { i, s -> "${i + 1}、$s" }?.joinToString("<br>\n");
+                        this.specialAgreement = s
+                    }
+                    if (!arg.notice.isNullOrEmpty()) {
+                        val s = arg.notice?.mapIndexed { i, s -> "${i + 1}、$s" }?.joinToString("<br>\n")
+                        this.notice = s
+                    }
                 })
             }
             ModifyTypeEnum.UPDATE -> productService.updateById(product)

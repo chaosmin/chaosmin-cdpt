@@ -7,10 +7,10 @@ package tech.chaosmin.framework.dao.dataobject
  */
 class Partner(id: Long? = null) : BaseCommonDO(id, 0) {
     // 保司编码
-    var code: String? = null
+    var partnerCode: String? = null
 
     // 保司名称
-    var name: String? = null
+    var partnerName: String? = null
 
     // 保司公钥
     var publicKey: String? = null

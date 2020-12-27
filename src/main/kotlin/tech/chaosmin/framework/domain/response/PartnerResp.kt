@@ -11,10 +11,10 @@ import tech.chaosmin.framework.domain.response.base.BaseResp
 @ApiModel("保险公司接口返回参数")
 class PartnerResp : BaseResp() {
     @ApiModelProperty(value = "保司编码")
-    var code: String? = null
+    var partnerCode: String? = null
 
     @ApiModelProperty(value = "保司名称")
-    var name: String? = null
+    var partnerName: String? = null
 
     @ApiModelProperty(value = "保司公钥")
     var publicKey: String? = null

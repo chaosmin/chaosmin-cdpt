@@ -7,7 +7,7 @@ import tech.chaosmin.framework.domain.entity.base.BaseEntity
  * @since 2020/12/23 21:35
  */
 class PartnerEntity(id: Long? = null) : BaseEntity(id) {
-    var code: String? = null
-    var name: String? = null
+    var partnerCode: String? = null
+    var partnerName: String? = null
     var publicKey: String? = null
 }

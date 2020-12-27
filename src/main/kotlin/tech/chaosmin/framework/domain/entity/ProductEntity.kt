@@ -27,6 +27,8 @@ class ProductEntity(id: Long? = null) : BaseEntity(id) {
     var notice: List<String>? = null
 
     var numberOfPlan: Int? = null
+    var noticeText: String? = null
+    var noticeShort: String? = null
 
     fun getOrCreatePlan(planName: String?): ProductPlanEntity {
         synchronized(this) {

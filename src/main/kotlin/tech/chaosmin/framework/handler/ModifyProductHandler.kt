@@ -5,15 +5,15 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tech.chaosmin.framework.dao.convert.ProductMapper
 import tech.chaosmin.framework.dao.dataobject.Product
-import tech.chaosmin.framework.dao.dataobject.ProductAgreement
+import tech.chaosmin.framework.dao.dataobject.ProductExternal
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.entity.ProductEntity
 import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
 import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.handler.base.AbstractTemplateOperate
-import tech.chaosmin.framework.service.ProductAgreementService
 import tech.chaosmin.framework.service.ProductCategoryService
+import tech.chaosmin.framework.service.ProductExternalService
 import tech.chaosmin.framework.service.ProductService
 
 /**
@@ -24,7 +24,7 @@ import tech.chaosmin.framework.service.ProductService
 open class ModifyProductHandler(
     private val productService: ProductService,
     private val productCategoryService: ProductCategoryService,
-    private val productAgreementService: ProductAgreementService
+    private val productExternalService: ProductExternalService
 ) :
     AbstractTemplateOperate<ProductEntity, ProductEntity>() {
     override fun validation(arg: ProductEntity, result: RestResult<ProductEntity>) {
@@ -36,43 +36,40 @@ open class ModifyProductHandler(
     @Transactional
     override fun processor(arg: ProductEntity, result: RestResult<ProductEntity>): RestResult<ProductEntity> {
         val product = ProductMapper.INSTANCE.convert2DO(arg)
-        val productAgreement = ProductAgreement().apply {
-            if (!arg.specialAgreement.isNullOrEmpty()) {
-                this.specialAgreement = arg.specialAgreement?.joinToString("<br>\n");
-            }
-            if (!arg.notice.isNullOrEmpty()) {
-                this.notice = arg.notice?.joinToString("<br>\n")
-            }
-        }
+        val productExternal = ProductExternal(arg.externalText)
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> {
                 val category = productCategoryService.getCategoryOrCreate(arg.categoryName!!, arg.categorySubName!!)
                 // 针对productCode进行幂等查询
                 val productDO = productService.listEqProductCode(arg.productCode!!).firstOrNull()
                 if (productDO == null) {
-                    createProduct(product, productAgreement)
-                    productService.setCategories(product.id!!, listOf(category.id!!))
+                    createProduct(product, category.id, productExternal)
                 } else {
                     // 幂等更新数据
                     product.id = productDO.id
-                    updateProduct(product, productAgreement)
+                    updateProduct(product, category.id, productExternal)
                 }
             }
-            ModifyTypeEnum.UPDATE -> updateProduct(product, productAgreement)
+            ModifyTypeEnum.UPDATE -> updateProduct(product, arg.productCategoryId, productExternal)
             ModifyTypeEnum.REMOVE -> productService.remove(Wrappers.query(product))
         }
         return result.success(ProductMapper.INSTANCE.convert2Entity(product))
     }
 
-    private fun createProduct(product: Product, productAgreement: ProductAgreement) {
+    private fun createProduct(product: Product, categoryId: Long?, external: ProductExternal) {
         productService.save(product)
-        productAgreement.productId = product.id
-        productAgreementService.save(productAgreement)
+        external.productId = product.id
+        productExternalService.save(external)
+        if (categoryId != null) {
+            productService.setCategories(product.id!!, listOf(categoryId))
+        }
     }
 
-    private fun updateProduct(product: Product, productAgreement: ProductAgreement) {
+    private fun updateProduct(product: Product, categoryId: Long?, ex: ProductExternal) {
         productService.updateById(product)
-        val wa = Wrappers.query<ProductAgreement>().eq("product_id", product.id)
-        productAgreementService.update(productAgreement, wa)
+        productExternalService.updateText(product.id!!, ex.externalText)
+        if (categoryId != null) {
+            productService.setCategories(product.id!!, listOf(categoryId))
+        }
     }
 }

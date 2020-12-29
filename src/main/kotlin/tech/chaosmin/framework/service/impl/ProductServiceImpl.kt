@@ -29,6 +29,7 @@ open class ProductServiceImpl : ServiceImpl<ProductDAO, Product>(), ProductServi
     }
 
     override fun setCategories(productId: Long, categoryIds: List<Long>) {
+        baseMapper.removeRelations(productId)
         baseMapper.addRelations(productId, categoryIds)
     }
 }

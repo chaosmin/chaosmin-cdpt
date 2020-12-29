@@ -24,6 +24,9 @@ open class Product(id: Long? = null) : BaseCommonDO(id, 0) {
     // 产品描述
     var productDesc: String? = null
 
+    // 起保日期(T+N)
+    var waitingDays: Int? = null
+
     // 状态
     var status: Int? = null
 }

@@ -9,6 +9,9 @@ open class ProductPlanLiability(id: Long? = null) : BaseCommonDO(id, 0) {
     // 计划ID
     var productPlanId: Long? = null
 
+    // 计划code
+    var productPlanCode: String? = null
+
     // 责任类名
     var liabilityCategory: String? = null
 

@@ -11,12 +11,10 @@ import org.springframework.transaction.annotation.Transactional
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.const.SystemConst.DEFAULT_COMMISSION_RATIO
 import tech.chaosmin.framework.domain.const.SystemConst.HANDLE_START_LOG
-import tech.chaosmin.framework.domain.const.SystemConst.INSURED_NOTICE_ZH
 import tech.chaosmin.framework.domain.const.SystemConst.LIABILITY_ZH
 import tech.chaosmin.framework.domain.const.SystemConst.PLAN_ZH
 import tech.chaosmin.framework.domain.const.SystemConst.PRODUCT_ZH
 import tech.chaosmin.framework.domain.const.SystemConst.RATE_TABLE_ZH
-import tech.chaosmin.framework.domain.const.SystemConst.SPECIAL_AGREEMENT_ZH
 import tech.chaosmin.framework.domain.entity.ProductEntity
 import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
 import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
@@ -84,9 +82,7 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
                 PLAN_ZH -> handlePlan(sheet, product)
                 LIABILITY_ZH -> handleLiability(sheet, product)
                 RATE_TABLE_ZH -> handleRateTable(sheet, product)
-                SPECIAL_AGREEMENT_ZH -> handleSpecialAgreement(sheet, product)
-                INSURED_NOTICE_ZH -> handleNotice(sheet, product)
-                else -> throw FrameworkException(ErrorCodeEnum.FAILURE.code)
+                else -> handleText(sheet, product)
             }
         }
     }
@@ -163,14 +159,10 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
         }
     }
 
-    private fun handleSpecialAgreement(sheet: Sheet, product: ProductEntity) {
-        logger.info(HANDLE_START_LOG, product.productCode, SPECIAL_AGREEMENT_ZH)
-        product.specialAgreement = sheet.mapNotNull { it.first().stringCellValue }
-    }
-
-    private fun handleNotice(sheet: Sheet, product: ProductEntity) {
-        logger.info(HANDLE_START_LOG, product.productCode, INSURED_NOTICE_ZH)
-        product.notice = sheet.mapNotNull { it.first().stringCellValue }
+    private fun handleText(sheet: Sheet, product: ProductEntity) {
+        logger.info(HANDLE_START_LOG, product.productCode, "Product External Text")
+        val exText = sheet.mapNotNull { getRowValue(it, 0) }.joinToString("<br>")
+        product.externalText += exText
     }
 
     private fun getHeaderAndRemoveRow(sheet: Sheet, header: Int, remove: Int): Map<Int, String> {

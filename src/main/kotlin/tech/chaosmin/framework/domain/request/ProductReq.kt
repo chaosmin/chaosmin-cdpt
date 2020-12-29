@@ -32,6 +32,12 @@ class ProductReq : BaseReq() {
     @ApiModelProperty(value = "产品描述")
     var productDesc: String? = null
 
+    @ApiModelProperty(value = "起保日期(T+N)")
+    var waitingDays: Int? = null
+
     @ApiModelProperty(value = "产品状态")
     var status: BasicStatusEnum? = null
+
+    @ApiModelProperty("产品特约&须知")
+    var externalText: String? = null
 }

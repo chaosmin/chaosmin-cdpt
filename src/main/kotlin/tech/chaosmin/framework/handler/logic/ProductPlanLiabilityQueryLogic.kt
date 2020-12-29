@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.dao.convert.ProductPlanLiabilityMapper
 import tech.chaosmin.framework.dao.dataobject.ProductPlanLiability
-import tech.chaosmin.framework.dao.dataobject.ext.ProductPlanLiabilityExt
 import tech.chaosmin.framework.domain.PageQuery
 import tech.chaosmin.framework.domain.entity.ProductPlanLiabilityEntity
 import tech.chaosmin.framework.handler.logic.base.BaseQueryLogic
@@ -16,7 +15,7 @@ import tech.chaosmin.framework.service.ProductPlanLiabilityService
  */
 @Component
 class ProductPlanLiabilityQueryLogic(private val productPlanLiabilityService: ProductPlanLiabilityService) :
-    BaseQueryLogic<ProductPlanLiabilityEntity, ProductPlanLiabilityExt> {
+    BaseQueryLogic<ProductPlanLiabilityEntity, ProductPlanLiability> {
 
     override fun get(id: Long): ProductPlanLiabilityEntity? {
         val productPlanLiability = productPlanLiabilityService.getById(id)
@@ -24,8 +23,8 @@ class ProductPlanLiabilityQueryLogic(private val productPlanLiabilityService: Pr
         else ProductPlanLiabilityMapper.INSTANCE.convert2Entity(productPlanLiability)
     }
 
-    override fun page(cond: PageQuery<ProductPlanLiabilityExt>): IPage<ProductPlanLiabilityEntity> {
-        val page = productPlanLiabilityService.pageExt(cond.page, cond.wrapper)
+    override fun page(cond: PageQuery<ProductPlanLiability>): IPage<ProductPlanLiabilityEntity> {
+        val page = productPlanLiabilityService.page(cond.page, cond.wrapper)
         return page.convert(ProductPlanLiabilityMapper.INSTANCE::convert2Entity)
     }
 }

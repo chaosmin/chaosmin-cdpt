@@ -15,7 +15,7 @@ class ProductEntity(id: Long? = null) : BaseEntity(id) {
     var partnerCode: String? = null
     var partnerName: String? = null
 
-    var categoryIds: List<Long>? = null
+    var productCategoryId: Long? = null
     var categoryName: String? = null
     var categorySubName: String? = null
 
@@ -30,12 +30,9 @@ class ProductEntity(id: Long? = null) : BaseEntity(id) {
 
     var plans = mutableListOf<ProductPlanEntity>()
 
-    var specialAgreement: List<String>? = null
-    var notice: List<String>? = null
+    var externalText: String? = null
 
     var numberOfPlan: Int? = null
-    var noticeText: String? = null
-    var noticeShort: String? = null
 
     fun addPlan(code: String, name: String, ratio: String?) {
         this.plans.add(ProductPlanEntity().apply {

@@ -7,7 +7,7 @@ import tech.chaosmin.framework.dao.dataobject.ext.ProductExt
 import tech.chaosmin.framework.domain.PageQuery
 import tech.chaosmin.framework.domain.entity.ProductEntity
 import tech.chaosmin.framework.handler.logic.base.BaseQueryLogic
-import tech.chaosmin.framework.service.ProductAgreementService
+import tech.chaosmin.framework.service.ProductExternalService
 import tech.chaosmin.framework.service.ProductService
 
 /**
@@ -17,7 +17,7 @@ import tech.chaosmin.framework.service.ProductService
 @Component
 class ProductQueryLogic(
     private val productService: ProductService,
-    private val productAgreementService: ProductAgreementService
+    private val productAgreementService: ProductExternalService
 ) : BaseQueryLogic<ProductEntity, ProductExt> {
 
     override fun get(id: Long): ProductEntity? {
@@ -30,8 +30,7 @@ class ProductQueryLogic(
         val page = productService.pageExt(cond.page, cond.wrapper)
         val result = page.convert(ProductMapper.INSTANCE::convert2Entity)
         result.records.forEach {
-            it.noticeText = productAgreementService.getNoticeText(it.id!!)
-            it.noticeShort = it.noticeText?.substring(0, 10)
+            it.externalText = productAgreementService.selectText(it.id!!)
         }
         return result
     }

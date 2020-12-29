@@ -8,7 +8,6 @@ import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.entity.ProductCategoryEntity
 import tech.chaosmin.framework.domain.request.ProductCategoryReq
 import tech.chaosmin.framework.domain.response.ProductCategoryResp
-import tech.chaosmin.framework.domain.response.ProductCategoryTreeNodeResp
 import tech.chaosmin.framework.handler.ModifyProductCategoryHandler
 import tech.chaosmin.framework.handler.convert.ProductCategoryConvert
 import tech.chaosmin.framework.handler.logic.ProductCategoryQueryLogic
@@ -29,10 +28,6 @@ open class ProductCategoryShareProvider(
         val productCategory = productCategoryQueryLogic.get(id)
         return if (productCategory == null) RestResultExt.successRestResult()
         else RestResultExt.successRestResult(ProductCategoryConvert.INSTANCE.convert2Resp(productCategory))
-    }
-
-    override fun selectTree(): RestResult<List<ProductCategoryTreeNodeResp>> {
-        return RestResultExt.successRestResult(productCategoryQueryLogic.tree())
     }
 
     override fun page(request: HttpServletRequest): RestResult<IPage<ProductCategoryResp>> {

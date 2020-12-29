@@ -11,7 +11,7 @@ import tech.chaosmin.framework.domain.request.base.BaseReq
 @ApiModel("产品计划责任接口请求参数")
 class ProductPlanLiabilityReq : BaseReq() {
     @ApiModelProperty(value = "责任所属计划")
-    var planCode: String? = null
+    var productPlanCode: String? = null
 
     @ApiModelProperty(value = "责任大类")
     var liabilityCategory: String? = null

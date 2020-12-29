@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="tech.chaosmin.framework.dao.ProductPlanDAO">
     <select id="pageExt" resultType="tech.chaosmin.framework.dao.dataobject.ext.ProductPlanExt">
-        SELECT p.product_name, pp.*
-        FROM product_plan pp
-        left join product p on p.id = pp.product_id
+        SELECT product.product_name, product_plan.*
+        FROM product_plan
+        left join product on product.id = product_plan.product_id
         ${ew.customSqlSegment}
     </select>
 </mapper> 

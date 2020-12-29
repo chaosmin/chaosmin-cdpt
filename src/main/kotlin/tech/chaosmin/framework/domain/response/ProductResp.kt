@@ -17,6 +17,12 @@ class ProductResp : BaseResp() {
     @ApiModelProperty(value = "保司名称")
     var partnerName: String? = null
 
+    @ApiModelProperty(value = "大类ID")
+    var productCategoryId: Long? = null
+
+    @ApiModelProperty(value = "产品大类")
+    var categoryName: String? = null
+
     @ApiModelProperty(value = "产品代码")
     var productCode: String? = null
 
@@ -32,6 +38,9 @@ class ProductResp : BaseResp() {
     @ApiModelProperty(value = "产品描述")
     var productDesc: String? = null
 
+    @ApiModelProperty(value = "起保日期(T+N)")
+    var waitingDays: Int? = null
+
     @ApiModelProperty(value = "产品状态")
     var status: BasicStatusEnum? = null
 
@@ -39,8 +48,5 @@ class ProductResp : BaseResp() {
     var numberOfPlan: Int? = null
 
     @ApiModelProperty(value = "投保须知")
-    var noticeText: String? = null
-
-    @ApiModelProperty(value = "投保须知简述")
-    var noticeShort: String? = null
+    var externalText: String? = null
 }

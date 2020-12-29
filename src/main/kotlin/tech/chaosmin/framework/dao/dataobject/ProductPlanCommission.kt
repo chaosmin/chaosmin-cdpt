@@ -11,6 +11,9 @@ class ProductPlanCommission(id: Long? = null) : BaseCommonDO(id, 0) {
     // 计划ID
     var productPlanId: Long? = null
 
+    // 计划code
+    var productPlanCode: String? = null
+    
     // 佣金比例
     var commissionRatio: Double? = null
 

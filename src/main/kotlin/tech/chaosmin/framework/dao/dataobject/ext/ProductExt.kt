@@ -11,6 +11,9 @@ class ProductExt : Product() {
     // 产品分类ID
     var productCategoryId: Long? = null
 
+    // 产品大类
+    var categoryName: String? = null
+
     // 保司名称
     var partnerName: String? = null
 

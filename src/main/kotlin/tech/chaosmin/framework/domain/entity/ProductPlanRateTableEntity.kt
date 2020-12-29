@@ -9,6 +9,7 @@ import tech.chaosmin.framework.domain.enums.RateTableTypeEnum
  */
 class ProductPlanRateTableEntity(id: Long? = null) : BaseEntity(id) {
     var productPlanId: Long? = null
+    var productPlanCode: String? = null
     var sort: Int? = null
     var type: RateTableTypeEnum? = null
     var factor: String? = null

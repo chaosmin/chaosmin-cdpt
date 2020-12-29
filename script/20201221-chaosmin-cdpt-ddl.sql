@@ -39,6 +39,7 @@ create table product
     product_sub_name   varchar(64)                        null comment '产品子名称',
     partner_product_no varchar(64)                        null comment '保司产品编码',
     product_desc       varchar(256)                       null comment '产品描述',
+    waiting_days       int      default 1                 not null comment '起保日期(T+N)',
     status             int      default 0                 not null comment '产品状态 0-暂存/1-有效/2-下架',
     create_time        datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     creator            varchar(64)                        null comment '创建人',
@@ -83,6 +84,7 @@ create table product_plan_liability
 (
     id                 bigint auto_increment primary key,
     product_plan_id    bigint                             not null comment '产品计划ID',
+    product_plan_code  varchar(64)                        not null comment '产品计划Code',
     liability_category varchar(64)                        not null comment '责任大类(文本)',
     liability_name     varchar(64)                        not null comment '责任名称',
     liability_remark   varchar(256)                       not null comment '责任备注',
@@ -99,55 +101,51 @@ create table product_plan_liability
 
 create table product_plan_rate_table
 (
-    id               bigint auto_increment primary key,
-    product_plan_id  bigint                             not null comment '产品计划ID',
-    sort             int      default 0                 not null comment '排序',
-    type             int                                not null comment '类型 0-公式 1-日 2-月 3-年',
-    factor           int                                not null comment '费率因子',
-    formula          varchar(256)                       not null comment '计算公式',
-    premium          double                             not null comment '保费',
-    premium_currency varchar(64)                        not null comment '保费币种',
-    create_time      datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    creator          varchar(64)                        null comment '创建人',
-    update_time      datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    updater          varchar(64)                        null comment '更新人',
-    extra_info       varchar(128)                       null comment '扩展信息',
-    is_deleted       smallint default 0                 not null comment '是否删除'
+    id                bigint auto_increment primary key,
+    product_plan_id   bigint                             not null comment '产品计划ID',
+    product_plan_code varchar(64)                        not null comment '产品计划Code',
+    sort              int      default 0                 not null comment '排序',
+    type              int                                not null comment '类型 0-公式 1-日 2-月 3-年',
+    factor            int                                not null comment '费率因子',
+    formula           varchar(256)                       not null comment '计算公式',
+    premium           double                             not null comment '保费',
+    premium_currency  varchar(64)                        not null comment '保费币种',
+    create_time       datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    creator           varchar(64)                        null comment '创建人',
+    update_time       datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    updater           varchar(64)                        null comment '更新人',
+    extra_info        varchar(128)                       null comment '扩展信息',
+    is_deleted        smallint default 0                 not null comment '是否删除'
 ) comment '产品计划费率表' charset = utf8;
 
 create table product_plan_commission
 (
-    id               bigint auto_increment primary key,
-    product_plan_id  bigint                             not null comment '产品计划ID',
-    commission_ratio double                             not null comment '最高佣金比例',
-    status           int      default 1                 not null comment '计划状态 0-无效/1-有效',
-    settle_date      datetime                           not null comment '设置时间',
-    create_time      datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    creator          varchar(64)                        null comment '创建人',
-    update_time      datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    updater          varchar(64)                        null comment '更新人',
-    extra_info       varchar(128)                       null comment '扩展信息',
-    is_deleted       smallint default 0                 not null comment '是否删除'
+    id                bigint auto_increment primary key,
+    product_plan_id   bigint                             not null comment '产品计划ID',
+    product_plan_code varchar(64)                        not null comment '产品计划Code',
+    commission_ratio  double                             not null comment '最高佣金比例',
+    status            int      default 1                 not null comment '计划状态 0-无效/1-有效',
+    settle_date       datetime                           not null comment '设置时间',
+    create_time       datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    creator           varchar(64)                        null comment '创建人',
+    update_time       datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    updater           varchar(64)                        null comment '更新人',
+    extra_info        varchar(128)                       null comment '扩展信息',
+    is_deleted        smallint default 0                 not null comment '是否删除'
 ) comment '产品计划佣金表' charset = utf8;
 
-create table product_agreement
+create table product_external
 (
-    id                 bigint auto_increment primary key,
-    product_id         bigint                             not null comment '产品ID',
-    notice             text                               null comment '投保须知',
-    announcement       text                               null comment '投被保人声明与授权',
-    special_agreement  text                               null comment '特别约定',
-    dispute_settlement text                               null comment '争议处理',
-    jurisdiction       text                               null comment '司法管辖',
-    health_declaration text                               null comment '健康告知',
-    insurance_case     text                               null comment '保险案例',
-    create_time        datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    creator            varchar(64)                        null comment '创建人',
-    update_time        datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    updater            varchar(64)                        null comment '更新人',
-    extra_info         varchar(128)                       null comment '扩展信息',
-    is_deleted         smallint default 0                 not null comment '是否删除'
-) comment '产品特约须知表' charset = utf8;
+    id            bigint auto_increment primary key,
+    product_id    bigint                             not null comment '产品ID',
+    external_text text                               null comment '扩展文本',
+    create_time   datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    creator       varchar(64)                        null comment '创建人',
+    update_time   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    updater       varchar(64)                        null comment '更新人',
+    extra_info    varchar(128)                       null comment '扩展信息',
+    is_deleted    smallint default 0                 not null comment '是否删除'
+) comment '产品特约及须知表' charset = utf8;
 
 create table knowledge
 (

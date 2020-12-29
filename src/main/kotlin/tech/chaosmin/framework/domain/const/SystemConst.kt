@@ -14,8 +14,6 @@ object SystemConst {
     const val PLAN_ZH ="计划"
     const val LIABILITY_ZH = "产品责任"
     const val RATE_TABLE_ZH = "费率表"
-    const val SPECIAL_AGREEMENT_ZH = "特别约定"
-    const val INSURED_NOTICE_ZH = "投保须知"
 
     // 系统默认值
     const val DEFAULT_RETRY_TIME = 3

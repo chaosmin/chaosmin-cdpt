@@ -3,7 +3,6 @@ package tech.chaosmin.framework.provider
 import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.dao.dataobject.ProductPlanLiability
-import tech.chaosmin.framework.dao.dataobject.ext.ProductPlanLiabilityExt
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.RestResultExt
 import tech.chaosmin.framework.domain.entity.ProductPlanLiabilityEntity
@@ -32,7 +31,7 @@ open class ProductPlanLiabilityShareProvider(
     }
 
     override fun page(request: HttpServletRequest): RestResult<IPage<ProductPlanLiabilityResp>> {
-        val queryCondition = RequestUtil.getQueryCondition<ProductPlanLiabilityExt>(request)
+        val queryCondition = RequestUtil.getQueryCondition<ProductPlanLiability>(request)
         val page = productPlanLiabilityQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(ProductPlanLiabilityConvert.INSTANCE::convert2Resp))
     }

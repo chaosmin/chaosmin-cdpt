@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tech.chaosmin.framework.domain.RestResult
+import tech.chaosmin.framework.domain.const.SystemConst.DEFAULT_COMMISSION_RATIO
 import tech.chaosmin.framework.domain.const.SystemConst.HANDLE_START_LOG
 import tech.chaosmin.framework.domain.const.SystemConst.INSURED_NOTICE_ZH
 import tech.chaosmin.framework.domain.const.SystemConst.LIABILITY_ZH
@@ -64,6 +65,9 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
         if (success && data != null) {
             product.plans.forEach { plan ->
                 plan.productId = data.id
+                if (plan.defaultCommissionRatio == null) {
+                    plan.defaultCommissionRatio = (product.productRatio ?: DEFAULT_COMMISSION_RATIO).toDouble()
+                }
                 val (_, _, _, _, sus) = modifyProductPlanHandler.operate(plan)
                 if (!sus) throw FrameworkException(ErrorCodeEnum.FAILURE.code)
             }
@@ -130,7 +134,7 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
     private fun handleLiability(sheet: Sheet, product: ProductEntity) {
         val plans = getHeaderAndRemoveRow(sheet, 1, 2)
         sheet.rowIterator().forEach { row ->
-            val category = getRowValue(row, 0) ?: paramException("[${row.rowNum}]责任大类")
+            val category = getRowValue(row, 0) ?: ""
             val liability = getRowValue(row, 1) ?: paramException("[${row.rowNum}]保险责任")
             (2..row.lastCellNum).forEach {
                 val amount = getRowValue(row, it)

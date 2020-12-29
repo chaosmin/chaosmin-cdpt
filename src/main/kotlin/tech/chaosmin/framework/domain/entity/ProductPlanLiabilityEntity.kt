@@ -8,6 +8,7 @@ import tech.chaosmin.framework.domain.entity.base.BaseEntity
  */
 class ProductPlanLiabilityEntity(id: Long? = null) : BaseEntity(id) {
     var productPlanId: Long? = null
+    var planCode: String? = null
     var liabilityCategory: String? = null
     var liabilityName: String? = null
     var liabilityRemark: String? = null

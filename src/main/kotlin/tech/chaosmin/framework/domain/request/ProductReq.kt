@@ -9,7 +9,6 @@ import tech.chaosmin.framework.domain.request.base.BaseReq
  * @author Romani min
  * @since 2020/12/23 21:36
  */
-
 @ApiModel("产品接口请求参数")
 class ProductReq : BaseReq() {
     @ApiModelProperty(value = "大类ID")

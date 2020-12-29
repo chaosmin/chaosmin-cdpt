@@ -5,7 +5,7 @@ package tech.chaosmin.framework.dao.dataobject
  * @author Romani min
  * @since 2020/12/23 11:08
  */
-class ProductPlanLiability(id: Long? = null) : BaseCommonDO(id, 0) {
+open class ProductPlanLiability(id: Long? = null) : BaseCommonDO(id, 0) {
     // 计划ID
     var productPlanId: Long? = null
 

@@ -20,7 +20,7 @@ class ProductCategoryTreeNodeResp() : Serializable {
 
     private fun buildChildren(list: List<ProductCategory>): List<ProductCategoryTreeNodeResp> {
         return list.map {
-            ProductCategoryTreeNodeResp(it.id, it.categoryName)
+            ProductCategoryTreeNodeResp(it.id, it.categorySubName)
         }
     }
 }

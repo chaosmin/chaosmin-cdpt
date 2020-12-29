@@ -25,5 +25,5 @@ interface ProductDAO : BaseMapper<Product> {
                 + "<foreach collection='categoryIds' item='id' separator=','>"
                 + "(#{productId},#{id}) </foreach></script>"]
     )
-    fun addRoles(@Param("productId") productId: Long, @Param("categoryIds") categoryIds: List<Long>)
+    fun addRelations(@Param("productId") productId: Long, @Param("categoryIds") categoryIds: List<Long>)
 }

@@ -1,6 +1,5 @@
 package tech.chaosmin.framework.handler
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.baomidou.mybatisplus.core.toolkit.Wrappers
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -14,6 +13,7 @@ import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.handler.base.AbstractTemplateOperate
 import tech.chaosmin.framework.service.ProductAgreementService
+import tech.chaosmin.framework.service.ProductCategoryService
 import tech.chaosmin.framework.service.ProductService
 
 /**
@@ -23,6 +23,7 @@ import tech.chaosmin.framework.service.ProductService
 @Component
 open class ModifyProductHandler(
     private val productService: ProductService,
+    private val productCategoryService: ProductCategoryService,
     private val productAgreementService: ProductAgreementService
 ) :
     AbstractTemplateOperate<ProductEntity, ProductEntity>() {
@@ -35,29 +36,43 @@ open class ModifyProductHandler(
     @Transactional
     override fun processor(arg: ProductEntity, result: RestResult<ProductEntity>): RestResult<ProductEntity> {
         val product = ProductMapper.INSTANCE.convert2DO(arg)
+        val productAgreement = ProductAgreement().apply {
+            if (!arg.specialAgreement.isNullOrEmpty()) {
+                this.specialAgreement = arg.specialAgreement?.joinToString("<br>\n");
+            }
+            if (!arg.notice.isNullOrEmpty()) {
+                this.notice = arg.notice?.joinToString("<br>\n")
+            }
+        }
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> {
-                val queryWrapper = QueryWrapper<Product>().eq("product_code", product.productCode)
-                if (!productService.list(queryWrapper).isNullOrEmpty()) {
-                    throw FrameworkException(ErrorCodeEnum.DATA_ERROR.code, "${product.productCode}已存在.")
+                val category = productCategoryService.getCategoryOrCreate(arg.categoryName!!, arg.categorySubName!!)
+                // 针对productCode进行幂等查询
+                val productDO = productService.listEqProductCode(arg.productCode!!).firstOrNull()
+                if (productDO == null) {
+                    createProduct(product, productAgreement)
+                    productService.setCategories(product.id!!, listOf(category.id!!))
+                } else {
+                    // 幂等更新数据
+                    product.id = productDO.id
+                    updateProduct(product, productAgreement)
                 }
-                productService.save(product)
-                arg.categoryIds?.run { productService.setCategories(product.id!!, this) }
-                productAgreementService.save(ProductAgreement().apply {
-                    this.productId = product.id
-                    if (!arg.specialAgreement.isNullOrEmpty()) {
-                        val s = arg.specialAgreement?.mapIndexed { i, s -> "${i + 1}、$s" }?.joinToString("<br>\n");
-                        this.specialAgreement = s
-                    }
-                    if (!arg.notice.isNullOrEmpty()) {
-                        val s = arg.notice?.mapIndexed { i, s -> "${i + 1}、$s" }?.joinToString("<br>\n")
-                        this.notice = s
-                    }
-                })
             }
-            ModifyTypeEnum.UPDATE -> productService.updateById(product)
+            ModifyTypeEnum.UPDATE -> updateProduct(product, productAgreement)
             ModifyTypeEnum.REMOVE -> productService.remove(Wrappers.query(product))
         }
         return result.success(ProductMapper.INSTANCE.convert2Entity(product))
+    }
+
+    private fun createProduct(product: Product, productAgreement: ProductAgreement) {
+        productService.save(product)
+        productAgreement.productId = product.id
+        productAgreementService.save(productAgreement)
+    }
+
+    private fun updateProduct(product: Product, productAgreement: ProductAgreement) {
+        productService.updateById(product)
+        val wa = Wrappers.query<ProductAgreement>().eq("product_id", product.id)
+        productAgreementService.update(productAgreement, wa)
     }
 }

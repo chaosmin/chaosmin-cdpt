@@ -2,15 +2,19 @@ package tech.chaosmin.framework.handler
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.baomidou.mybatisplus.core.toolkit.Wrappers
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tech.chaosmin.framework.dao.convert.ProductPlanLiabilityMapper
 import tech.chaosmin.framework.dao.convert.ProductPlanMapper
 import tech.chaosmin.framework.dao.convert.ProductPlanRateTableMapper
+import tech.chaosmin.framework.dao.dataobject.ProductPlan
 import tech.chaosmin.framework.dao.dataobject.ProductPlanLiability
 import tech.chaosmin.framework.dao.dataobject.ProductPlanRateTable
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.entity.ProductPlanEntity
+import tech.chaosmin.framework.domain.entity.ProductPlanLiabilityEntity
+import tech.chaosmin.framework.domain.entity.ProductPlanRateTableEntity
 import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
 import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
 import tech.chaosmin.framework.exception.FrameworkException
@@ -29,6 +33,7 @@ open class ModifyProductPlanHandler(
     private val productPlanLiabilityService: ProductPlanLiabilityService,
     private val productPlanRateTableService: ProductPlanRateTableService
 ) : AbstractTemplateOperate<ProductPlanEntity, ProductPlanEntity>() {
+    private val logger = LoggerFactory.getLogger(ModifyProductPlanHandler::class.java)
     private val pid = "product_plan_id"
 
     override fun validation(arg: ProductPlanEntity, result: RestResult<ProductPlanEntity>) {
@@ -38,28 +43,18 @@ open class ModifyProductPlanHandler(
     }
 
     @Transactional
-    override fun processor(
-        arg: ProductPlanEntity,
-        result: RestResult<ProductPlanEntity>
-    ): RestResult<ProductPlanEntity> {
+    override fun processor(arg: ProductPlanEntity, result: RestResult<ProductPlanEntity>): RestResult<ProductPlanEntity> {
         val productPlan = ProductPlanMapper.INSTANCE.convert2DO(arg)
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> {
-                productPlanService.save(productPlan)
-                val liabilities = arg.liabilities.mapIndexed { index, it ->
-                    ProductPlanLiabilityMapper.INSTANCE.convert2DO(it).apply {
-                        this.productPlanId = productPlan.id
-                        this.sort = index + 1
-                    }
+                val productId = productPlan.productId!!
+                val planCode = productPlan.planCode
+                val exPlans = productPlanService.listEqProductId(productId)
+                if (exPlans.isEmpty() || exPlans.none { it.planCode == planCode }) {
+                    createPlan(productPlan, arg.liabilities, arg.rateTable)
+                } else {
+                    logger.warn("ProductPlan[{}][{}] has already be created.", productId, planCode)
                 }
-                productPlanLiabilityService.saveBatch(liabilities)
-                val rateTable = arg.rateTable.mapIndexed { index, it ->
-                    ProductPlanRateTableMapper.INSTANCE.convert2DO(it).apply {
-                        this.productPlanId = productPlan.id
-                        this.sort = index + 1
-                    }
-                }
-                productPlanRateTableService.saveBatch(rateTable)
             }
             ModifyTypeEnum.UPDATE -> {
                 productPlanService.updateById(productPlan)
@@ -75,5 +70,27 @@ open class ModifyProductPlanHandler(
             }
         }
         return result.success(ProductPlanMapper.INSTANCE.convert2Entity(productPlan))
+    }
+
+    private fun createPlan(
+        productPlan: ProductPlan,
+        liabilities: List<ProductPlanLiabilityEntity>,
+        rateTable: List<ProductPlanRateTableEntity>
+    ) {
+        // 创建时填充计划的主险保额
+        productPlan.primaryCoverage = liabilities.firstOrNull()?.amount
+        productPlanService.save(productPlan)
+        productPlanLiabilityService.saveBatch(liabilities.mapIndexed { index, it ->
+            ProductPlanLiabilityMapper.INSTANCE.convert2DO(it).apply {
+                this.productPlanId = productPlan.id
+                this.sort = index + 1
+            }
+        })
+        productPlanRateTableService.saveBatch(rateTable.mapIndexed { index, it ->
+            ProductPlanRateTableMapper.INSTANCE.convert2DO(it).apply {
+                this.productPlanId = productPlan.id
+                this.sort = index + 1
+            }
+        })
     }
 }

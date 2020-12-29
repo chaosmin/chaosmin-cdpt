@@ -19,7 +19,10 @@ enum class ErrorCodeEnum(val code: String, val msg: String) {
     AUTHENTICATION_FAILED("SYS_10002", "登录失败"),
 
     RESOURCE_NOT_EXIST("SYS_20001", "资源不存在"),
+    RESOURCE_EXISTED("SYS_20002", "资源已存在"),
 
     PARAM_IS_NULL("PARAMS_00001", "参数不能为空"),
     PARAM_IS_INVALID("PARAMS_00002", "参数不合法"),
+    PARAM_LACK_DATA("PARAMS_00003", "数据缺失"),
+    PARAM_OUT_OF_RANGE("PARAMS_00004", "数据不足")
 }

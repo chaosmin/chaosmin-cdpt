@@ -3,15 +3,19 @@ package tech.chaosmin.framework.handler
 import cn.hutool.poi.excel.ExcelReader
 import cn.hutool.poi.excel.ExcelUtil
 import cn.hutool.poi.excel.cell.CellUtil
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
+import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import tech.chaosmin.framework.dao.dataobject.Partner
-import tech.chaosmin.framework.dao.dataobject.ProductCategory
 import tech.chaosmin.framework.domain.RestResult
-import tech.chaosmin.framework.domain.const.SystemConst.ANONYMOUS
+import tech.chaosmin.framework.domain.const.SystemConst.HANDLE_START_LOG
+import tech.chaosmin.framework.domain.const.SystemConst.INSURED_NOTICE_ZH
+import tech.chaosmin.framework.domain.const.SystemConst.LIABILITY_ZH
+import tech.chaosmin.framework.domain.const.SystemConst.PLAN_ZH
+import tech.chaosmin.framework.domain.const.SystemConst.PRODUCT_ZH
+import tech.chaosmin.framework.domain.const.SystemConst.RATE_TABLE_ZH
+import tech.chaosmin.framework.domain.const.SystemConst.SPECIAL_AGREEMENT_ZH
 import tech.chaosmin.framework.domain.entity.ProductEntity
 import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
 import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
@@ -19,11 +23,7 @@ import tech.chaosmin.framework.domain.request.UploadFileReq
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.handler.base.AbstractTemplateOperate
 import tech.chaosmin.framework.service.PartnerService
-import tech.chaosmin.framework.service.ProductCategoryService
-import tech.chaosmin.framework.utils.StringUtil.getCodeFromZh
-import java.util.*
 import javax.annotation.Resource
-
 
 /**
  * @author Romani min
@@ -37,9 +37,6 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
     lateinit var partnerService: PartnerService
 
     @Resource
-    lateinit var categoryService: ProductCategoryService
-
-    @Resource
     lateinit var modifyProductHandler: ModifyProductHandler
 
     @Resource
@@ -47,29 +44,17 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
 
     override fun validation(arg: UploadFileReq, result: RestResult<ProductEntity>) {
         if (arg.file == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "file")
+            paramException("文件")
         }
         if (arg.fileName.isNullOrBlank()) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "fileName")
+            paramException("文件名")
         }
     }
 
     @Transactional(rollbackFor = [FrameworkException::class, Exception::class])
     override fun processor(arg: UploadFileReq, result: RestResult<ProductEntity>): RestResult<ProductEntity> {
-        val traceId = UUID.randomUUID().toString()
-        val fileNameSplit = arg.fileName!!.substringBeforeLast('.').split('_')
-        val partnerName = if (fileNameSplit.size == 2) fileNameSplit[0] else ANONYMOUS
-        val partner = partnerService.list(QueryWrapper<Partner>().like("partner_name", partnerName)).firstOrNull()
-            ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "保险公司[$partnerName]")
-        val categoryNames = if (fileNameSplit.size == 2) fileNameSplit[1].split('|') else arrayListOf(ANONYMOUS)
-        val categories = categoryService.list(QueryWrapper<ProductCategory>().`in`("category_name", categoryNames))
-        logger.info("[pd:$traceId] >>> 处理保司[$partnerName]名下产品大类[$categoryNames]")
         val product = ProductEntity().apply {
             this.modifyType = ModifyTypeEnum.SAVE
-            this.partnerId = partner.id
-            this.partnerName = partner.partnerName
-            this.categoryIds = categories.mapNotNull { it.id }
-            this.productCode = traceId
         }
         arg.file!!.inputStream.use { `in` ->
             ExcelUtil.getReader(`in`).use { handle(it, product) }
@@ -79,7 +64,6 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
         if (success && data != null) {
             product.plans.forEach { plan ->
                 plan.productId = data.id
-                plan.primaryCoverage = plan.liabilities.firstOrNull()?.amount
                 val (_, _, _, _, sus) = modifyProductPlanHandler.operate(plan)
                 if (!sus) throw FrameworkException(ErrorCodeEnum.FAILURE.code)
             }
@@ -90,61 +74,128 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
     }
 
     private fun handle(reader: ExcelReader, product: ProductEntity) {
-        try {
-            reader.sheets.forEach { sheet ->
-                when (sheet.sheetName) {
-                    "费率表" -> handleRateTable(sheet, product)
-                    "特别约定" -> handleSpecialAgreement(sheet, product)
-                    "投保须知" -> handleNotice(sheet, product)
-                    else -> handlePlans(sheet, product)
+        reader.sheets.forEach { sheet ->
+            when (sheet.sheetName) {
+                PRODUCT_ZH -> handleProduct(sheet, product)
+                PLAN_ZH -> handlePlan(sheet, product)
+                LIABILITY_ZH -> handleLiability(sheet, product)
+                RATE_TABLE_ZH -> handleRateTable(sheet, product)
+                SPECIAL_AGREEMENT_ZH -> handleSpecialAgreement(sheet, product)
+                INSURED_NOTICE_ZH -> handleNotice(sheet, product)
+                else -> throw FrameworkException(ErrorCodeEnum.FAILURE.code)
+            }
+        }
+    }
+
+    private fun handleProduct(sheet: Sheet, product: ProductEntity) {
+        if (sheet.lastRowNum <= 0) {
+            throw FrameworkException(ErrorCodeEnum.PARAM_LACK_DATA.code)
+        }
+        // 移除第一行Header
+        sheet.shiftRows(1, sheet.lastRowNum, -1)
+        val row = sheet.first()
+        val partnerCode = getRowValue(row, 0) ?: paramException("保司Code")
+        val partner = partnerService.listEqPartnerCode(partnerCode)
+        if (partner.isEmpty()) {
+            throw FrameworkException(ErrorCodeEnum.RESOURCE_NOT_EXIST.code, "保司[$partnerCode]")
+        }
+        partner.first().run {
+            product.partnerId = this.id
+            product.partnerCode = this.partnerCode
+            product.partnerName = this.partnerName
+        }
+        product.categoryName = getRowValue(row, 1) ?: paramException("产品一级大类")
+        product.categorySubName = getRowValue(row, 2) ?: paramException("产品二级大类")
+        product.productCode = getRowValue(row, 3) ?: paramException("产品Code")
+        product.productName = getRowValue(row, 4) ?: paramException("产品名称")
+        product.waitingDays = getRowValue(row, 5) ?: "1"
+        product.productDesc = getRowValue(row, 6)
+        product.productRatio = getRowValue(row, 7)
+    }
+
+    private fun handlePlan(sheet: Sheet, product: ProductEntity) {
+        if (sheet.lastRowNum <= 0) {
+            throw FrameworkException(ErrorCodeEnum.PARAM_LACK_DATA.code)
+        }
+        // 移除第一行Header
+        sheet.shiftRows(1, sheet.lastRowNum, -1)
+        sheet.rowIterator().forEach { row ->
+            val planCode = getRowValue(row, 1) ?: paramException("计划Code")
+            val planName = getRowValue(row, 2) ?: paramException("计划名称")
+            val planRatio = getRowValue(row, 3)
+            product.addPlan(planCode, planName, planRatio)
+        }
+    }
+
+    private fun handleLiability(sheet: Sheet, product: ProductEntity) {
+        val plans = getHeaderAndRemoveRow(sheet, 1, 2)
+        sheet.rowIterator().forEach { row ->
+            val category = getRowValue(row, 0) ?: paramException("[${row.rowNum}]责任大类")
+            val liability = getRowValue(row, 1) ?: paramException("[${row.rowNum}]保险责任")
+            (2..row.lastCellNum).forEach {
+                val amount = getRowValue(row, it)
+                if (!amount.isNullOrBlank()) {
+                    product.getPlan(plans[it])?.run {
+                        this.addLiability(category, liability, amount)
+                    }
                 }
             }
-        } catch (e: Exception) {
-            throw FrameworkException(ErrorCodeEnum.FAILURE.code, e.message ?: "")
         }
     }
 
     private fun handleRateTable(sheet: Sheet, product: ProductEntity) {
-        logger.info("[pd:${product.productCode}] >>> 处理费率表")
-        val r = sheet.first()
-        val plans = (2 until r.count()).map { it to r.getCell(it).stringCellValue }.toMap()
-        (1..sheet.lastRowNum).forEach { row ->
-            val startDay = CellUtil.getCellValue(sheet.getRow(row).getCell(0), true).toString()
-            val endDay = CellUtil.getCellValue(sheet.getRow(row).getCell(1), true).toString()
-            (2 until r.count()).forEach { col ->
-                val amount = CellUtil.getCellValue(sheet.getRow(row).getCell(col), true).toString()
-                product.getOrCreatePlan(plans[col]).addRateTable(startDay, endDay, amount)
+        val plans = getHeaderAndRemoveRow(sheet, 1, 2)
+        sheet.rowIterator().forEach { row ->
+            val startDay = getRowValue(row, 0) ?: paramException("[${row.rowNum}]天数起")
+            val endDay = getRowValue(row, 1) ?: paramException("[${row.rowNum}]天数止")
+            (2..row.lastCellNum).forEach {
+                val amount = getRowValue(row, it)
+                if (!amount.isNullOrBlank()) {
+                    product.getPlan(plans[it])?.run {
+                        this.addRateTable(startDay, endDay, amount)
+                    }
+                }
             }
         }
     }
 
     private fun handleSpecialAgreement(sheet: Sheet, product: ProductEntity) {
-        logger.info("[pd:${product.productCode}] >>> 处理特别约定")
-        val specialAgreement = sheet.mapNotNull { it.first().stringCellValue }
-        product.specialAgreement = specialAgreement
+        logger.info(HANDLE_START_LOG, product.productCode, SPECIAL_AGREEMENT_ZH)
+        product.specialAgreement = sheet.mapNotNull { it.first().stringCellValue }
     }
 
     private fun handleNotice(sheet: Sheet, product: ProductEntity) {
-        logger.info("[pd:${product.productCode}] >>> 处理投保须知")
-        val notice = sheet.mapNotNull { it.first().stringCellValue }
-        product.notice = notice
+        logger.info(HANDLE_START_LOG, product.productCode, INSURED_NOTICE_ZH)
+        product.notice = sheet.mapNotNull { it.first().stringCellValue }
     }
 
-    private fun handlePlans(sheet: Sheet, product: ProductEntity) {
-        val name = sheet.sheetName
-        val code = "${product.partnerName}${name}".getCodeFromZh()
-        logger.info("[pd:${product.productCode}/${code}] >>> 处理产品计划")
-        product.productName = name
-        product.productCode = code
-        val r = sheet.first()
-        val plans = (2 until r.count()).map { it to r.getCell(it).stringCellValue }.toMap()
-        (1..sheet.lastRowNum).forEach { row ->
-            val category = CellUtil.getCellValue(sheet.getRow(row).getCell(0), true).toString()
-            val liability = CellUtil.getCellValue(sheet.getRow(row).getCell(1), true).toString()
-            (2 until r.count()).forEach { col ->
-                val amount = CellUtil.getCellValue(sheet.getRow(row).getCell(col), true).toString()
-                product.getOrCreatePlan(plans[col]).addLiability(category, liability, amount)
-            }
+    private fun getHeaderAndRemoveRow(sheet: Sheet, header: Int, remove: Int): Map<Int, String> {
+        if (sheet.lastRowNum <= header) {
+            throw FrameworkException(ErrorCodeEnum.PARAM_LACK_DATA.code)
         }
+        val r = sheet.getRow(header)
+        // 获取到列对应的planCode
+        val plans = (2 until r.count()).map { it to r.getCell(it).stringCellValue }.toMap()
+        // 移除头两行
+        sheet.shiftRows(remove, sheet.lastRowNum, -remove)
+        return plans
+    }
+
+    private fun getCellValue(sheet: Sheet, row: Int, col: Int): String? {
+        if (row < 0 || row > sheet.lastRowNum) {
+            throw FrameworkException(ErrorCodeEnum.PARAM_OUT_OF_RANGE.code)
+        }
+        return getRowValue(sheet.getRow(row), col)
+    }
+
+    private fun getRowValue(row: Row, col: Int): String? {
+        if (col < 0 || col > row.lastCellNum) {
+            throw FrameworkException(ErrorCodeEnum.PARAM_OUT_OF_RANGE.code)
+        }
+        return CellUtil.getCellValue(row.getCell(col))?.toString()
+    }
+
+    private fun paramException(paramName: String): String {
+        throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, paramName)
     }
 }

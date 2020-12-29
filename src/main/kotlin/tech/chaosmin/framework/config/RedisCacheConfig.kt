@@ -32,7 +32,7 @@ open class RedisCacheConfig(private val applicationParam: ApplicationParam) : Ca
     open fun cacheManager(factory: RedisConnectionFactory): CacheManager {
         val redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
             .entryTtl(Duration.ofSeconds(DEFAULT_CACHE_EXPIRE_TIME))
-            .computePrefixWith { cacheName: String -> "$applicationParam:$cacheName:" }
+            .computePrefixWith { cacheName: String -> "${applicationParam.name}:$cacheName:" }
             .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(getKeySerializer())) // 设置Key序列化器
             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(getValueSerializer())) // 设置Value序列化器
             .disableCachingNullValues()

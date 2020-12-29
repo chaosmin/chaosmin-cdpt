@@ -7,4 +7,6 @@ import tech.chaosmin.framework.dao.dataobject.ProductCategory
  * @author Romani min
  * @since 2020/12/9 13:50
  */
-interface ProductCategoryService : IService<ProductCategory>
+interface ProductCategoryService : IService<ProductCategory> {
+    fun getCategoryOrCreate(name: String, subName: String): ProductCategory
+}

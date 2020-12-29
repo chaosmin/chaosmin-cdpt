@@ -14,19 +14,21 @@ create table partner
 
 create table product_category
 (
-    id            bigint auto_increment primary key,
-    parent_name   varchar(64)                        not null comment '父类名称',
-    category_code varchar(64)                        not null comment '分类代码',
-    category_name varchar(64)                        null comment '分类名称',
-    sort          int      default 0                 not null comment '排序',
-    is_show       int      default 1                 not null comment '是否展示',
-    create_time   datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    creator       varchar(64)                        null comment '创建人',
-    update_time   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    updater       varchar(64)                        null comment '更新人',
-    extra_info    varchar(128)                       null comment '扩展信息',
-    is_deleted    smallint default 0                 not null comment '是否删除'
+    id                bigint auto_increment primary key,
+    category_name     varchar(64)                        not null comment '父类名称',
+    category_sub_name varchar(64)                        null comment '分类名称',
+    sort              int      default 0                 not null comment '排序',
+    is_show           int      default 1                 not null comment '是否展示',
+    create_time       datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    creator           varchar(64)                        null comment '创建人',
+    update_time       datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    updater           varchar(64)                        null comment '更新人',
+    extra_info        varchar(128)                       null comment '扩展信息',
+    is_deleted        smallint default 0                 not null comment '是否删除'
 ) comment '产品大类表' charset = utf8;
+
+create unique index product_category_category_name_category_sub_name_uindex
+    on product_category (category_name, category_sub_name);
 
 create table product
 (

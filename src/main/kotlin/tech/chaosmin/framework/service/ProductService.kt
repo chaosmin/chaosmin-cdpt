@@ -12,6 +12,9 @@ import tech.chaosmin.framework.dao.dataobject.ext.ProductExt
  * @since 2020/12/9 13:50
  */
 interface ProductService : IService<Product> {
+    fun listEqProductCode(code: String): List<Product>
+
     fun pageExt(page: Page<ProductExt>, queryWrapper: Wrapper<ProductExt>): IPage<ProductExt>
+
     fun setCategories(productId: Long, categoryIds: List<Long>)
 }

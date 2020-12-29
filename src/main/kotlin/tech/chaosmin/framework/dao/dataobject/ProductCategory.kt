@@ -7,17 +7,21 @@ package tech.chaosmin.framework.dao.dataobject
  */
 class ProductCategory(id: Long? = null) : BaseCommonDO(id, 0) {
     // 父类名称
-    var parentName: String? = null
-
-    // 大类代码
-    var categoryCode: String? = null
+    var categoryName: String? = null
 
     // 大类名称
-    var categoryName: String? = null
+    var categorySubName: String? = null
 
     // 排序
     var sort: Int? = null
 
     // 是否展示
     var isShow: Boolean? = null
+
+    constructor(name: String, subName: String) : this() {
+        this.categoryName = name
+        this.categorySubName = subName
+        this.sort = 0
+        this.isShow = true
+    }
 }

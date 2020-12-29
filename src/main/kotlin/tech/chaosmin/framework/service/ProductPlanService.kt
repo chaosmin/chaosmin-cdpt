@@ -13,4 +13,6 @@ import tech.chaosmin.framework.dao.dataobject.ext.ProductPlanExt
  */
 interface ProductPlanService : IService<ProductPlan> {
     fun pageExt(page: Page<ProductPlanExt>, queryWrapper: Wrapper<ProductPlanExt>): IPage<ProductPlanExt>
+
+    fun listEqProductId(productId: Long): List<ProductPlan>
 }

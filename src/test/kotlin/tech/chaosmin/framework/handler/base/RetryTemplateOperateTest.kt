@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import tech.chaosmin.framework.domain.RestResult
 
 internal class RetryTemplateOperateTest {
-
     class TestRetryTemplateOperate : RetryTemplateOperate<String, String>("testRetry") {
         @Suppress("DIVISION_BY_ZERO")
         override fun processor(arg: String, result: RestResult<String>): RestResult<String> {

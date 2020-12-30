@@ -22,6 +22,8 @@ import tech.chaosmin.framework.domain.request.UploadFileReq
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.handler.base.AbstractTemplateOperate
 import tech.chaosmin.framework.service.PartnerService
+import tech.chaosmin.framework.utils.StringUtil.isNumber
+import java.text.DecimalFormat
 import javax.annotation.Resource
 
 /**
@@ -133,10 +135,12 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
             val category = getRowValue(row, 0) ?: ""
             val liability = getRowValue(row, 1) ?: paramException("[${row.rowNum}]保险责任")
             (2..row.lastCellNum).forEach {
+                // TODO 嵌套优化
                 val amount = getRowValue(row, it)
                 if (!amount.isNullOrBlank()) {
                     product.getPlan(plans[it])?.run {
-                        this.addLiability(category, liability, amount)
+                        // 千分位格式化
+                        this.addLiability(category, liability, if (amount.isNumber()) DecimalFormat(",###,##0").format(amount) else amount)
                     }
                 }
             }

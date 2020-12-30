@@ -77,22 +77,24 @@ open class ModifyProductPlanHandler(
         liabilities: List<ProductPlanLiabilityEntity>,
         rateTable: List<ProductPlanRateTableEntity>
     ) {
-        // 创建时填充计划的主险保额
-        productPlan.primaryCoverage = liabilities.firstOrNull()?.amount
-        productPlanService.save(productPlan)
-        productPlanLiabilityService.saveBatch(liabilities.mapIndexed { index, it ->
-            ProductPlanLiabilityMapper.INSTANCE.convert2DO(it).apply {
-                this.productPlanId = productPlan.id
-                this.productPlanCode = productPlan.planCode
-                this.sort = index + 1
-            }
-        })
-        productPlanRateTableService.saveBatch(rateTable.mapIndexed { index, it ->
-            ProductPlanRateTableMapper.INSTANCE.convert2DO(it).apply {
-                this.productPlanId = productPlan.id
-                this.productPlanCode = productPlan.planCode
-                this.sort = index + 1
-            }
-        })
+        if (liabilities.isNotEmpty() && rateTable.isNotEmpty()) {
+            // 创建时填充计划的主险保额
+            productPlan.primaryCoverage = liabilities.first().amount
+            productPlanService.save(productPlan)
+            productPlanLiabilityService.saveBatch(liabilities.mapIndexed { index, it ->
+                ProductPlanLiabilityMapper.INSTANCE.convert2DO(it).apply {
+                    this.productPlanId = productPlan.id
+                    this.productPlanCode = productPlan.planCode
+                    this.sort = index + 1
+                }
+            })
+            productPlanRateTableService.saveBatch(rateTable.mapIndexed { index, it ->
+                ProductPlanRateTableMapper.INSTANCE.convert2DO(it).apply {
+                    this.productPlanId = productPlan.id
+                    this.productPlanCode = productPlan.planCode
+                    this.sort = index + 1
+                }
+            })
+        } else logger.warn("Plan[{}] is empty, skip create progress.", productPlan.planCode)
     }
 }

@@ -156,7 +156,7 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
                 val amount = getRowValue(row, it)
                 if (!amount.isNullOrBlank()) {
                     product.getPlan(plans[it])?.run {
-                        this.addRateTable(startDay, endDay, amount)
+                        this.addRateTable(startDay.toInt(), endDay.toInt(), amount)
                     }
                 }
             }

@@ -35,13 +35,14 @@ class ProductPlanEntity(id: Long? = null) : BaseEntity(id) {
         }
     }
 
-    fun addRateTable(startDay: String, endDay: String, amount: String) {
+    fun addRateTable(startDay: Int, endDay: Int, amount: String) {
         synchronized(this) {
             val lia = ProductPlanRateTableEntity().apply {
                 this.modifyType = ModifyTypeEnum.SAVE
                 this.type = RateTableTypeEnum.DAY
-                this.factor = "days"
-                this.formula = "#{$factor} >= $startDay && #{$factor} <= $endDay"
+                this.dayStart = startDay
+                this.dayEnd = endDay
+                this.formula = "$0>=$startDay && $0<=$endDay"
                 this.premium = amount.toDouble()
                 this.premiumCurrency = DEFAULT_CURRENCY
             }

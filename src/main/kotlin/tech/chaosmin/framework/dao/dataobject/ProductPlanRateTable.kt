@@ -12,14 +12,14 @@ open class ProductPlanRateTable(id: Long? = null) : BaseCommonDO(id, 0) {
     // 计划code
     var productPlanCode: String? = null
 
-    // 排序
-    var sort: Int? = null
-
     // 类型
     var type: Int? = null
 
-    // 因子
-    var factor: String? = null
+    // 天数起
+    var dayStart: Int? = null
+
+    // 天数止
+    var dayEnd: Int? = null
 
     // 公式
     var formula: String? = null
@@ -29,4 +29,7 @@ open class ProductPlanRateTable(id: Long? = null) : BaseCommonDO(id, 0) {
 
     // 保费币种
     var premiumCurrency: String? = null
+
+    // 排序
+    var sort: Int? = null
 }

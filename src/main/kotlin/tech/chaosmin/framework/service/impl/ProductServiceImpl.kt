@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.baomidou.mybatisplus.core.metadata.IPage
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import tech.chaosmin.framework.dao.ProductDAO
 import tech.chaosmin.framework.dao.dataobject.Product
@@ -18,7 +17,6 @@ import tech.chaosmin.framework.service.ProductService
  */
 @Service
 open class ProductServiceImpl : ServiceImpl<ProductDAO, Product>(), ProductService {
-    @Cacheable(value = ["product:EqCode"], key = "#code", unless = "#result.isEmpty()")
     override fun listEqProductCode(code: String): List<Product> {
         val wa = QueryWrapper<Product>().eq("product_code", code)
         return baseMapper.selectList(wa)

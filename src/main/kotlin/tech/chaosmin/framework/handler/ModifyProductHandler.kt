@@ -8,13 +8,16 @@ import tech.chaosmin.framework.dao.dataobject.Product
 import tech.chaosmin.framework.dao.dataobject.ProductExternal
 import tech.chaosmin.framework.domain.RestResult
 import tech.chaosmin.framework.domain.entity.ProductEntity
+import tech.chaosmin.framework.domain.enums.BasicStatusEnum
 import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
 import tech.chaosmin.framework.domain.enums.ModifyTypeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.handler.base.AbstractTemplateOperate
 import tech.chaosmin.framework.service.ProductCategoryService
 import tech.chaosmin.framework.service.ProductExternalService
+import tech.chaosmin.framework.service.ProductPlanService
 import tech.chaosmin.framework.service.ProductService
+import tech.chaosmin.framework.utils.EnumClient
 
 /**
  * @author Romani min
@@ -23,10 +26,10 @@ import tech.chaosmin.framework.service.ProductService
 @Component
 open class ModifyProductHandler(
     private val productService: ProductService,
+    private val productPlanService: ProductPlanService,
     private val productCategoryService: ProductCategoryService,
     private val productExternalService: ProductExternalService
-) :
-    AbstractTemplateOperate<ProductEntity, ProductEntity>() {
+) : AbstractTemplateOperate<ProductEntity, ProductEntity>() {
     override fun validation(arg: ProductEntity, result: RestResult<ProductEntity>) {
         if (arg.modifyType == null) {
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType");
@@ -67,9 +70,15 @@ open class ModifyProductHandler(
 
     private fun updateProduct(product: Product, categoryId: Long?, ex: ProductExternal) {
         productService.updateById(product)
-        productExternalService.updateText(product.id!!, ex.externalText)
+        val productId = product.id!!
+        if (product.status != null && EnumClient.getEnum(BasicStatusEnum::class.java, product.status!!) != null) {
+            productPlanService.switchPlansTo(productId, EnumClient.getEnum(BasicStatusEnum::class.java, product.status!!)!!)
+        }
+        if (!ex.externalText.isNullOrBlank()) {
+            productExternalService.updateText(productId, ex.externalText)
+        }
         if (categoryId != null) {
-            productService.setCategories(product.id!!, listOf(categoryId))
+            productService.setCategories(productId, listOf(categoryId))
         }
     }
 }

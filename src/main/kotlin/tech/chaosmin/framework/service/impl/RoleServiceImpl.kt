@@ -2,7 +2,6 @@ package tech.chaosmin.framework.service.impl
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import tech.chaosmin.framework.dao.RoleDAO
 import tech.chaosmin.framework.dao.dataobject.Role
 import tech.chaosmin.framework.service.RoleService
@@ -13,7 +12,6 @@ open class RoleServiceImpl : ServiceImpl<RoleDAO, Role>(), RoleService {
         return baseMapper.findRoles(userId)
     }
 
-    @Transactional
     override fun updateRoles(userId: Long, roleIds: List<Long>): Set<Role> {
         return if (roleIds.isNotEmpty()) {
             val assigned = baseMapper.findRoles(userId).mapNotNull { it.id }
@@ -27,7 +25,6 @@ open class RoleServiceImpl : ServiceImpl<RoleDAO, Role>(), RoleService {
         } else emptySet()
     }
 
-    @Transactional
     override fun clearRoles(userId: Long) {
         baseMapper.clearRoles(userId)
     }

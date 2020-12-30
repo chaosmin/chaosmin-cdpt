@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.IService
 import tech.chaosmin.framework.dao.dataobject.ProductPlan
 import tech.chaosmin.framework.dao.dataobject.ext.ProductPlanExt
+import tech.chaosmin.framework.domain.enums.BasicStatusEnum
 
 /**
  * @author Romani min
@@ -15,4 +16,6 @@ interface ProductPlanService : IService<ProductPlan> {
     fun pageExt(page: Page<ProductPlanExt>, queryWrapper: Wrapper<ProductPlanExt>): IPage<ProductPlanExt>
 
     fun listEqProductId(productId: Long): List<ProductPlan>
+
+    fun switchPlansTo(productId: Long, status: BasicStatusEnum)
 }

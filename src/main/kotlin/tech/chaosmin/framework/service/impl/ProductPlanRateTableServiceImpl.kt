@@ -11,5 +11,4 @@ import tech.chaosmin.framework.service.ProductPlanRateTableService
  * @since 2020/12/9 13:50
  */
 @Service
-open class ProductPlanRateTableServiceImpl : ServiceImpl<ProductPlanRateTableDAO, ProductPlanRateTable>(),
-    ProductPlanRateTableService
+open class ProductPlanRateTableServiceImpl : ServiceImpl<ProductPlanRateTableDAO, ProductPlanRateTable>(), ProductPlanRateTableService

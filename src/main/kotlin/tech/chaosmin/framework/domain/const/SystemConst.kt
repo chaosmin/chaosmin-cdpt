@@ -26,9 +26,6 @@ object SystemConst {
     // 标准字符集
     const val EXCEL_SPLIT_CHAR = '_'
 
-    // 缓存命名空间
-    const val CACHE_NAMESPACE_AUTHORITY = "authority:"
-
     // 格式化日志输出
     const val INIT_SUCCESSFULLY = ":> The {} was initialized successfully."
     const val INIT_FAILED = ":> The {} initialization failed."

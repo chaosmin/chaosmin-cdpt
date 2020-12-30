@@ -110,7 +110,7 @@ tasks.jacocoTestReport {
 tasks {
     getByName<BootJar>("bootJar") {
         println("准备打包项目...")
-        archiveName = "app.jar"
+        archiveName = "chaosmin-cdpt.jar"
         mainClassName = "tech.chaosmin.framework.ApplicationKt"
     }
 

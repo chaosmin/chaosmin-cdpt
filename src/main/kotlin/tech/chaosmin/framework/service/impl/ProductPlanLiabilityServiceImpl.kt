@@ -11,5 +11,4 @@ import tech.chaosmin.framework.service.ProductPlanLiabilityService
  * @since 2020/12/9 13:50
  */
 @Service
-open class ProductPlanLiabilityServiceImpl : ServiceImpl<ProductPlanLiabilityDAO, ProductPlanLiability>(), ProductPlanLiabilityService {
-}
+open class ProductPlanLiabilityServiceImpl : ServiceImpl<ProductPlanLiabilityDAO, ProductPlanLiability>(), ProductPlanLiabilityService

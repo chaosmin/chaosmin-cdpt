@@ -162,7 +162,11 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
     private fun handleText(sheet: Sheet, product: ProductEntity) {
         logger.info(HANDLE_START_LOG, product.productCode, "Product External Text")
         val exText = sheet.mapNotNull { getRowValue(it, 0) }.joinToString("<br>")
-        product.externalText += exText
+        if (product.externalText == null) {
+            product.externalText = exText
+        } else {
+            product.externalText += exText
+        }
     }
 
     private fun getHeaderAndRemoveRow(sheet: Sheet, header: Int, remove: Int): Map<Int, String> {

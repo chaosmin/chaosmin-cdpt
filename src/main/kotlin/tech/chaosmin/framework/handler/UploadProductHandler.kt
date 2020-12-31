@@ -23,6 +23,7 @@ import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.handler.base.AbstractTemplateOperate
 import tech.chaosmin.framework.service.PartnerService
 import tech.chaosmin.framework.utils.StringUtil.isNumber
+import java.math.BigDecimal
 import java.text.DecimalFormat
 import javax.annotation.Resource
 
@@ -131,6 +132,7 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
 
     private fun handleLiability(sheet: Sheet, product: ProductEntity) {
         val plans = getHeaderAndRemoveRow(sheet, 1, 2)
+        val format = DecimalFormat(",###,##0")
         sheet.rowIterator().forEach { row ->
             val category = getRowValue(row, 0) ?: ""
             val liability = getRowValue(row, 1) ?: paramException("[${row.rowNum}]保险责任")
@@ -140,7 +142,7 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
                 if (!amount.isNullOrBlank()) {
                     product.getPlan(plans[it])?.run {
                         // 千分位格式化
-                        this.addLiability(category, liability, if (amount.isNumber()) DecimalFormat(",###,##0").format(amount) else amount)
+                        this.addLiability(category, liability, if (amount.isNumber()) format.format(BigDecimal(amount)) else amount)
                     }
                 }
             }

@@ -18,7 +18,6 @@ import tech.chaosmin.framework.module.mgmt.domain.auth.Rule
 import tech.chaosmin.framework.utils.JsonUtil
 import java.time.Duration
 
-
 /**
  * @author Romani min
  * @since 2020/12/6 15:36
@@ -33,8 +32,8 @@ open class RedisCacheConfig(private val applicationParam: ApplicationParam) : Ca
         val redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
             .entryTtl(Duration.ofSeconds(DEFAULT_CACHE_EXPIRE_TIME))
             .computePrefixWith { cacheName: String -> "${applicationParam.name}:$cacheName:" }
-            .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(getKeySerializer())) // 设置Key序列化器
-            .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(getValueSerializer())) // 设置Value序列化器
+            .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(getKeySerializer()))
+            .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(getValueSerializer()))
             .disableCachingNullValues()
         val redisCacheManager = RedisCacheManager.builder(factory).cacheDefaults(redisCacheConfiguration).build()
         logger.info(INIT_SUCCESSFULLY, redisCacheManager.javaClass.name)

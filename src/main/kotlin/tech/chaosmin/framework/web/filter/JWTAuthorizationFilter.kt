@@ -4,7 +4,7 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
-import tech.chaosmin.framework.domain.RestResultExt
+import tech.chaosmin.framework.base.RestResultExt
 import tech.chaosmin.framework.utils.HttpUtil
 import tech.chaosmin.framework.utils.JwtTokenUtil
 import javax.servlet.FilterChain

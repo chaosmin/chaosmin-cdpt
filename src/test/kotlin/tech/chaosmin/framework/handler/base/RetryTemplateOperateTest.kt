@@ -2,7 +2,8 @@ package tech.chaosmin.framework.handler.base
 
 import cn.hutool.core.lang.Assert
 import org.junit.jupiter.api.Test
-import tech.chaosmin.framework.domain.RestResult
+import tech.chaosmin.framework.base.RetryTemplateOperate
+import tech.chaosmin.framework.base.RestResult
 
 internal class RetryTemplateOperateTest {
     class TestRetryTemplateOperate : RetryTemplateOperate<String, String>("testRetry") {

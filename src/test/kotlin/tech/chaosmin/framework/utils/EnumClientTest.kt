@@ -3,8 +3,7 @@ package tech.chaosmin.framework.utils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.Assertions.*
-import tech.chaosmin.framework.domain.enums.UserStatusEnum
+import tech.chaosmin.framework.module.mgmt.domain.enums.UserStatusEnum
 
 /**
  * @author Romani min

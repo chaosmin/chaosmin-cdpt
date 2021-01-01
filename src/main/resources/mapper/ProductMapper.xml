@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="tech.chaosmin.framework.dao.ProductDAO">
-    <select id="pageExt" resultType="tech.chaosmin.framework.dao.dataobject.ext.ProductExt">
+<mapper namespace="tech.chaosmin.framework.module.cdpt.domain.dao.ProductDAO">
+    <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductExt">
         SELECT partner.partner_name,
         product_category.id as product_category_id,
         concat(product_category.category_name,' ',product_category.category_sub_name) as category_name,

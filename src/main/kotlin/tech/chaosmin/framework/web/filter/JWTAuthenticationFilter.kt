@@ -5,12 +5,12 @@ import org.springframework.security.authentication.event.InteractiveAuthenticati
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import tech.chaosmin.framework.domain.RestResultExt
-import tech.chaosmin.framework.domain.auth.JwtAuthenticationToken
-import tech.chaosmin.framework.domain.auth.LoginParameter
-import tech.chaosmin.framework.domain.const.SystemConst.DEFAULT_CHARSET_NAME
-import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
+import tech.chaosmin.framework.base.RestResultExt
+import tech.chaosmin.framework.base.enums.ErrorCodeEnum
+import tech.chaosmin.framework.definition.SystemConst.DEFAULT_CHARSET_NAME
 import tech.chaosmin.framework.exception.FrameworkException
+import tech.chaosmin.framework.module.mgmt.domain.auth.JwtAuthenticationToken
+import tech.chaosmin.framework.module.mgmt.domain.auth.LoginParameter
 import tech.chaosmin.framework.utils.HttpUtil
 import tech.chaosmin.framework.utils.JsonUtil
 import tech.chaosmin.framework.utils.JwtTokenUtil

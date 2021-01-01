@@ -3,9 +3,9 @@ package tech.chaosmin.framework.utils
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
-import tech.chaosmin.framework.domain.auth.JwtUserDetails
-import tech.chaosmin.framework.domain.const.SystemConst
-import tech.chaosmin.framework.domain.response.UserDetailResp
+import tech.chaosmin.framework.definition.SystemConst
+import tech.chaosmin.framework.module.mgmt.domain.auth.JwtUserDetails
+import tech.chaosmin.framework.module.mgmt.entity.response.UserDetailResp
 
 object SecurityUtil {
     private val logger = LoggerFactory.getLogger(SecurityUtil::class.java)

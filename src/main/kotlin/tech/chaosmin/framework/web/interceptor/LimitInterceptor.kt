@@ -3,8 +3,8 @@ package tech.chaosmin.framework.web.interceptor
 import cn.hutool.core.util.EnumUtil
 import com.google.common.util.concurrent.RateLimiter
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
-import tech.chaosmin.framework.domain.const.ServerLimitParam
-import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
+import tech.chaosmin.framework.base.enums.ErrorCodeEnum
+import tech.chaosmin.framework.definition.ServerLimitParam
 import tech.chaosmin.framework.exception.FrameworkException
 import java.util.concurrent.TimeUnit
 import javax.servlet.http.HttpServletRequest

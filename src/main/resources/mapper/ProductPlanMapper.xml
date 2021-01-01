@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="tech.chaosmin.framework.dao.ProductPlanDAO">
-    <select id="pageExt" resultType="tech.chaosmin.framework.dao.dataobject.ext.ProductPlanExt">
+<mapper namespace="tech.chaosmin.framework.module.cdpt.domain.dao.ProductPlanDAO">
+    <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductPlanExt">
         SELECT product.product_name, product_plan.*
         FROM product_plan
         left join product on product.id = product_plan.product_id

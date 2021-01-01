@@ -1,0 +1,12 @@
+package tech.chaosmin.framework.module.cdpt.domain.dataobject.ext
+
+import tech.chaosmin.framework.module.cdpt.domain.dataobject.ProductPlan
+
+/**
+ * @author Romani min
+ * @since 2020/12/27 16:40
+ */
+class ProductPlanExt : ProductPlan() {
+    // 产品名称
+    var productName: String? = null
+}

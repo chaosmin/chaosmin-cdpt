@@ -2,7 +2,7 @@ package tech.chaosmin.framework.utils
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
-import tech.chaosmin.framework.domain.PageQuery
+import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.utils.StringUtil.upperCamel
 import java.util.*
 import javax.servlet.http.HttpServletRequest

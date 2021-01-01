@@ -10,10 +10,10 @@ import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.servlet.NoHandlerFoundException
-import tech.chaosmin.framework.domain.RestResult
-import tech.chaosmin.framework.domain.RestResultExt.failureRestResult
-import tech.chaosmin.framework.domain.RestResultExt.noPermissionRestResult
-import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
+import tech.chaosmin.framework.base.RestResult
+import tech.chaosmin.framework.base.RestResultExt.failureRestResult
+import tech.chaosmin.framework.base.RestResultExt.noPermissionRestResult
+import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.AuthenticationException
 import tech.chaosmin.framework.exception.PermissionException
 import tech.chaosmin.framework.exception.ResourceNotExistException

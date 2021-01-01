@@ -11,14 +11,16 @@ import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.springframework.core.io.ClassPathResource
 import org.springframework.mock.web.MockMultipartFile
-import tech.chaosmin.framework.dao.dataobject.Partner
-import tech.chaosmin.framework.dao.dataobject.ProductCategory
-import tech.chaosmin.framework.domain.RestResultExt
-import tech.chaosmin.framework.domain.entity.ProductEntity
-import tech.chaosmin.framework.domain.entity.ProductPlanEntity
-import tech.chaosmin.framework.domain.request.UploadFileReq
-import tech.chaosmin.framework.service.PartnerService
-import tech.chaosmin.framework.service.ProductCategoryService
+import tech.chaosmin.framework.module.cdpt.domain.dataobject.Partner
+import tech.chaosmin.framework.module.cdpt.domain.dataobject.ProductCategory
+import tech.chaosmin.framework.base.RestResultExt
+import tech.chaosmin.framework.module.cdpt.entity.ProductEntity
+import tech.chaosmin.framework.module.cdpt.handler.ModifyProductHandler
+import tech.chaosmin.framework.module.cdpt.handler.ModifyProductPlanHandler
+import tech.chaosmin.framework.module.cdpt.handler.UploadProductHandler
+import tech.chaosmin.framework.module.mgmt.entity.request.UploadFileReq
+import tech.chaosmin.framework.module.cdpt.service.PartnerService
+import tech.chaosmin.framework.module.cdpt.service.ProductCategoryService
 import tech.chaosmin.framework.utils.JsonUtil
 
 /**

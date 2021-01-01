@@ -1,6 +1,6 @@
 package tech.chaosmin.framework.utils
 
-import tech.chaosmin.framework.domain.enums.KeyValueEnum
+import tech.chaosmin.framework.base.KeyValueEnum
 
 /**
  * @author Romani min

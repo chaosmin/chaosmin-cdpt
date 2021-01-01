@@ -13,7 +13,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi
 @EnableOpenApi
 @EnableDiscoveryClient
 @EnableTransactionManagement(proxyTargetClass = true)
-@MapperScan("tech.chaosmin.framework.dao")
+@MapperScan("tech.chaosmin.framework.module.*.domain.dao")
 @Import(cn.hutool.extra.spring.SpringUtil::class)
 @SpringBootApplication
 open class Application

@@ -6,11 +6,11 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
-import tech.chaosmin.framework.domain.auth.GrantedAuthorityImpl
-import tech.chaosmin.framework.domain.auth.JwtAuthenticationToken
-import tech.chaosmin.framework.domain.auth.JwtUserDetails
-import tech.chaosmin.framework.domain.enums.ErrorCodeEnum
+import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.AuthenticationException
+import tech.chaosmin.framework.module.mgmt.domain.auth.GrantedAuthorityImpl
+import tech.chaosmin.framework.module.mgmt.domain.auth.JwtAuthenticationToken
+import tech.chaosmin.framework.module.mgmt.domain.auth.JwtUserDetails
 import java.io.Serializable
 import java.util.*
 

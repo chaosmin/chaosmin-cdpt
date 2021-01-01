@@ -2,7 +2,7 @@ package tech.chaosmin.framework.utils
 
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
-import tech.chaosmin.framework.domain.RestResult
+import tech.chaosmin.framework.base.RestResult
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 

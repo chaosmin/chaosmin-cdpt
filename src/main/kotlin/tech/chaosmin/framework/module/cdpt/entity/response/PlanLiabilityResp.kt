@@ -10,24 +10,24 @@ import tech.chaosmin.framework.base.BaseResp
  */
 @ApiModel("产品计划责任接口返回参数")
 class PlanLiabilityResp : BaseResp() {
-    @ApiModelProperty(value = "责任所属计划")
+    @ApiModelProperty("责任所属计划")
     var productPlanCode: String? = null
 
-    @ApiModelProperty(value = "责任大类")
+    @ApiModelProperty("责任大类")
     var liabilityCategory: String? = null
 
-    @ApiModelProperty(value = "责任名称")
+    @ApiModelProperty("责任名称")
     var liabilityName: String? = null
 
-    @ApiModelProperty(value = "责任备注")
+    @ApiModelProperty("责任备注")
     var liabilityRemark: String? = null
 
-    @ApiModelProperty(value = "排序")
+    @ApiModelProperty("排序")
     var sort: Int? = null
 
-    @ApiModelProperty(value = "责任金额")
+    @ApiModelProperty("责任金额")
     var amount: String? = null
 
-    @ApiModelProperty(value = "责任金额备注")
+    @ApiModelProperty("责任金额备注")
     var amountRemark: String? = null
 }

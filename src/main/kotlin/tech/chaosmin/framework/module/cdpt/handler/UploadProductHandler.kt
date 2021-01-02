@@ -66,8 +66,8 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
         if (success && data != null) {
             product.plans.forEach { plan ->
                 plan.productId = data.id
-                if (plan.defaultCommissionRatio == null) {
-                    plan.defaultCommissionRatio = (product.productRatio ?: DEFAULT_COMMISSION_RATIO).toDouble()
+                if (plan.comsRatio == null) {
+                    plan.comsRatio = (product.productRatio ?: DEFAULT_COMMISSION_RATIO).toDouble()
                 }
                 val (_, _, _, _, sus) = modifyProductPlanHandler.operate(plan)
                 if (!sus) throw FrameworkException(ErrorCodeEnum.FAILURE.code)

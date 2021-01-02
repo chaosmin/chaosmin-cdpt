@@ -12,8 +12,8 @@ import tech.chaosmin.framework.module.cdpt.entity.response.PlanRateTableResp
  * @since 2020/12/23 21:30
  */
 @Mapper
-interface ProductPlanRateTableConvert : BaseConvert<PlanRateTableEntity, PlanRateTableReq, PlanRateTableResp> {
+interface PlanRateTableConvert : BaseConvert<PlanRateTableEntity, PlanRateTableReq, PlanRateTableResp> {
     companion object {
-        val INSTANCE: ProductPlanRateTableConvert = Mappers.getMapper(ProductPlanRateTableConvert::class.java)
+        val INSTANCE: PlanRateTableConvert = Mappers.getMapper(PlanRateTableConvert::class.java)
     }
 }

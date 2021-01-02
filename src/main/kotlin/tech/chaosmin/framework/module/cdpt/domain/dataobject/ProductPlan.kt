@@ -24,7 +24,7 @@ open class ProductPlan(id: Long? = null) : BaseDO(id, 0) {
     var currency: String? = null
 
     // 默认佣金比例
-    var defaultCommissionRatio: Double? = null
+    var comsRatio: Double? = null
 
     // 状态
     var status: Int? = null

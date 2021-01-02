@@ -13,9 +13,9 @@ import tech.chaosmin.framework.base.BaseReq
 @ApiModel("文件上传接口请求参数")
 class UploadFileReq : BaseReq() {
     @JsonIgnore
-    @ApiModelProperty(value = "文件")
+    @ApiModelProperty("文件")
     var file: MultipartFile? = null
 
-    @ApiModelProperty(value = "文件名")
+    @ApiModelProperty("文件名")
     var fileName: String? = null
 }

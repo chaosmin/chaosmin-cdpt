@@ -14,17 +14,17 @@ import tech.chaosmin.framework.module.cdpt.service.PlanLiabilityService
  * @since 2020/12/17 15:28
  */
 @Component
-class PlanLiabilityQueryLogic(private val productPlanLiabilityService: PlanLiabilityService) :
+class PlanLiabilityQueryLogic(private val planLiabilityService: PlanLiabilityService) :
     BaseQueryLogic<PlanLiabilityEntity, PlanLiability> {
 
     override fun get(id: Long): PlanLiabilityEntity? {
-        val productPlanLiability = productPlanLiabilityService.getById(id)
-        return if (productPlanLiability == null) null
-        else PlanLiabilityMapper.INSTANCE.convert2Entity(productPlanLiability)
+        val planLiability = planLiabilityService.getById(id)
+        return if (planLiability == null) null
+        else PlanLiabilityMapper.INSTANCE.convert2Entity(planLiability)
     }
 
     override fun page(cond: PageQuery<PlanLiability>): IPage<PlanLiabilityEntity> {
-        val page = productPlanLiabilityService.page(cond.page, cond.wrapper)
+        val page = planLiabilityService.page(cond.page, cond.wrapper)
         return page.convert(PlanLiabilityMapper.INSTANCE::convert2Entity)
     }
 }

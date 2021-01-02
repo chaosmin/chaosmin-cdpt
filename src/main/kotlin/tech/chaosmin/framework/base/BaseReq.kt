@@ -8,6 +8,6 @@ import java.io.Serializable
  * @since 2020/12/23 18:21
  */
 open class BaseReq : Serializable {
-    @ApiModelProperty(value = "扩展信息")
+    @ApiModelProperty("扩展信息")
     var extraInfo: String? = null
 }

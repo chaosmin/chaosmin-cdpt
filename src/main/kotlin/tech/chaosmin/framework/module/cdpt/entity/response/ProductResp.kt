@@ -11,42 +11,42 @@ import tech.chaosmin.framework.base.enums.BasicStatusEnum
  */
 @ApiModel("产品接口返回参数")
 class ProductResp : BaseResp() {
-    @ApiModelProperty(value = "保司ID")
+    @ApiModelProperty("保司ID")
     var partnerId: Long? = null
 
-    @ApiModelProperty(value = "保司名称")
+    @ApiModelProperty("保司名称")
     var partnerName: String? = null
 
-    @ApiModelProperty(value = "大类ID")
+    @ApiModelProperty("大类ID")
     var productCategoryId: Long? = null
 
-    @ApiModelProperty(value = "产品大类")
+    @ApiModelProperty("产品大类")
     var categoryName: String? = null
 
-    @ApiModelProperty(value = "产品代码")
+    @ApiModelProperty("产品代码")
     var productCode: String? = null
 
-    @ApiModelProperty(value = "产品名称")
+    @ApiModelProperty("产品名称")
     var productName: String? = null
 
-    @ApiModelProperty(value = "产品子名称")
+    @ApiModelProperty("产品子名称")
     var productSubName: String? = null
 
-    @ApiModelProperty(value = "保司产品代码")
+    @ApiModelProperty("保司产品代码")
     var partnerProductNo: String? = null
 
-    @ApiModelProperty(value = "产品描述")
+    @ApiModelProperty("产品描述")
     var productDesc: String? = null
 
-    @ApiModelProperty(value = "起保日期(T+N)")
+    @ApiModelProperty("起保日期(T+N)")
     var waitingDays: Int? = null
 
-    @ApiModelProperty(value = "产品状态")
+    @ApiModelProperty("产品状态")
     var status: BasicStatusEnum? = null
 
-    @ApiModelProperty(value = "包含计划数")
+    @ApiModelProperty("包含计划数")
     var numberOfPlan: Int? = null
 
-    @ApiModelProperty(value = "投保须知")
+    @ApiModelProperty("投保须知")
     var externalText: String? = null
 }

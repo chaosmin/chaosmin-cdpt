@@ -30,8 +30,8 @@ import tech.chaosmin.framework.module.cdpt.service.ProductPlanService
 @Component
 open class ModifyProductPlanHandler(
     private val productPlanService: ProductPlanService,
-    private val productPlanLiabilityService: PlanLiabilityService,
-    private val productPlanRateTableService: PlanRateTableService
+    private val planLiabilityService: PlanLiabilityService,
+    private val planRateTableService: PlanRateTableService
 ) : AbstractTemplateOperate<ProductPlanEntity, ProductPlanEntity>() {
     private val logger = LoggerFactory.getLogger(ModifyProductPlanHandler::class.java)
     private val pid = "product_plan_id"
@@ -59,14 +59,14 @@ open class ModifyProductPlanHandler(
             ModifyTypeEnum.UPDATE -> {
                 productPlanService.updateById(productPlan)
                 val liabilities = arg.liabilities.map { PlanLiabilityMapper.INSTANCE.convert2DO(it) }
-                productPlanLiabilityService.updateBatchById(liabilities)
+                planLiabilityService.updateBatchById(liabilities)
                 val rateTable = arg.rateTable.map { PlanRateTableMapper.INSTANCE.convert2DO(it) }
-                productPlanRateTableService.updateBatchById(rateTable)
+                planRateTableService.updateBatchById(rateTable)
             }
             ModifyTypeEnum.REMOVE -> {
                 productPlanService.remove(Wrappers.query(productPlan))
-                productPlanLiabilityService.remove(QueryWrapper<PlanLiability>().eq(pid, productPlan.id))
-                productPlanRateTableService.remove(QueryWrapper<PlanRateTable>().eq(pid, productPlan.id))
+                planLiabilityService.remove(QueryWrapper<PlanLiability>().eq(pid, productPlan.id))
+                planRateTableService.remove(QueryWrapper<PlanRateTable>().eq(pid, productPlan.id))
             }
         }
         return result.success(ProductPlanMapper.INSTANCE.convert2Entity(productPlan))
@@ -81,14 +81,14 @@ open class ModifyProductPlanHandler(
             // 创建时填充计划的主险保额
             productPlan.primaryCoverage = liabilities.first().amount
             productPlanService.save(productPlan)
-            productPlanLiabilityService.saveBatch(liabilities.mapIndexed { index, it ->
+            planLiabilityService.saveBatch(liabilities.mapIndexed { index, it ->
                 PlanLiabilityMapper.INSTANCE.convert2DO(it).apply {
                     this.productPlanId = productPlan.id
                     this.productPlanCode = productPlan.planCode
                     this.sort = index + 1
                 }
             })
-            productPlanRateTableService.saveBatch(rateTable.mapIndexed { index, it ->
+            planRateTableService.saveBatch(rateTable.mapIndexed { index, it ->
                 PlanRateTableMapper.INSTANCE.convert2DO(it).apply {
                     this.productPlanId = productPlan.id
                     this.productPlanCode = productPlan.planCode

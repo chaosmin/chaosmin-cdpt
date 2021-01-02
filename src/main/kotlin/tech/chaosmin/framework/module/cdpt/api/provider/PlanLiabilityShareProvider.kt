@@ -11,7 +11,7 @@ import tech.chaosmin.framework.module.cdpt.entity.request.PlanLiabilityReq
 import tech.chaosmin.framework.module.cdpt.entity.response.PlanLiabilityResp
 import tech.chaosmin.framework.module.cdpt.handler.ModifyPlanLiabilityHandler
 import tech.chaosmin.framework.module.cdpt.handler.logic.PlanLiabilityQueryLogic
-import tech.chaosmin.framework.module.cdpt.helper.convert.ProductPlanLiabilityConvert
+import tech.chaosmin.framework.module.cdpt.helper.convert.PlanLiabilityConvert
 import tech.chaosmin.framework.utils.RequestUtil
 import javax.servlet.http.HttpServletRequest
 
@@ -25,32 +25,32 @@ open class PlanLiabilityShareProvider(
     private val modifyPlanLiabilityHandler: ModifyPlanLiabilityHandler
 ) : PlanLiabilityShareService {
     override fun selectById(id: Long): RestResult<PlanLiabilityResp?> {
-        val productPlanLiability = planLiabilityQueryLogic.get(id)
-        return if (productPlanLiability == null) RestResultExt.successRestResult()
-        else RestResultExt.successRestResult(ProductPlanLiabilityConvert.INSTANCE.convert2Resp(productPlanLiability))
+        val planLiability = planLiabilityQueryLogic.get(id)
+        return if (planLiability == null) RestResultExt.successRestResult()
+        else RestResultExt.successRestResult(PlanLiabilityConvert.INSTANCE.convert2Resp(planLiability))
     }
 
     override fun page(request: HttpServletRequest): RestResult<IPage<PlanLiabilityResp>> {
         val queryCondition = RequestUtil.getQueryCondition<PlanLiability>(request)
         val page = planLiabilityQueryLogic.page(queryCondition)
-        return RestResultExt.successRestResult(page.convert(ProductPlanLiabilityConvert.INSTANCE::convert2Resp))
+        return RestResultExt.successRestResult(page.convert(PlanLiabilityConvert.INSTANCE::convert2Resp))
     }
 
     override fun save(req: PlanLiabilityReq): RestResult<PlanLiabilityResp> {
-        val productPlanLiability = ProductPlanLiabilityConvert.INSTANCE.convert2Entity(req)
-        productPlanLiability.save()
-        return RestResultExt.execute(modifyPlanLiabilityHandler, productPlanLiability, ProductPlanLiabilityConvert::class.java)
+        val planLiability = PlanLiabilityConvert.INSTANCE.convert2Entity(req)
+        planLiability.save()
+        return RestResultExt.execute(modifyPlanLiabilityHandler, planLiability, PlanLiabilityConvert::class.java)
     }
 
     override fun update(id: Long, req: PlanLiabilityReq): RestResult<PlanLiabilityResp> {
-        val productPlanLiability = ProductPlanLiabilityConvert.INSTANCE.convert2Entity(req)
-        productPlanLiability.update(id)
-        return RestResultExt.execute(modifyPlanLiabilityHandler, productPlanLiability, ProductPlanLiabilityConvert::class.java)
+        val planLiability = PlanLiabilityConvert.INSTANCE.convert2Entity(req)
+        planLiability.update(id)
+        return RestResultExt.execute(modifyPlanLiabilityHandler, planLiability, PlanLiabilityConvert::class.java)
     }
 
     override fun delete(id: Long): RestResult<PlanLiabilityResp> {
-        val productPlanLiability = PlanLiabilityEntity(id)
-        productPlanLiability.remove()
-        return RestResultExt.execute(modifyPlanLiabilityHandler, productPlanLiability, ProductPlanLiabilityConvert::class.java)
+        val planLiability = PlanLiabilityEntity(id)
+        planLiability.remove()
+        return RestResultExt.execute(modifyPlanLiabilityHandler, planLiability, PlanLiabilityConvert::class.java)
     }
 }

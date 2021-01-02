@@ -17,7 +17,7 @@ import tech.chaosmin.framework.module.cdpt.service.PlanRateTableService
  * @since 2020/12/23 17:12
  */
 @Component
-open class ModifyPlanRateTableHandler(private val productPlanRateTableService: PlanRateTableService) :
+open class ModifyPlanRateTableHandler(private val planRateTableService: PlanRateTableService) :
     AbstractTemplateOperate<PlanRateTableEntity, PlanRateTableEntity>() {
     override fun validation(arg: PlanRateTableEntity, result: RestResult<PlanRateTableEntity>) {
         if (arg.modifyType == null) {
@@ -30,11 +30,11 @@ open class ModifyPlanRateTableHandler(private val productPlanRateTableService: P
         arg: PlanRateTableEntity,
         result: RestResult<PlanRateTableEntity>
     ): RestResult<PlanRateTableEntity> {
-        val productPlanRateTable = PlanRateTableMapper.INSTANCE.convert2DO(arg)
+        val planRateTable = PlanRateTableMapper.INSTANCE.convert2DO(arg)
         when (arg.modifyType) {
-            ModifyTypeEnum.SAVE -> productPlanRateTableService.save(productPlanRateTable)
-            ModifyTypeEnum.UPDATE -> productPlanRateTableService.updateById(productPlanRateTable)
-            ModifyTypeEnum.REMOVE -> productPlanRateTableService.remove(Wrappers.query(productPlanRateTable))
+            ModifyTypeEnum.SAVE -> planRateTableService.save(planRateTable)
+            ModifyTypeEnum.UPDATE -> planRateTableService.updateById(planRateTable)
+            ModifyTypeEnum.REMOVE -> planRateTableService.remove(Wrappers.query(planRateTable))
         }
         return result.success(arg)
     }

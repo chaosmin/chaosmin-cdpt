@@ -14,17 +14,17 @@ import tech.chaosmin.framework.module.cdpt.service.PlanRateTableService
  * @since 2020/12/17 15:28
  */
 @Component
-class PlanRateTableQueryLogic(private val productPlanRateTableService: PlanRateTableService) :
+class PlanRateTableQueryLogic(private val planRateTableService: PlanRateTableService) :
     BaseQueryLogic<PlanRateTableEntity, PlanRateTable> {
 
     override fun get(id: Long): PlanRateTableEntity? {
-        val productPlanRateTable = productPlanRateTableService.getById(id)
-        return if (productPlanRateTable == null) null
-        else PlanRateTableMapper.INSTANCE.convert2Entity(productPlanRateTable)
+        val planRateTable = planRateTableService.getById(id)
+        return if (planRateTable == null) null
+        else PlanRateTableMapper.INSTANCE.convert2Entity(planRateTable)
     }
 
     override fun page(cond: PageQuery<PlanRateTable>): IPage<PlanRateTableEntity> {
-        val page = productPlanRateTableService.page(cond.page, cond.wrapper)
+        val page = planRateTableService.page(cond.page, cond.wrapper)
         return page.convert(PlanRateTableMapper.INSTANCE::convert2Entity)
     }
 }

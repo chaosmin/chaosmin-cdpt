@@ -54,5 +54,5 @@ class GoodsPlan(id: Long? = null) : BaseDO(id, 0) {
     var authorizeTime: Date? = null
 
     //佣金比例
-    var commissionRatio: Double? = null
+    var comsRatio: Double? = null
 }

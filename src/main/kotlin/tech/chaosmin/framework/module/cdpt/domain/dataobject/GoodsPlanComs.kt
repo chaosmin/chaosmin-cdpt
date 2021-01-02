@@ -8,12 +8,9 @@ import java.util.*
  * @author Romani min
  * @since 2020/12/23 11:08
  */
-class PlanComs(id: Long? = null) : BaseDO(id, 0) {
-    // 计划ID
-    var productPlanId: Long? = null
-
-    // 计划code
-    var productPlanCode: String? = null
+class GoodsPlanComs(id: Long? = null) : BaseDO(id, 0) {
+    // 个人计划ID
+    var goodsPlanId: Long? = null
 
     // 佣金比例
     var comsRatio: Double? = null

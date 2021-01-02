@@ -12,8 +12,8 @@ import tech.chaosmin.framework.module.cdpt.entity.response.PlanLiabilityResp
  * @since 2020/12/23 21:30
  */
 @Mapper
-interface ProductPlanLiabilityConvert : BaseConvert<PlanLiabilityEntity, PlanLiabilityReq, PlanLiabilityResp> {
+interface PlanLiabilityConvert : BaseConvert<PlanLiabilityEntity, PlanLiabilityReq, PlanLiabilityResp> {
     companion object {
-        val INSTANCE: ProductPlanLiabilityConvert = Mappers.getMapper(ProductPlanLiabilityConvert::class.java)
+        val INSTANCE: PlanLiabilityConvert = Mappers.getMapper(PlanLiabilityConvert::class.java)
     }
 }

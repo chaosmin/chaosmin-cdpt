@@ -39,7 +39,7 @@ class ProductEntity(id: Long? = null) : BaseEntity(id) {
             this.planCode = code
             this.planName = name
             this.currency = DEFAULT_CURRENCY
-            this.defaultCommissionRatio = if (ratio.isNullOrBlank()) null else ratio.toDouble()
+            this.comsRatio = if (ratio.isNullOrBlank()) null else ratio.toDouble()
         })
     }
 

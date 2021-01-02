@@ -7,6 +7,7 @@ create table goods
     status          int      default 1                 not null comment '商品状态',
     show_start_time datetime                           not null comment '展示开始时间',
     show_end_time   datetime                           not null comment '展示结束时间',
+    coms_ratio      double                             not null comment '佣金比例',
     create_time     datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     creator         varchar(64)                        null comment '创建人',
     update_time     datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
@@ -15,7 +16,7 @@ create table goods
     is_deleted      smallint default 0                 not null comment '是否删除'
 ) comment '保险商品表' charset = utf8;
 
-create table goods_user_plan
+create table goods_plan
 (
     id                bigint auto_increment primary key,
     goods_id          bigint                             not null comment '商品ID',
@@ -33,7 +34,7 @@ create table goods_user_plan
     sale_end_time     datetime                           not null comment '售卖结束时间',
     authorizer        varchar(64)                        not null comment '授权人',
     authorize_time    datetime                           not null comment '授权时间',
-    commission_ratio  double                             not null comment '佣金比例',
+    coms_ratio        double                             not null comment '佣金比例',
     create_time       datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     creator           varchar(64)                        null comment '创建人',
     update_time       datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',

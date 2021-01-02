@@ -17,7 +17,7 @@ class ProductPlanEntity(id: Long? = null) : BaseEntity(id) {
     var planName: String? = null
     var primaryCoverage: String? = null
     var currency: String? = null
-    var defaultCommissionRatio: Double? = null
+    var comsRatio: Double? = null
     var status: BasicStatusEnum? = null
 
     var liabilities = mutableListOf<PlanLiabilityEntity>()

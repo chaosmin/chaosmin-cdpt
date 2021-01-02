@@ -17,7 +17,7 @@ import tech.chaosmin.framework.module.cdpt.service.PlanLiabilityService
  * @since 2020/12/23 17:12
  */
 @Component
-open class ModifyPlanLiabilityHandler(private val productPlanLiabilityService: PlanLiabilityService) :
+open class ModifyPlanLiabilityHandler(private val planLiabilityService: PlanLiabilityService) :
     AbstractTemplateOperate<PlanLiabilityEntity, PlanLiabilityEntity>() {
     override fun validation(arg: PlanLiabilityEntity, result: RestResult<PlanLiabilityEntity>) {
         if (arg.modifyType == null) {
@@ -30,11 +30,11 @@ open class ModifyPlanLiabilityHandler(private val productPlanLiabilityService: P
         arg: PlanLiabilityEntity,
         result: RestResult<PlanLiabilityEntity>
     ): RestResult<PlanLiabilityEntity> {
-        val productPlanLiability = PlanLiabilityMapper.INSTANCE.convert2DO(arg)
+        val planLiability = PlanLiabilityMapper.INSTANCE.convert2DO(arg)
         when (arg.modifyType) {
-            ModifyTypeEnum.SAVE -> productPlanLiabilityService.save(productPlanLiability)
-            ModifyTypeEnum.UPDATE -> productPlanLiabilityService.updateById(productPlanLiability)
-            ModifyTypeEnum.REMOVE -> productPlanLiabilityService.remove(Wrappers.query(productPlanLiability))
+            ModifyTypeEnum.SAVE -> planLiabilityService.save(planLiability)
+            ModifyTypeEnum.UPDATE -> planLiabilityService.updateById(planLiability)
+            ModifyTypeEnum.REMOVE -> planLiabilityService.remove(Wrappers.query(planLiability))
         }
         return result.success(arg)
     }

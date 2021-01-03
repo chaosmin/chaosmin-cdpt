@@ -14,6 +14,8 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductExt
 interface ProductService : IService<Product> {
     fun listEqProductCode(code: String): List<Product>
 
+    fun getByIdExt(id: Long): ProductExt?
+
     fun pageExt(page: Page<ProductExt>, queryWrapper: Wrapper<ProductExt>): IPage<ProductExt>
 
     fun setCategories(productId: Long, categoryIds: List<Long>)

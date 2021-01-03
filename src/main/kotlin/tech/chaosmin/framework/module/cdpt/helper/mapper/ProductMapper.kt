@@ -18,5 +18,5 @@ interface ProductMapper : BaseMapper<ProductEntity, Product> {
         val INSTANCE: ProductMapper = Mappers.getMapper(ProductMapper::class.java)
     }
 
-    fun convert2Entity(source: ProductExt): ProductEntity
+    fun convertEx2Entity(source: ProductExt?): ProductEntity?
 }

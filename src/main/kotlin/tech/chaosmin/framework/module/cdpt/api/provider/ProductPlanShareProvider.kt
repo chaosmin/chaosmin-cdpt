@@ -30,7 +30,7 @@ open class ProductPlanShareProvider(
         else RestResultExt.successRestResult(ProductPlanConvert.INSTANCE.convert2Resp(productPlan))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<ProductPlanResp>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<ProductPlanResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<ProductPlanExt>(request)
         val page = productPlanQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(ProductPlanConvert.INSTANCE::convert2Resp))

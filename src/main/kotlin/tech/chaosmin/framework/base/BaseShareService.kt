@@ -16,7 +16,7 @@ interface BaseShareService<RE : BaseReq, RQ : BaseResp> {
 
     @GetMapping
     @ApiOperation(value = "分页查询查询")
-    fun page(request: HttpServletRequest): RestResult<IPage<RQ>>
+    fun page(request: HttpServletRequest): RestResult<IPage<RQ?>>
 
     @PostMapping
     @ApiOperation(value = "创建/新增")

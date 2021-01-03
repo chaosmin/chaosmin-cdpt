@@ -19,11 +19,10 @@ class PlanLiabilityQueryLogic(private val planLiabilityService: PlanLiabilitySer
 
     override fun get(id: Long): PlanLiabilityEntity? {
         val planLiability = planLiabilityService.getById(id)
-        return if (planLiability == null) null
-        else PlanLiabilityMapper.INSTANCE.convert2Entity(planLiability)
+        return PlanLiabilityMapper.INSTANCE.convert2Entity(planLiability)
     }
 
-    override fun page(cond: PageQuery<PlanLiability>): IPage<PlanLiabilityEntity> {
+    override fun page(cond: PageQuery<PlanLiability>): IPage<PlanLiabilityEntity?> {
         val page = planLiabilityService.page(cond.page, cond.wrapper)
         return page.convert(PlanLiabilityMapper.INSTANCE::convert2Entity)
     }

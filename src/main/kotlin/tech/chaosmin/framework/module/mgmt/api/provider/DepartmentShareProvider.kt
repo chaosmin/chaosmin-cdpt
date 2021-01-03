@@ -30,7 +30,7 @@ open class DepartmentShareProvider(
         else RestResultExt.successRestResult(DepartmentConvert.INSTANCE.convert2Resp(department))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<DepartmentResp>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<DepartmentResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<DepartmentExt>(request)
         val page = departmentQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(DepartmentConvert.INSTANCE::convert2Resp))

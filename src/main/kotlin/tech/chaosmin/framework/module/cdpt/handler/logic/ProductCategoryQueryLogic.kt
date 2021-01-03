@@ -19,11 +19,10 @@ class ProductCategoryQueryLogic(private val productCategoryService: ProductCateg
 
     override fun get(id: Long): ProductCategoryEntity? {
         val productCategory = productCategoryService.getById(id)
-        return if (productCategory == null) null
-        else ProductCategoryMapper.INSTANCE.convert2Entity(productCategory)
+        return ProductCategoryMapper.INSTANCE.convert2Entity(productCategory)
     }
 
-    override fun page(cond: PageQuery<ProductCategory>): IPage<ProductCategoryEntity> {
+    override fun page(cond: PageQuery<ProductCategory>): IPage<ProductCategoryEntity?> {
         val page = productCategoryService.page(cond.page, cond.wrapper)
         return page.convert(ProductCategoryMapper.INSTANCE::convert2Entity)
     }

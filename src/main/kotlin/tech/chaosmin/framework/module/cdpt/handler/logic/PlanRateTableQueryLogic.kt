@@ -19,11 +19,10 @@ class PlanRateTableQueryLogic(private val planRateTableService: PlanRateTableSer
 
     override fun get(id: Long): PlanRateTableEntity? {
         val planRateTable = planRateTableService.getById(id)
-        return if (planRateTable == null) null
-        else PlanRateTableMapper.INSTANCE.convert2Entity(planRateTable)
+        return PlanRateTableMapper.INSTANCE.convert2Entity(planRateTable)
     }
 
-    override fun page(cond: PageQuery<PlanRateTable>): IPage<PlanRateTableEntity> {
+    override fun page(cond: PageQuery<PlanRateTable>): IPage<PlanRateTableEntity?> {
         val page = planRateTableService.page(cond.page, cond.wrapper)
         return page.convert(PlanRateTableMapper.INSTANCE::convert2Entity)
     }

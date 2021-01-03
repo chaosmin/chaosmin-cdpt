@@ -8,9 +8,9 @@ import org.mapstruct.Mappings
  * @since 2020/12/23 16:31
  */
 interface BaseConvert<E : BaseEntity, RE : BaseReq, RQ : BaseResp> {
-    fun convert2Resp(source: E): RQ
+    fun convert2Resp(source: E?): RQ?
 
-    fun convert2Resp(source: List<E>): List<RQ>
+    fun convert2Resp(source: List<E?>): List<RQ?>
 
     @Mappings(
         value = [

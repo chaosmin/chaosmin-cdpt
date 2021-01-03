@@ -30,7 +30,7 @@ open class PartnerShareProvider(
         else RestResultExt.successRestResult(PartnerConvert.INSTANCE.convert2Resp(partner))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<PartnerResp>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<PartnerResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<Partner>(request)
         val page = partnerQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(PartnerConvert.INSTANCE::convert2Resp))

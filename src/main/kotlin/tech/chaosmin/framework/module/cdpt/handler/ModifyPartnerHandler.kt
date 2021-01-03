@@ -21,13 +21,13 @@ open class ModifyPartnerHandler(private val partnerService: PartnerService) :
     AbstractTemplateOperate<PartnerEntity, PartnerEntity>() {
     override fun validation(arg: PartnerEntity, result: RestResult<PartnerEntity>) {
         if (arg.modifyType == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType");
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType")
         }
     }
 
     @Transactional
     override fun processor(arg: PartnerEntity, result: RestResult<PartnerEntity>): RestResult<PartnerEntity> {
-        val partner = PartnerMapper.INSTANCE.convert2DO(arg)
+        val partner = PartnerMapper.INSTANCE.convert2DO(arg) ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code)
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> partnerService.save(partner)
             ModifyTypeEnum.UPDATE -> partnerService.updateById(partner)

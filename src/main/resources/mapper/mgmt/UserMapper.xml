@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="tech.chaosmin.framework.module.mgmt.domain.dao.UserDAO">
+    <sql id="selectExt">
+        department.name as department, role.id as role_id, role.name as role, user.*
+    </sql>
+
+    <select id="getByIdExt" resultType="tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.UserExt">
+        SELECT <include refid="selectExt" />
+        FROM user
+        left join department on department.id = user.department_id
+        left join user_role on user_role.user_id = user.id
+        left join role on role.id = user_role.role_id
+        where user.id = #{id} and user.is_deleted = 0
+    </select>
+
     <select id="pageExt" resultType="tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.UserExt">
-        SELECT department.name as department, role.id as role_id, role.name as role, user.*
+        SELECT <include refid="selectExt" />
         FROM user
         left join department on department.id = user.department_id
         left join user_role on user_role.user_id = user.id

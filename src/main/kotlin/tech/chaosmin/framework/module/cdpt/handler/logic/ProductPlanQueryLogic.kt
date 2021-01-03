@@ -19,11 +19,10 @@ class ProductPlanQueryLogic(private val productPlanService: ProductPlanService) 
 
     override fun get(id: Long): ProductPlanEntity? {
         val productPlan = productPlanService.getById(id)
-        return if (productPlan == null) null
-        else ProductPlanMapper.INSTANCE.convert2Entity(productPlan)
+        return ProductPlanMapper.INSTANCE.convert2Entity(productPlan)
     }
 
-    override fun page(cond: PageQuery<ProductPlanExt>): IPage<ProductPlanEntity> {
+    override fun page(cond: PageQuery<ProductPlanExt>): IPage<ProductPlanEntity?> {
         val page = productPlanService.pageExt(cond.page, cond.wrapper)
         return page.convert(ProductPlanMapper.INSTANCE::convert2Entity)
     }

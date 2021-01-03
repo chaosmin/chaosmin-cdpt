@@ -21,7 +21,7 @@ open class ModifyProductCategoryHandler(private val productCategoryService: Prod
     AbstractTemplateOperate<ProductCategoryEntity, ProductCategoryEntity>() {
     override fun validation(arg: ProductCategoryEntity, result: RestResult<ProductCategoryEntity>) {
         if (arg.modifyType == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType");
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType")
         }
     }
 
@@ -30,7 +30,7 @@ open class ModifyProductCategoryHandler(private val productCategoryService: Prod
         arg: ProductCategoryEntity,
         result: RestResult<ProductCategoryEntity>
     ): RestResult<ProductCategoryEntity> {
-        val productCategory = ProductCategoryMapper.INSTANCE.convert2DO(arg)
+        val productCategory = ProductCategoryMapper.INSTANCE.convert2DO(arg) ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code)
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> productCategoryService.save(productCategory)
             ModifyTypeEnum.UPDATE -> productCategoryService.updateById(productCategory)

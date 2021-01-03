@@ -26,7 +26,7 @@ open class RoleShareProvider(
         else RestResultExt.successRestResult(RoleConvert.INSTANCE.convert2Resp(role))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<RoleResp>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<RoleResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<Role>(request)
         val page = roleQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(RoleConvert.INSTANCE::convert2Resp))

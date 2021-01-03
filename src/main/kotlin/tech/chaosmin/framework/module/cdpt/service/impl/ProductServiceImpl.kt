@@ -22,6 +22,8 @@ open class ProductServiceImpl : ServiceImpl<ProductDAO, Product>(), ProductServi
         return baseMapper.selectList(wa)
     }
 
+    override fun getByIdExt(id: Long): ProductExt? = baseMapper.getByIdExt(id)
+
     override fun pageExt(page: Page<ProductExt>, queryWrapper: Wrapper<ProductExt>): IPage<ProductExt> {
         return baseMapper.pageExt(page, queryWrapper)
     }

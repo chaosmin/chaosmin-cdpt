@@ -3,6 +3,7 @@ package tech.chaosmin.framework.module.cdpt.entity.response
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseResp
+import tech.chaosmin.framework.base.enums.BasicStatusEnum
 import java.util.*
 
 /**
@@ -11,11 +12,17 @@ import java.util.*
  */
 @ApiModel("个人产品计划接口返回参数")
 class GoodsPlanResp : BaseResp() {
-    @ApiModelProperty("商品ID")
-    var goodsId: Long? = null
+    @ApiModelProperty("机构名称")
+    var departmentName: String? = null
+
+    @ApiModelProperty("角色名称")
+    var roleName: String? = null
 
     @ApiModelProperty("用户ID")
     var userId: Long? = null
+
+    @ApiModelProperty("用户名称")
+    var userName: String? = null
 
     @ApiModelProperty("产品计划ID")
     var productPlanId: Long? = null
@@ -32,6 +39,9 @@ class GoodsPlanResp : BaseResp() {
     @ApiModelProperty("二级大类")
     var categorySubName: String? = null
 
+    @ApiModelProperty("产品代码")
+    var productCode: String? = null
+
     @ApiModelProperty("商品代码")
     var goodsCode: String? = null
 
@@ -39,16 +49,13 @@ class GoodsPlanResp : BaseResp() {
     var goodsName: String? = null
 
     @ApiModelProperty("商品状态")
-    var status: Int? = null
+    var status: BasicStatusEnum? = null
 
     @ApiModelProperty("是否可售")
-    var isForSale: Int? = null
+    var isForSale: Boolean? = null
 
-    @ApiModelProperty("售卖开始时间")
-    var saleStartTime: Date? = null
-
-    @ApiModelProperty("售卖结束时间")
-    var saleEndTime: Date? = null
+    @ApiModelProperty("售卖时间段")
+    var saleDateScope: List<Date>? = null
 
     @ApiModelProperty("授权人")
     var authorizer: String? = null

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="tech.chaosmin.framework.module.cdpt.domain.dao.ProductDAO">
+<mapper namespace="tech.chaosmin.framework.module.cdpt.domain.dao.GoodsPlanDAO">
     <sql id="selectExt">
-        partner.partner_code,partner.partner_name,
-        product_category.id as product_category_id,
         product_category.category_name,product_category.category_sub_name,
-        product.*,
-        (select count(*) from product_plan pp where pp.product_id = product.id) as number_of_plan
+        product.product_code,
+        concat('[',product.product_name,']-',product_plan.plan_name,'[',product_plan.primary_coverage,']') as 'goodsName',
+        product_plan.coms_ratio as 'max_coms_ratio',
+        goods_plan.*
     </sql>
 
     <select id="getByIdExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductExt">
@@ -18,12 +18,13 @@
         where product.id = #{id} and partner.is_deleted = 0
     </select>
 
-    <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductExt">
+    <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.GoodsPlanExt">
         SELECT <include refid="selectExt" />
-        FROM product
-        left join partner on partner.id = product.partner_id
-        left join product_category_relation on product_category_relation.product_id = product.id
-        left join product_category on product_category.id = product_category_relation.product_category_id
+        FROM goods_plan
+        left join product on goods_plan.product_id = product.id
+        left join product_category_relation on product.id = product_category_relation.product_id
+        left join product_category on product_category_relation.product_category_id = product_category.id
+        left join product_plan on goods_plan.product_plan_id = product_plan.id
         ${ew.customSqlSegment}
     </select>
 </mapper> 

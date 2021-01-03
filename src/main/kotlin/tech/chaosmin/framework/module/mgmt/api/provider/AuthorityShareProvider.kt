@@ -31,7 +31,7 @@ open class AuthorityShareProvider(
         return RestResultExt.successRestResult(authorityQueryLogic.tree())
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<AuthorityResp>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<AuthorityResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<Authority>(request)
         val page = authorityQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(AuthorityConvert.INSTANCE::convert2Resp))

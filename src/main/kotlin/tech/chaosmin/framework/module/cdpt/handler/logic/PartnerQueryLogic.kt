@@ -18,11 +18,10 @@ class PartnerQueryLogic(private val partnerService: PartnerService) : BaseQueryL
 
     override fun get(id: Long): PartnerEntity? {
         val partner = partnerService.getById(id)
-        return if (partner == null) null
-        else PartnerMapper.INSTANCE.convert2Entity(partner)
+        return PartnerMapper.INSTANCE.convert2Entity(partner)
     }
 
-    override fun page(cond: PageQuery<Partner>): IPage<PartnerEntity> {
+    override fun page(cond: PageQuery<Partner>): IPage<PartnerEntity?> {
         val page = partnerService.page(cond.page, cond.wrapper)
         return page.convert(PartnerMapper.INSTANCE::convert2Entity)
     }

@@ -21,15 +21,14 @@ class ProductQueryLogic(
 ) : BaseQueryLogic<ProductEntity, ProductExt> {
 
     override fun get(id: Long): ProductEntity? {
-        val product = productService.getById(id)
-        return if (product == null) null
-        else ProductMapper.INSTANCE.convert2Entity(product)
+        val productExt: ProductExt? = productService.getByIdExt(id)
+        return ProductMapper.INSTANCE.convertEx2Entity(productExt)
     }
 
-    override fun page(cond: PageQuery<ProductExt>): IPage<ProductEntity> {
+    override fun page(cond: PageQuery<ProductExt>): IPage<ProductEntity?> {
         val page = productService.pageExt(cond.page, cond.wrapper)
-        val result = page.convert(ProductMapper.INSTANCE::convert2Entity)
-        result.records.forEach {
+        val result = page.convert(ProductMapper.INSTANCE::convertEx2Entity)
+        result.records.filterNotNull().forEach {
             it.externalText = productAgreementService.selectText(it.id!!)
         }
         return result

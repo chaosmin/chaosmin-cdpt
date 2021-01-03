@@ -17,13 +17,12 @@ import tech.chaosmin.framework.module.mgmt.service.UserService
 class UserQueryLogic(private val userService: UserService) : BaseQueryLogic<UserEntity, UserExt> {
 
     override fun get(id: Long): UserEntity? {
-        val user = userService.getById(id)
-        return if (user == null) null
-        else UserMapper.INSTANCE.convert2Entity(user)
+        val user = userService.getByIdExt(id)
+        return UserMapper.INSTANCE.convertEx2Entity(user)
     }
 
-    override fun page(cond: PageQuery<UserExt>): IPage<UserEntity> {
+    override fun page(cond: PageQuery<UserExt>): IPage<UserEntity?> {
         val page = userService.pageExt(cond.page, cond.wrapper)
-        return page.convert(UserMapper.INSTANCE::convert2Entity)
+        return page.convert(UserMapper.INSTANCE::convertEx2Entity)
     }
 }

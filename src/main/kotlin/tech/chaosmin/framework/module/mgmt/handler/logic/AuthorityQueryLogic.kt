@@ -19,11 +19,10 @@ class AuthorityQueryLogic(private val authorityService: AuthorityService) : Base
 
     override fun get(id: Long): AuthorityEntity? {
         val authority = authorityService.getById(id)
-        return if (authority == null) null
-        else AuthorityMapper.INSTANCE.convert2Entity(authority)
+        return AuthorityMapper.INSTANCE.convert2Entity(authority)
     }
 
-    override fun page(cond: PageQuery<Authority>): IPage<AuthorityEntity> {
+    override fun page(cond: PageQuery<Authority>): IPage<AuthorityEntity?> {
         val page = authorityService.page(cond.page, cond.wrapper)
         return page.convert(AuthorityMapper.INSTANCE::convert2Entity)
     }

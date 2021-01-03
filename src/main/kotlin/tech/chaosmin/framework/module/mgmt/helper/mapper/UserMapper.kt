@@ -18,5 +18,5 @@ interface UserMapper : BaseMapper<UserEntity, User> {
         val INSTANCE: UserMapper = Mappers.getMapper(UserMapper::class.java)
     }
 
-    fun convert2Entity(source: UserExt): UserEntity
+    fun convertEx2Entity(source: UserExt?): UserEntity?
 }

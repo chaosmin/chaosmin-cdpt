@@ -30,7 +30,7 @@ open class ProductCategoryShareProvider(
         else RestResultExt.successRestResult(ProductCategoryConvert.INSTANCE.convert2Resp(productCategory))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<ProductCategoryResp>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<ProductCategoryResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<ProductCategory>(request)
         val page = productCategoryQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(ProductCategoryConvert.INSTANCE::convert2Resp))

@@ -21,13 +21,13 @@ open class ModifyAuthorityHandler(private val authorityService: AuthorityService
     AbstractTemplateOperate<AuthorityEntity, AuthorityEntity>() {
     override fun validation(arg: AuthorityEntity, result: RestResult<AuthorityEntity>) {
         if (arg.modifyType == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType");
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType")
         }
     }
 
     @Transactional
     override fun processor(arg: AuthorityEntity, result: RestResult<AuthorityEntity>): RestResult<AuthorityEntity> {
-        val authority = AuthorityMapper.INSTANCE.convert2DO(arg)
+        val authority = AuthorityMapper.INSTANCE.convert2DO(arg) ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code)
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> authorityService.save(authority)
             ModifyTypeEnum.UPDATE -> authorityService.updateById(authority)

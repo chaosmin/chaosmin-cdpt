@@ -10,5 +10,7 @@ import tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.UserExt
 interface UserService : IService<User> {
     fun findByLoginName(loginName: String): User?
 
+    fun getByIdExt(id: Long): UserExt?
+
     fun pageExt(page: Page<UserExt>, queryWrapper: Wrapper<UserExt>): IPage<UserExt>
 }

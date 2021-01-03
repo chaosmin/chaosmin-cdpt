@@ -32,13 +32,13 @@ open class ModifyProductHandler(
 ) : AbstractTemplateOperate<ProductEntity, ProductEntity>() {
     override fun validation(arg: ProductEntity, result: RestResult<ProductEntity>) {
         if (arg.modifyType == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType");
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType")
         }
     }
 
     @Transactional
     override fun processor(arg: ProductEntity, result: RestResult<ProductEntity>): RestResult<ProductEntity> {
-        val product = ProductMapper.INSTANCE.convert2DO(arg)
+        val product = ProductMapper.INSTANCE.convert2DO(arg) ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code)
         val productExternal = ProductExternal(arg.externalText)
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> {

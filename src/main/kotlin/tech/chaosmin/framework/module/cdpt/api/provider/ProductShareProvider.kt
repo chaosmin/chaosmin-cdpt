@@ -33,7 +33,7 @@ open class ProductShareProvider(
         else RestResultExt.successRestResult(ProductConvert.INSTANCE.convert2Resp(product))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<ProductResp>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<ProductResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<ProductExt>(request)
         val page = productQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(ProductConvert.INSTANCE::convert2Resp))
@@ -50,7 +50,7 @@ open class ProductShareProvider(
         req.fileName = req.file?.originalFilename
         val result = uploadProductHandler.operate(req)
         return if (result.success && result.data != null) {
-            RestResultExt.successRestResult(ProductConvert.INSTANCE.convert2Resp(result.data!!))
+            RestResultExt.successRestResult(ProductConvert.INSTANCE.convert2Resp(result.data)!!)
         } else {
             RestResultExt.mapper(result)
         }

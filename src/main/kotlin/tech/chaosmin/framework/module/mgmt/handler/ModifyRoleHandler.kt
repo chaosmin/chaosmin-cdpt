@@ -25,13 +25,13 @@ open class ModifyRoleHandler(
     AbstractTemplateOperate<RoleEntity, RoleEntity>() {
     override fun validation(arg: RoleEntity, result: RestResult<RoleEntity>) {
         if (arg.modifyType == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType");
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType")
         }
     }
 
     @Transactional
     override fun processor(arg: RoleEntity, result: RestResult<RoleEntity>): RestResult<RoleEntity> {
-        val role = RoleMapper.INSTANCE.convert2DO(arg)
+        val role = RoleMapper.INSTANCE.convert2DO(arg) ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code)
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> {
                 if (roleService.save(role)) {

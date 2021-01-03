@@ -26,13 +26,13 @@ open class ModifyUserHandler(
 ) : AbstractTemplateOperate<UserEntity, UserEntity>() {
     override fun validation(arg: UserEntity, result: RestResult<UserEntity>) {
         if (arg.modifyType == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType");
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType")
         }
     }
 
     @Transactional
     override fun processor(arg: UserEntity, result: RestResult<UserEntity>): RestResult<UserEntity> {
-        val user = UserMapper.INSTANCE.convert2DO(arg)
+        val user = UserMapper.INSTANCE.convert2DO(arg) ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code)
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> {
                 user.password = passwordEncoder.encode(arg.password)

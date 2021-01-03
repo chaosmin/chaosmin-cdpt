@@ -38,13 +38,13 @@ open class ModifyProductPlanHandler(
 
     override fun validation(arg: ProductPlanEntity, result: RestResult<ProductPlanEntity>) {
         if (arg.modifyType == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType");
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType")
         }
     }
 
     @Transactional
     override fun processor(arg: ProductPlanEntity, result: RestResult<ProductPlanEntity>): RestResult<ProductPlanEntity> {
-        val productPlan = ProductPlanMapper.INSTANCE.convert2DO(arg)
+        val productPlan = ProductPlanMapper.INSTANCE.convert2DO(arg) ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code)
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> {
                 val productId = productPlan.productId!!
@@ -81,15 +81,15 @@ open class ModifyProductPlanHandler(
             // 创建时填充计划的主险保额
             productPlan.primaryCoverage = liabilities.first().amount
             productPlanService.save(productPlan)
-            planLiabilityService.saveBatch(liabilities.mapIndexed { index, it ->
-                PlanLiabilityMapper.INSTANCE.convert2DO(it).apply {
+            planLiabilityService.saveBatch(liabilities.mapIndexedNotNull { index, it ->
+                PlanLiabilityMapper.INSTANCE.convert2DO(it)?.apply {
                     this.productPlanId = productPlan.id
                     this.productPlanCode = productPlan.planCode
                     this.sort = index + 1
                 }
             })
-            planRateTableService.saveBatch(rateTable.mapIndexed { index, it ->
-                PlanRateTableMapper.INSTANCE.convert2DO(it).apply {
+            planRateTableService.saveBatch(rateTable.mapIndexedNotNull { index, it ->
+                PlanRateTableMapper.INSTANCE.convert2DO(it)?.apply {
                     this.productPlanId = productPlan.id
                     this.productPlanCode = productPlan.planCode
                     this.sort = index + 1

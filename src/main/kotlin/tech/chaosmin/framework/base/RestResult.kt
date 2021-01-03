@@ -38,7 +38,7 @@ object RestResultExt {
     ): RestResult<RQ> {
         val result = func.operate(req)
         return if (result.success && result.data != null) {
-            successRestResult(Mappers.getMapper(clazz).convert2Resp(result.data!!))
+            successRestResult(Mappers.getMapper(clazz).convert2Resp(result.data)!!)
         } else failureRestResult()
     }
 

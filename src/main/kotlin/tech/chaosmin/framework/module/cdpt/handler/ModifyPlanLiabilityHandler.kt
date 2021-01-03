@@ -21,7 +21,7 @@ open class ModifyPlanLiabilityHandler(private val planLiabilityService: PlanLiab
     AbstractTemplateOperate<PlanLiabilityEntity, PlanLiabilityEntity>() {
     override fun validation(arg: PlanLiabilityEntity, result: RestResult<PlanLiabilityEntity>) {
         if (arg.modifyType == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType");
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType")
         }
     }
 

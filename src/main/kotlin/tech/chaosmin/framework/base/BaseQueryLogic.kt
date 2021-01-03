@@ -8,5 +8,5 @@ import com.baomidou.mybatisplus.core.metadata.IPage
  */
 interface BaseQueryLogic<E : BaseEntity, D : BaseDO> {
     fun get(id: Long): E?
-    fun page(cond: PageQuery<D>): IPage<E>
+    fun page(cond: PageQuery<D>): IPage<E?>
 }

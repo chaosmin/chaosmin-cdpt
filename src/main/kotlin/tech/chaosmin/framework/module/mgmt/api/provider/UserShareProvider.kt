@@ -26,7 +26,7 @@ open class UserShareProvider(
         else RestResultExt.successRestResult(UserConvert.INSTANCE.convert2Resp(user))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<UserResp>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<UserResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<UserExt>(request)
         val page = userQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(UserConvert.INSTANCE::convert2Resp))

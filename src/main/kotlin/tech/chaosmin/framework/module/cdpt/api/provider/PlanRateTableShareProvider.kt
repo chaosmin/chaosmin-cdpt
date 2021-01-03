@@ -30,7 +30,7 @@ open class PlanRateTableShareProvider(
         else RestResultExt.successRestResult(PlanRateTableConvert.INSTANCE.convert2Resp(planRateTable))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<PlanRateTableResp>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<PlanRateTableResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<PlanRateTable>(request)
         val page = planRateTableQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(PlanRateTableConvert.INSTANCE::convert2Resp))

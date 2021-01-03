@@ -12,6 +12,8 @@ import tech.chaosmin.framework.module.cdpt.domain.enums.RateTableTypeEnum
  */
 class ProductPlanEntity(id: Long? = null) : BaseEntity(id) {
     var productId: Long? = null
+    var partnerName: String? = null
+    var productCode: String? = null
     var productName: String? = null
     var planCode: String? = null
     var planName: String? = null

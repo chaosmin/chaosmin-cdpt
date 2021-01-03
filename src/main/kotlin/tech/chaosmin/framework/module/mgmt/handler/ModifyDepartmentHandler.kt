@@ -21,13 +21,13 @@ open class ModifyDepartmentHandler(private val departmentService: DepartmentServ
     AbstractTemplateOperate<DepartmentEntity, DepartmentEntity>() {
     override fun validation(arg: DepartmentEntity, result: RestResult<DepartmentEntity>) {
         if (arg.modifyType == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType");
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType")
         }
     }
 
     @Transactional
     override fun processor(arg: DepartmentEntity, result: RestResult<DepartmentEntity>): RestResult<DepartmentEntity> {
-        val department = DepartmentMapper.INSTANCE.convert2DO(arg)
+        val department = DepartmentMapper.INSTANCE.convert2DO(arg) ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code)
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> departmentService.save(department)
             ModifyTypeEnum.UPDATE -> departmentService.updateById(department)

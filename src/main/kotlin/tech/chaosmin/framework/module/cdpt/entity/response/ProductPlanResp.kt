@@ -14,6 +14,12 @@ class ProductPlanResp : BaseResp() {
     @ApiModelProperty("产品ID")
     var productId: Long? = null
 
+    @ApiModelProperty("保司名称")
+    var partnerName: String? = null
+
+    @ApiModelProperty("产品编码")
+    var productCode: String? = null
+
     @ApiModelProperty("产品名称")
     var productName: String? = null
 

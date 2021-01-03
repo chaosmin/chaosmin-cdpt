@@ -16,6 +16,8 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductExt
  * @since 2020/12/9 13:49
  */
 interface ProductDAO : BaseMapper<Product> {
+    fun getByIdExt(@Param("id") id: Long): ProductExt?
+
     fun pageExt(
         page: Page<ProductExt>,
         @Param(Constants.WRAPPER) queryWrapper: Wrapper<ProductExt>

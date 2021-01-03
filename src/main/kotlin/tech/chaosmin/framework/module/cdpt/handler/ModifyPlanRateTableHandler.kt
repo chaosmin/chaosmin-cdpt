@@ -21,7 +21,7 @@ open class ModifyPlanRateTableHandler(private val planRateTableService: PlanRate
     AbstractTemplateOperate<PlanRateTableEntity, PlanRateTableEntity>() {
     override fun validation(arg: PlanRateTableEntity, result: RestResult<PlanRateTableEntity>) {
         if (arg.modifyType == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType");
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType")
         }
     }
 

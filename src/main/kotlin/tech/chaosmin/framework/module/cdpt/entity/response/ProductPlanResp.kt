@@ -38,6 +38,9 @@ class ProductPlanResp : BaseResp() {
     @ApiModelProperty("默认佣金比例")
     var comsRatio: Double? = null
 
+    @ApiModelProperty("佣金比例")
+    var iComsRatio: Double? = null
+
     @ApiModelProperty("状态")
     var status: BasicStatusEnum? = null
 }

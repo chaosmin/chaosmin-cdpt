@@ -29,6 +29,7 @@ class GoodsPlanEntity(id: Long? = null) : BaseEntity(id) {
     var authorizeTime: Date? = null
     var authorizer: String? = null
     var comsRatio: Double? = null
+    var maxComsRatio: Double? = null
 
     /*****
      * 新建扩展字段

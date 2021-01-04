@@ -65,4 +65,7 @@ class GoodsPlanResp : BaseResp() {
 
     @ApiModelProperty("佣金比例")
     var comsRatio: Double? = null
+
+    @ApiModelProperty("最大佣金比例")
+    var maxComsRatio: Double? = null
 }

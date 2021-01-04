@@ -93,10 +93,9 @@ open class ModifyGoodsPlanHandler(
                     this.userName = user.username
                     this.partnerCode = product?.partnerCode
                     this.partnerName = product?.partnerName
-                    // TODO 管理员授权的账户没有出单权限?
                     this.isForSale = isOfficer
-                    this.saleStartTime = authorizeTime
-                    this.saleEndTime = DateUtil.offsetDay(authorizeTime, 365)
+                    this.saleStartTime = DateUtil.beginOfDay(authorizeTime)
+                    this.saleEndTime = DateUtil.offsetMonth(this.saleStartTime, 1200)
                     this.authorizeTime = authorizeTime
                     this.authorizer = SecurityUtil.getUsername()
                     this.comsRatio = comsRatio

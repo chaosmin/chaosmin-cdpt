@@ -1,5 +1,6 @@
 package tech.chaosmin.framework.module.cdpt.entity.response
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseResp
@@ -60,6 +61,7 @@ class GoodsPlanResp : BaseResp() {
     @ApiModelProperty("授权人")
     var authorizer: String? = null
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("授权时间")
     var authorizeTime: Date? = null
 

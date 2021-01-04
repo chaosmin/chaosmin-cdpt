@@ -39,7 +39,7 @@ object RestResultExt {
         val result = func.operate(req)
         return if (result.success && result.data != null) {
             successRestResult(Mappers.getMapper(clazz).convert2Resp(result.data)!!)
-        } else failureRestResult()
+        } else failureRestResult<RQ>(result.code, result.msg)
     }
 
     fun <T> mapper(result: RestResult<*>): RestResult<T> {
@@ -55,6 +55,7 @@ object RestResultExt {
 
     fun <T> failureRestResult() = RestResult<T>(ErrorCodeEnum.FAILURE.code, OPT_FAILED)
     fun <T> failureRestResult(msg: String) = RestResult<T>(ErrorCodeEnum.FAILURE.code, msg)
+    fun <T> failureRestResult(code: String, msg: String?) = RestResult<T>(code, msg)
     fun <T> failureRestResult(data: T) = RestResult(ErrorCodeEnum.FAILURE.code, OPT_FAILED, data)
     fun <T> failureRestResult(data: T, meta: Any) = RestResult(ErrorCodeEnum.FAILURE.code, OPT_FAILED, data, meta)
     fun <T> failureRestResult(msg: String, data: T) = RestResult(ErrorCodeEnum.FAILURE.code, msg, data)

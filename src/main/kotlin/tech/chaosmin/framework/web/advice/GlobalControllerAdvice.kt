@@ -15,6 +15,7 @@ import tech.chaosmin.framework.base.RestResultExt.failureRestResult
 import tech.chaosmin.framework.base.RestResultExt.noPermissionRestResult
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.AuthenticationException
+import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.exception.PermissionException
 import tech.chaosmin.framework.exception.ResourceNotExistException
 
@@ -87,7 +88,7 @@ class GlobalControllerAdvice {
     fun handleBindException(e: BindException): RestResult<Void> {
         val message = e.bindingResult.allErrors.joinToString { "${it.defaultMessage};" }
         logger.error("捕获到参数绑定异常: {}", message, e)
-        return failureRestResult(msg = message ?: "invalid request parameters")
+        return failureRestResult(msg = message)
     }
 
     /**
@@ -115,6 +116,15 @@ class GlobalControllerAdvice {
     fun handlePermissionException(e: PermissionException): RestResult<Void> {
         logger.error("捕获到权限异常", e)
         return noPermissionRestResult(msg = e.message ?: "permission deny")
+    }
+
+    /**
+     * 框架异常
+     */
+    @ExceptionHandler(FrameworkException::class)
+    fun handleFrameworkException(e: FrameworkException): RestResult<Void> {
+        logger.error("捕获到框架异常", e)
+        return failureRestResult(msg = e.message!!)
     }
 
     /**

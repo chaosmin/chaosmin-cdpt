@@ -20,8 +20,11 @@ class ProductResp : BaseResp() {
     @ApiModelProperty("大类ID")
     var productCategoryId: Long? = null
 
-    @ApiModelProperty("产品大类")
+    @ApiModelProperty("一级大类")
     var categoryName: String? = null
+
+    @ApiModelProperty("二级大类")
+    var categorySubName: String? = null
 
     @ApiModelProperty("产品代码")
     var productCode: String? = null

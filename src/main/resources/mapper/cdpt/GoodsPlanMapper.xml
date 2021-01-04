@@ -11,20 +11,21 @@
 
     <select id="getByIdExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductExt">
         SELECT <include refid="selectExt" />
-        FROM product
-        left join partner on partner.id = product.partner_id
-        left join product_category_relation on product_category_relation.product_id = product.id
-        left join product_category on product_category.id = product_category_relation.product_category_id
-        where product.id = #{id} and partner.is_deleted = 0
+        FROM goods_plan
+        left join product on goods_plan.product_id = product.id and product.is_deleted = 0
+        left join product_category_relation on product_category_relation.product_id = product.id and product_category_relation.is_deleted = 0
+        left join product_category on product_category.id = product_category_relation.product_category_id and product_category.is_deleted = 0
+        left join product_plan on goods_plan.product_plan_id = product_plan.id and product_plan.is_deleted = 0
+        where goods_plan.id = #{id} and goods_plan.is_deleted = 0
     </select>
 
     <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.GoodsPlanExt">
         SELECT <include refid="selectExt" />
         FROM goods_plan
-        left join product on goods_plan.product_id = product.id
-        left join product_category_relation on product.id = product_category_relation.product_id
-        left join product_category on product_category_relation.product_category_id = product_category.id
-        left join product_plan on goods_plan.product_plan_id = product_plan.id
+        left join product on goods_plan.product_id = product.id and product.is_deleted = 0
+        left join product_category_relation on product.id = product_category_relation.product_id and product_category_relation.is_deleted = 0
+        left join product_category on product_category_relation.product_category_id = product_category.id and product_category.is_deleted = 0
+        left join product_plan on goods_plan.product_plan_id = product_plan.id and product_plan.is_deleted = 0
         ${ew.customSqlSegment}
     </select>
 </mapper> 

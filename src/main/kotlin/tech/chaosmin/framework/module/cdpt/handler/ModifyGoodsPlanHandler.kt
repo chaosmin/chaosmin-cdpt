@@ -67,8 +67,9 @@ open class ModifyGoodsPlanHandler(
         plans.forEach { (planId, comsRatio) ->
             val exPlan = goodsPlanService.getEqUserAndPlan(user.id!!, planId)
             if (exPlan != null) {
-                logger.warn("overwrite user goods-plan[{}]", exPlan.id)
-                goodsPlanService.removeById(exPlan.id)
+                logger.error("product-plan[{}] has already auth to user[{}]", exPlan.id, user.id)
+                // goodsPlanService.removeById(exPlan.id)
+                throw FrameworkException(ErrorCodeEnum.FAILURE.code, "已为用户[${user.username}]分配过计划[${exPlan.productPlanId}]")
             }
             val plan = productPlanQueryLogic.get(planId)
             if (plan != null) {

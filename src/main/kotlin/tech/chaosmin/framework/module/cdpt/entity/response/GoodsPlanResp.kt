@@ -61,7 +61,7 @@ class GoodsPlanResp : BaseResp() {
     @ApiModelProperty("授权人")
     var authorizer: String? = null
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     @ApiModelProperty("授权时间")
     var authorizeTime: Date? = null
 

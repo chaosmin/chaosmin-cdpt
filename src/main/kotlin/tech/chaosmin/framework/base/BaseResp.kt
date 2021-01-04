@@ -9,14 +9,14 @@ open class BaseResp : Serializable {
     @ApiModelProperty("主键")
     var id: Long? = null
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     @ApiModelProperty("创建时间")
     var createTime: Date? = null
 
     @ApiModelProperty("创建人")
     var creator: String? = null
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     @ApiModelProperty("更新时间")
     var updateTime: Date? = null
 

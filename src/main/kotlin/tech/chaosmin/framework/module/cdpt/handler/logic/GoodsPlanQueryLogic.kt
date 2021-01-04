@@ -23,6 +23,8 @@ class GoodsPlanQueryLogic(private val goodsPlanService: GoodsPlanService) : Base
 
     override fun page(cond: PageQuery<GoodsPlanExt>): IPage<GoodsPlanEntity?> {
         val page = goodsPlanService.pageExt(cond.page, cond.wrapper)
-        return page.convert(GoodsPlanMapper.INSTANCE::convertEx2Entity)
+        return page.convert(GoodsPlanMapper.INSTANCE::convertEx2Entity).convert {
+            it?.apply { this.saleDateScope = listOf(it.saleStartTime!!, it.saleEndTime!!) }
+        }
     }
 }

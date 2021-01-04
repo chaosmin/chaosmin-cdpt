@@ -43,7 +43,7 @@ open class ModifyGoodsPlanHandler(
     override fun processor(arg: GoodsPlanEntity, result: RestResult<GoodsPlanEntity>): RestResult<GoodsPlanEntity> {
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> createGoodsPlan(arg)
-            ModifyTypeEnum.UPDATE -> goodsPlanService.updateById(GoodsPlanMapper.INSTANCE.convert2DO(arg))
+            ModifyTypeEnum.UPDATE -> updateGoodsPlan(arg)
             ModifyTypeEnum.REMOVE -> goodsPlanService.removeById(arg.id)
             else -> throw FrameworkException(ErrorCodeEnum.NOT_SUPPORTED_FUNCTION.code)
         }
@@ -59,6 +59,16 @@ open class ModifyGoodsPlanHandler(
                 createUserGoodsPlan(this, arg.plans!!)
             }
         }
+    }
+
+    private fun updateGoodsPlan(arg: GoodsPlanEntity) {
+        val goodsPlan = GoodsPlanMapper.INSTANCE.convert2DO(arg)
+        // 更新授权时间范围
+        if (!arg.saleDateScope.isNullOrEmpty() && arg.saleDateScope!!.size == 2) {
+            goodsPlan?.saleStartTime = arg.saleDateScope!![0]
+            goodsPlan?.saleEndTime = arg.saleDateScope!![1]
+        }
+        goodsPlanService.updateById(goodsPlan)
     }
 
     private fun createUserGoodsPlan(user: UserEntity, plans: Map<Long, Double>) {

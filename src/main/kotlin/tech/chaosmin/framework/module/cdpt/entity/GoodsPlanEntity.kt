@@ -25,6 +25,7 @@ class GoodsPlanEntity(id: Long? = null) : BaseEntity(id) {
     var isForSale: Boolean? = null
     var saleStartTime: Date? = null
     var saleEndTime: Date? = null
+    var saleDateScope: List<Date>? = null
     var authorizeTime: Date? = null
     var authorizer: String? = null
     var comsRatio: Double? = null

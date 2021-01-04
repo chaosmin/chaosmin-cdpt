@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.stereotype.Service
+import tech.chaosmin.framework.base.enums.BasicStatusEnum
 import tech.chaosmin.framework.module.cdpt.domain.dao.GoodsPlanDAO
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.GoodsPlan
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.GoodsPlanExt
@@ -24,7 +25,10 @@ open class GoodsPlanServiceImpl : ServiceImpl<GoodsPlanDAO, GoodsPlan>(), GoodsP
     }
 
     override fun getEqUserAndPlan(userId: Long, planId: Long): GoodsPlan? {
-        val ew = Wrappers.query<GoodsPlan>().eq("user_id", userId).eq("product_plan_id", planId)
+        val ew = Wrappers.query<GoodsPlan>()
+            .eq("user_id", userId)
+            .eq("product_plan_id", planId)
+            .eq("status", BasicStatusEnum.ENABLED.getCode())
         return baseMapper.selectList(ew).firstOrNull()
     }
 }

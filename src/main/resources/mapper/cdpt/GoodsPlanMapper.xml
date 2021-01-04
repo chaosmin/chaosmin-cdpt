@@ -4,7 +4,7 @@
     <sql id="selectExt">
         product_category.category_name,product_category.category_sub_name,
         product.product_code,
-        concat('[',product.product_name,']-',product_plan.plan_name,'[',product_plan.primary_coverage,']') as 'goodsName',
+        product.product_name,product_plan.plan_name as 'product_plan_name',
         product_plan.coms_ratio as 'max_coms_ratio',
         goods_plan.*
     </sql>

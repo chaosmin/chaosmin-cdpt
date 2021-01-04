@@ -42,11 +42,11 @@ class GoodsPlanResp : BaseResp() {
     @ApiModelProperty("产品代码")
     var productCode: String? = null
 
-    @ApiModelProperty("商品代码")
-    var goodsCode: String? = null
+    @ApiModelProperty("产品名称")
+    var productName: String? = null
 
     @ApiModelProperty("商品名称")
-    var goodsName: String? = null
+    var productPlanName: String? = null
 
     @ApiModelProperty("商品状态")
     var status: BasicStatusEnum? = null

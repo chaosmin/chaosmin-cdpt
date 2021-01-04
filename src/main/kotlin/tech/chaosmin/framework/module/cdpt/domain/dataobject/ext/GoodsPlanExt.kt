@@ -16,8 +16,11 @@ class GoodsPlanExt : GoodsPlan() {
     // 产品代码
     var productCode: String? = null
 
+    // 产品名称
+    var productName: String? = null
+
     // 商品名称
-    var goodsName: String? = null
+    var productPlanName: String? = null
 
     // 最大佣金比例
     var maxComsRatio: Double? = null

@@ -16,5 +16,7 @@ interface GoodsPlanService : IService<GoodsPlan> {
 
     fun pageExt(page: Page<GoodsPlanExt>, queryWrapper: Wrapper<GoodsPlanExt>): IPage<GoodsPlanExt>
 
+    fun getEqUser(userId: Long): List<GoodsPlan>
+
     fun getEqUserAndPlan(userId: Long, planId: Long): GoodsPlan?
 }

@@ -12,7 +12,9 @@ import tech.chaosmin.framework.module.cdpt.entity.response.ProductPlanResp
 import tech.chaosmin.framework.module.cdpt.handler.ModifyProductPlanHandler
 import tech.chaosmin.framework.module.cdpt.handler.logic.ProductPlanQueryLogic
 import tech.chaosmin.framework.module.cdpt.helper.convert.ProductPlanConvert
+import tech.chaosmin.framework.module.cdpt.service.GoodsPlanService
 import tech.chaosmin.framework.utils.RequestUtil
+import tech.chaosmin.framework.utils.SecurityUtil
 import javax.servlet.http.HttpServletRequest
 
 /**
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletRequest
  */
 @RestController
 open class ProductPlanShareProvider(
+    private val goodsPlanService: GoodsPlanService,
     private val productPlanQueryLogic: ProductPlanQueryLogic,
     private val modifyProductPlanHandler: ModifyProductPlanHandler
 ) : ProductPlanShareService {
@@ -32,6 +35,11 @@ open class ProductPlanShareProvider(
 
     override fun page(request: HttpServletRequest): RestResult<IPage<ProductPlanResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<ProductPlanExt>(request)
+        // 如果是非管理员用户仅能查看自己被授权的产品计划信息
+        if (SecurityUtil.getUserDetails()?.isAdmin != true) {
+            val planIds = goodsPlanService.getEqUser(SecurityUtil.getUserId()).mapNotNull { it.productPlanId }
+            queryCondition.wrapper.`in`("product_plan.id", planIds)
+        }
         val page = productPlanQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(ProductPlanConvert.INSTANCE::convert2Resp))
     }

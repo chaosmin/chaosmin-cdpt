@@ -35,7 +35,7 @@ open class GoodsPlanShareProvider(
         val queryCondition = RequestUtil.getQueryCondition<GoodsPlanExt>(request)
         // 如果是非管理员用户仅能查看自己授权的产品信息
         if (SecurityUtil.getUserDetails()?.isAdmin != true) {
-            queryCondition.wrapper.eq("authorizer_id", SecurityUtil.getUserDetails()?.userId)
+            queryCondition.wrapper.eq("authorizer_id", SecurityUtil.getUserId())
         }
         val page = goodsPlanQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(GoodsPlanConvert.INSTANCE::convert2Resp))

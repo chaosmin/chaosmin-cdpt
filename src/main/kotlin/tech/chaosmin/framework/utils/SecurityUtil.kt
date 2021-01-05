@@ -10,9 +10,21 @@ import tech.chaosmin.framework.module.mgmt.entity.response.UserDetailResp
 object SecurityUtil {
     private val logger = LoggerFactory.getLogger(SecurityUtil::class.java)
 
+    fun getUserId(): Long = getUserId(getAuthentication())
+
     fun getUsername(): String = getUsername(getAuthentication())
 
     fun getUserDetails(): UserDetailResp? = getUserDetails(getAuthentication())
+
+    fun getUserId(authentication: Authentication?): Long {
+        if (authentication != null) {
+            val principal: Any = authentication.principal
+            if (principal is JwtUserDetails) {
+                return principal.userId
+            }
+        }
+        return -1
+    }
 
     fun getUsername(authentication: Authentication?): String {
         var username: String = SystemConst.ANONYMOUS

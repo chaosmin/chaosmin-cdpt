@@ -47,6 +47,9 @@ open class GoodsPlan(id: Long? = null) : BaseDO(id, 0) {
     // 授权时间
     var authorizeTime: Date? = null
 
+    // 授权人ID
+    var authorizerId: Long? = null
+
     // 授权人
     var authorizer: String? = null
 

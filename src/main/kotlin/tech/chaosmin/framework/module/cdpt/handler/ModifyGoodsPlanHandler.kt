@@ -73,6 +73,7 @@ open class ModifyGoodsPlanHandler(
 
     private fun createUserGoodsPlan(user: UserEntity, plans: Map<Long, Double>) {
         val authorizeTime = Date()
+        val userDetails = SecurityUtil.getUserDetails()
         val isOfficer = user.role.equals("officer", true)
         plans.forEach { (planId, comsRatio) ->
             val exPlan = goodsPlanService.getEqUserAndPlan(user.id!!, planId)
@@ -97,7 +98,8 @@ open class ModifyGoodsPlanHandler(
                     this.saleStartTime = DateUtil.beginOfDay(authorizeTime)
                     this.saleEndTime = DateUtil.offsetMonth(this.saleStartTime, 1200)
                     this.authorizeTime = authorizeTime
-                    this.authorizer = SecurityUtil.getUsername()
+                    this.authorizerId = userDetails?.userId
+                    this.authorizer = userDetails?.userName
                     this.comsRatio = comsRatio
                 })
             }

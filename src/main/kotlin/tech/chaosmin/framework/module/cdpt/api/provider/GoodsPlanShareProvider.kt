@@ -13,6 +13,7 @@ import tech.chaosmin.framework.module.cdpt.handler.ModifyGoodsPlanHandler
 import tech.chaosmin.framework.module.cdpt.handler.logic.GoodsPlanQueryLogic
 import tech.chaosmin.framework.module.cdpt.helper.convert.GoodsPlanConvert
 import tech.chaosmin.framework.utils.RequestUtil
+import tech.chaosmin.framework.utils.SecurityUtil
 import javax.servlet.http.HttpServletRequest
 
 /**
@@ -32,6 +33,10 @@ open class GoodsPlanShareProvider(
 
     override fun page(request: HttpServletRequest): RestResult<IPage<GoodsPlanResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<GoodsPlanExt>(request)
+        // 如果是非管理员用户仅能查看自己授权的产品信息
+        if (SecurityUtil.getUserDetails()?.isAdmin != true) {
+            queryCondition.wrapper.eq("authorizer_id", SecurityUtil.getUserDetails()?.userId)
+        }
         val page = goodsPlanQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(GoodsPlanConvert.INSTANCE::convert2Resp))
     }

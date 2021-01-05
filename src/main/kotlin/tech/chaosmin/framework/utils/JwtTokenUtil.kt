@@ -24,6 +24,7 @@ object JwtTokenUtil : Serializable {
     private const val ISS = "chaosmin"
     private const val APP_SECRET_KEY = "chaosmin_secret"
     private const val DEPARTMENT = "department"
+    private const val USERID = "userId"
     private const val USERNAME = "username"
     private const val ROLES = "roles"
     private const val AUTHORITIES = "authorities"
@@ -42,14 +43,15 @@ object JwtTokenUtil : Serializable {
      * @return 令牌
      */
     fun generateToken(authentication: Authentication, isRememberMe: Boolean = false): String? {
-        val claims: MutableMap<String, Any?> = HashMap(3)
+        val claims: MutableMap<String, Any?> = HashMap(8)
         val userDetails = SecurityUtil.getUserDetails(authentication)
-        claims[USERNAME] = userDetails?.name
+        claims[USERID] = userDetails?.userId
+        claims[USERNAME] = userDetails?.userName
         claims[DEPARTMENT] = userDetails?.departmentId
         claims[ROLES] = userDetails?.roles
         claims[AUTHORITIES] = authentication.authorities
         claims[CREATED] = Date()
-        return generateToken(userDetails?.name, claims, isRememberMe)
+        return generateToken(userDetails?.userName, claims, isRememberMe)
     }
 
     /**
@@ -97,6 +99,7 @@ object JwtTokenUtil : Serializable {
             if (SecurityUtil.getAuthentication() == null) {
                 // 上下文中Authentication为空
                 val claims = getClaimsFromToken(this) ?: return null
+                val userId = claims[USERID]?.toString() ?.toLong()
                 val username = claims[USERNAME]?.toString() ?: return null
                 val department = claims[DEPARTMENT]?.toString()?.toLong()
                 @Suppress("UNCHECKED_CAST") val roles = claims[ROLES] as List<String>
@@ -104,7 +107,7 @@ object JwtTokenUtil : Serializable {
                     return null
                 }
                 authentication = JwtAuthenticationToken(
-                    JwtUserDetails(username, "", department, roles),
+                    JwtUserDetails(userId!!, username, "", department, roles),
                     authorities = generateAuthorities(claims[AUTHORITIES]),
                     token = this
                 )

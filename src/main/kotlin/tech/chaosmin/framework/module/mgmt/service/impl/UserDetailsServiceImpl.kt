@@ -35,6 +35,7 @@ class UserDetailsServiceImpl(
                 department?.status != null && department.status == DepartmentStatusEnum.VALID.getCode()
             } else true
             JwtUserDetails(
+                this.id!!,
                 username,
                 this.password!!,
                 this.departmentId,

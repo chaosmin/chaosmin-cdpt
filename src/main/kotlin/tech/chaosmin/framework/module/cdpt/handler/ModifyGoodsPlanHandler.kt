@@ -8,6 +8,7 @@ import tech.chaosmin.framework.base.AbstractTemplateOperate
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.base.enums.ModifyTypeEnum
+import tech.chaosmin.framework.base.enums.YesNoEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.GoodsPlan
 import tech.chaosmin.framework.module.cdpt.entity.GoodsPlanEntity
@@ -76,7 +77,7 @@ open class ModifyGoodsPlanHandler(
         val userDetails = SecurityUtil.getUserDetails()
         val isOfficer = user.role.equals("officer", true)
         plans.forEach { (planId, comsRatio) ->
-            val exPlan = goodsPlanService.getEqUserAndPlan(user.id!!, planId)
+            val exPlan = goodsPlanService.getByUserAndPlan(user.id!!, planId)
             if (exPlan != null) {
                 logger.error("product-plan[{}] has already auth to user[{}]", exPlan.id, user.id)
                 // goodsPlanService.removeById(exPlan.id)
@@ -94,7 +95,7 @@ open class ModifyGoodsPlanHandler(
                     this.userName = user.username
                     this.partnerCode = product?.partnerCode
                     this.partnerName = product?.partnerName
-                    this.isForSale = isOfficer
+                    this.isForSale = if (isOfficer) YesNoEnum.YES.getCode() else YesNoEnum.NO.getCode()
                     this.saleStartTime = DateUtil.beginOfDay(authorizeTime)
                     this.saleEndTime = DateUtil.offsetMonth(this.saleStartTime, 1200)
                     this.authorizeTime = authorizeTime

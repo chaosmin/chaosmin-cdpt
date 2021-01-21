@@ -21,8 +21,9 @@ class GoodsPlanEntity(id: Long? = null) : BaseEntity(id) {
     var productCode: String? = null
     var productName: String? = null
     var productPlanName: String? = null
+    var primaryCoverage: String? = null
     var status: BasicStatusEnum? = null
-    var isForSale: Boolean? = null
+    var isForSale: BasicStatusEnum? = null
     var saleStartTime: Date? = null
     var saleEndTime: Date? = null
     var saleDateScope: List<Date>? = null
@@ -31,6 +32,11 @@ class GoodsPlanEntity(id: Long? = null) : BaseEntity(id) {
     var authorizer: String? = null
     var comsRatio: Double? = null
     var maxComsRatio: Double? = null
+
+    /**
+     * 返回扩展字段
+     */
+    var productId: Long? = null
 
     /*****
      * 新建扩展字段

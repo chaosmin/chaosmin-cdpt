@@ -24,18 +24,26 @@ open class GoodsPlanServiceImpl : ServiceImpl<GoodsPlanDAO, GoodsPlan>(), GoodsP
         return baseMapper.pageExt(page, queryWrapper)
     }
 
-    override fun getEqUser(userId: Long): List<GoodsPlan> {
+    override fun getByUser(userId: Long): List<GoodsPlan> {
         val ew = Wrappers.query<GoodsPlan>()
             .eq("user_id", userId)
             .eq("status", BasicStatusEnum.ENABLED.getCode())
         return baseMapper.selectList(ew)
     }
 
-    override fun getEqUserAndPlan(userId: Long, planId: Long): GoodsPlan? {
+    override fun getByUserAndPlan(userId: Long, planId: Long): GoodsPlan? {
         val ew = Wrappers.query<GoodsPlan>()
             .eq("user_id", userId)
             .eq("product_plan_id", planId)
             .eq("status", BasicStatusEnum.ENABLED.getCode())
         return baseMapper.selectList(ew).firstOrNull()
+    }
+
+    override fun getProductIdByUser(userId: Long): List<Long> {
+        val ew = Wrappers.query<GoodsPlan>()
+            .select("distinct product_id")
+            .eq("user_id", userId)
+            .eq("status", BasicStatusEnum.ENABLED.getCode())
+        return baseMapper.selectList(ew).mapNotNull { it.productId }
     }
 }

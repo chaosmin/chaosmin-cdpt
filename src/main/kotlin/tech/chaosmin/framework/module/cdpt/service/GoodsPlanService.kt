@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.IService
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.GoodsPlan
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.GoodsPlanExt
+import tech.chaosmin.framework.module.cdpt.entity.response.GoodsCategoryResp
 
 /**
  * @author Romani min
@@ -16,7 +17,9 @@ interface GoodsPlanService : IService<GoodsPlan> {
 
     fun pageExt(page: Page<GoodsPlanExt>, queryWrapper: Wrapper<GoodsPlanExt>): IPage<GoodsPlanExt>
 
-    fun getEqUser(userId: Long): List<GoodsPlan>
+    fun getByUser(userId: Long): List<GoodsPlan>
 
-    fun getEqUserAndPlan(userId: Long, planId: Long): GoodsPlan?
+    fun getByUserAndPlan(userId: Long, planId: Long): GoodsPlan?
+
+    fun getProductIdByUser(userId: Long): List<Long>
 }

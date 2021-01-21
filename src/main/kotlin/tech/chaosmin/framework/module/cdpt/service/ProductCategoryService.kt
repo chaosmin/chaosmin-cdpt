@@ -9,4 +9,6 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.ProductCategory
  */
 interface ProductCategoryService : IService<ProductCategory> {
     fun getCategoryOrCreate(name: String, subName: String): ProductCategory
+
+    fun getByProductIds(productIds: List<Long>): List<ProductCategory>
 }

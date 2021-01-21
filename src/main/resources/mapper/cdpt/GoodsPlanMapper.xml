@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="tech.chaosmin.framework.module.cdpt.domain.dao.GoodsPlanDAO">
-    <sql id="selectExt">
+    <sql id="extSelectFields">
+        goods_plan.*,
         product_category.category_name,product_category.category_sub_name,
-        product.product_code,
-        product.product_name,product_plan.plan_name as 'product_plan_name',
-        product_plan.coms_ratio as 'max_coms_ratio',
-        goods_plan.*
+        product.product_code,product.product_name,
+        product_plan.plan_name as 'product_plan_name',product_plan.coms_ratio as 'max_coms_ratio', product_plan.primary_coverage
     </sql>
 
     <select id="getByIdExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductExt">
-        SELECT <include refid="selectExt" />
+        SELECT <include refid="extSelectFields" />
         FROM goods_plan
-        left join product on goods_plan.product_id = product.id and product.is_deleted = 0
-        left join product_category_relation on product_category_relation.product_id = product.id and product_category_relation.is_deleted = 0
+        left join product_category_relation on product_category_relation.product_id = goods_plan.product_id and product_category_relation.is_deleted = 0
         left join product_category on product_category.id = product_category_relation.product_category_id and product_category.is_deleted = 0
+        left join product on goods_plan.product_id = product.id and product.is_deleted = 0
         left join product_plan on goods_plan.product_plan_id = product_plan.id and product_plan.is_deleted = 0
-        where goods_plan.id = #{id} and goods_plan.is_deleted = 0
+        where goods_plan.is_deleted = 0 and goods_plan.id = #{id}
     </select>
 
     <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.GoodsPlanExt">
-        SELECT <include refid="selectExt" />
+        SELECT <include refid="extSelectFields" />
         FROM goods_plan
+        left join product_category_relation on product_category_relation.product_id = goods_plan.product_id and product_category_relation.is_deleted = 0
+        left join product_category on product_category.id = product_category_relation.product_category_id and product_category.is_deleted = 0
         left join product on goods_plan.product_id = product.id and product.is_deleted = 0
-        left join product_category_relation on product.id = product_category_relation.product_id and product_category_relation.is_deleted = 0
-        left join product_category on product_category_relation.product_category_id = product_category.id and product_category.is_deleted = 0
         left join product_plan on goods_plan.product_plan_id = product_plan.id and product_plan.is_deleted = 0
         ${ew.customSqlSegment}
     </select>

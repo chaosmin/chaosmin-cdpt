@@ -17,4 +17,5 @@ class PlanRateTableEntity(id: Long? = null) : BaseEntity(id) {
     var premium: Double? = null
     var premiumCurrency: String? = null
     var sort: Int? = null
+    var remark: String? = null
 }

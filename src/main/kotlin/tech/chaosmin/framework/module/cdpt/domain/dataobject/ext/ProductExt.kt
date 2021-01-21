@@ -8,21 +8,22 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.Product
  * @since 2020/12/25 15:58
  */
 class ProductExt : Product() {
-    // 保司编号
+    // 扩展返回字段
+    /** 包含计划数 */
+    var numberOfPlan: Int? = null
+
+    /** 保司编号 */
     var partnerCode: String? = null
 
-    // 保司名称
+    /** 保司名称 */
     var partnerName: String? = null
 
-    // 产品分类ID
+    /** 产品分类ID */
     var productCategoryId: Long? = null
 
-    // 产品一级大类
+    /** 产品一级大类 */
     var categoryName: String? = null
 
-    // 产品二级大类
+    /** 产品二级大类 */
     var categorySubName: String? = null
-
-    // 包含计划数
-    var numberOfPlan: Int? = null
 }

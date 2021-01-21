@@ -1,4 +1,4 @@
-package tech.chaosmin.framework.handler.base
+package tech.chaosmin.framework.base
 
 import cn.hutool.core.lang.Assert
 import org.junit.jupiter.api.Test

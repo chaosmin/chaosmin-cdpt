@@ -37,7 +37,7 @@ open class ProductPlanShareProvider(
         val queryCondition = RequestUtil.getQueryCondition<ProductPlanExt>(request)
         // 如果是非管理员用户仅能查看自己被授权的产品计划信息
         if (SecurityUtil.getUserDetails()?.isAdmin != true) {
-            val planIds = goodsPlanService.getEqUser(SecurityUtil.getUserId()).mapNotNull { it.productPlanId }
+            val planIds = goodsPlanService.getByUser(SecurityUtil.getUserId()).mapNotNull { it.productPlanId }
             queryCondition.wrapper.`in`("product_plan.id", planIds)
         }
         val page = productPlanQueryLogic.page(queryCondition)

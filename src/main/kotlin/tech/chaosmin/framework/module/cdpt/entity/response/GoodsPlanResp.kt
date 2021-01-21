@@ -11,8 +11,8 @@ import java.util.*
  * @author Romani min
  * @since 2020/12/31 18:14
  */
-@ApiModel("个人产品计划接口返回参数")
-class GoodsPlanResp : BaseResp() {
+@ApiModel("个人产品计划管理接口返回参数")
+open class GoodsPlanResp : BaseResp() {
     @ApiModelProperty("机构名称")
     var departmentName: String? = null
 
@@ -53,7 +53,7 @@ class GoodsPlanResp : BaseResp() {
     var status: BasicStatusEnum? = null
 
     @ApiModelProperty("是否可售")
-    var isForSale: Boolean? = null
+    var isForSale: BasicStatusEnum? = null
 
     @ApiModelProperty("售卖时间段")
     var saleDateScope: List<Date>? = null

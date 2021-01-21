@@ -34,4 +34,7 @@ open class PlanRateTable(id: Long? = null) : BaseDO(id, 0) {
 
     // 排序
     var sort: Int? = null
+
+    // 费率表描述
+    var remark: String? = null
 }

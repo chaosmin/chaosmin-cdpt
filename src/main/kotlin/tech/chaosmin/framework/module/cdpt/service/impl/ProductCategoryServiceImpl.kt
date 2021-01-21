@@ -24,4 +24,9 @@ open class ProductCategoryServiceImpl : ServiceImpl<ProductCategoryDAO, ProductC
             return productCategory
         }
     }
+
+    override fun getByProductIds(productIds: List<Long>): List<ProductCategory> {
+        return if (productIds.isEmpty()) emptyList()
+        else baseMapper.getByProductIds(productIds)
+    }
 }

@@ -111,6 +111,7 @@ create table plan_rate_table
     formula           varchar(256)                       not null comment '计算公式',
     premium           double                             not null comment '保费',
     premium_currency  varchar(64)                        not null comment '保费币种',
+    remark            varchar(64)                        null comment '费率表描述',
     create_time       datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     creator           varchar(64)                        null comment '创建人',
     update_time       datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',

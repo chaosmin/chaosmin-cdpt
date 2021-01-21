@@ -34,4 +34,7 @@ class PlanRateTableResp : BaseResp() {
 
     @ApiModelProperty("排序")
     var sort: Int? = null
+
+    @ApiModelProperty("费率表描述")
+    var remark: String? = null
 }

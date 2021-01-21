@@ -1,9 +1,16 @@
 package tech.chaosmin.framework
 
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [Application::class])
-open class BaseTestMain
+open class BaseTestMain {
+    init {
+        System.setProperty("DEPLOY_ENV", "dev")
+        System.setProperty("NACOS_GROUP", "chaosmin")
+        System.setProperty("NACOS_ENABLE", "true")
+        System.setProperty("SPRING_DISCOVERY_ENABLE", "false")
+        System.setProperty("CONFIG_SERVER_URL", "106.14.40.2:8848")
+        System.setProperty("CONSUL_HOST", "106.14.40.2")
+        System.setProperty("CONSUL_PORT", "8500")
+    }
+}

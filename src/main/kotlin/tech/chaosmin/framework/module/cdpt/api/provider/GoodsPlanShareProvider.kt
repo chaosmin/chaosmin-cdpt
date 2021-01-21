@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.RestResultExt
+import tech.chaosmin.framework.base.enums.BasicStatusEnum
+import tech.chaosmin.framework.base.enums.YesNoEnum
 import tech.chaosmin.framework.module.cdpt.api.GoodsPlanShareService
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.GoodsPlanExt
 import tech.chaosmin.framework.module.cdpt.entity.GoodsPlanEntity
@@ -33,6 +35,9 @@ open class GoodsPlanShareProvider(
 
     override fun page(request: HttpServletRequest): RestResult<IPage<GoodsPlanResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<GoodsPlanExt>(request)
+        queryCondition.wrapper
+            .eq("goods_plan.status", BasicStatusEnum.ENABLED.getCode())
+            .eq("goods_plan.is_deleted", YesNoEnum.NO.getCode())
         // 如果是非管理员用户仅能查看自己授权的产品信息
         if (SecurityUtil.getUserDetails()?.isAdmin != true) {
             queryCondition.wrapper.eq("authorizer_id", SecurityUtil.getUserId())

@@ -36,7 +36,7 @@ open class GoodsPlan(id: Long? = null) : BaseDO(id, 0) {
     var status: Int? = null
 
     // 是否可售
-    var isForSale: Boolean? = null
+    var isForSale: Int? = null
 
     // 售卖开始时间
     var saleStartTime: Date? = null

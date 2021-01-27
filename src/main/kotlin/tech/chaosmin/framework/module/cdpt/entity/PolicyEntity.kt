@@ -16,4 +16,7 @@ class PolicyEntity(id: Long? = null) : BaseEntity(id) {
     var expiryTime: Date? = null
     var travelDestination: String? = null
     var status: PolicyStatusEnum? = null
+    var unitPremium: Double? = null
+    var totalPremium: Double? = null
+    var actualPremium: Double? = null
 }

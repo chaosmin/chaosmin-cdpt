@@ -3,6 +3,7 @@ package tech.chaosmin.framework.module.cdpt.entity.request
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseReq
+import java.util.*
 
 /**
  * @author Romani min
@@ -23,7 +24,7 @@ class PolicyInsuredReq : BaseReq() {
     var certiNo: String? = null
 
     @ApiModelProperty("生日")
-    var dateOfBirth: String? = null
+    var dateOfBirth: Date? = null
 
     @ApiModelProperty("姓名")
     var name: String? = null

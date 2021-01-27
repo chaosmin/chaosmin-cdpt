@@ -14,6 +14,7 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.GoodsPlanExt
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
 import tech.chaosmin.framework.module.cdpt.entity.response.GoodsCategoryResp
 import tech.chaosmin.framework.module.cdpt.entity.response.GoodsInsuredResp
+import tech.chaosmin.framework.module.cdpt.handler.IssuePolicyHandler
 import tech.chaosmin.framework.module.cdpt.handler.logic.GoodsPlanQueryLogic
 import tech.chaosmin.framework.module.cdpt.helper.convert.PlanLiabilityConvert
 import tech.chaosmin.framework.module.cdpt.helper.convert.PlanRateTableConvert
@@ -36,7 +37,8 @@ open class InsureShareProvider(
     private val goodsPlanQueryLogic: GoodsPlanQueryLogic,
     private val planLiabilityService: PlanLiabilityService,
     private val planRateTableService: PlanRateTableService,
-    private val productExternalService: ProductExternalService
+    private val productExternalService: ProductExternalService,
+    private val issuePolicyHandler: IssuePolicyHandler
 ) : InsureShareService {
     private val logger = LoggerFactory.getLogger(InsureShareService::class.java)
 
@@ -85,6 +87,6 @@ open class InsureShareProvider(
 
     override fun insurance(req: PolicyIssueReq): RestResult<Void> {
         logger.info(JsonUtil.encode(req, true))
-        return RestResultExt.successRestResult()
+        return issuePolicyHandler.operate(req)
     }
 }

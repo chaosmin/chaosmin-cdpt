@@ -12,6 +12,15 @@ import java.util.*
  */
 @ApiModel("保单出单接口请求参数")
 class PolicyIssueReq : BaseReq() {
+    @ApiModelProperty("订单ID")
+    var orderId: Long? = null
+
+    @ApiModelProperty("订单号")
+    var orderNo: String? = null
+
+    @ApiModelProperty("产品计划ID")
+    var productPlanId: Long? = null
+
     @ApiModelProperty("保障范围")
     var dateScope: List<Date>? = null
 

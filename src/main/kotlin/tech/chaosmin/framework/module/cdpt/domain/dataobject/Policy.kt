@@ -28,4 +28,13 @@ class Policy(id: Long? = null) : BaseDO(id, 0) {
 
     /** 0-待出单 1-出单成功 2-出单失败 */
     var status: Int? = null
+
+    /** 单价保费 */
+    var unitPremium: Double? = null
+
+    /** 原总保费 */
+    var totalPremium: Double? = null
+
+    /** 实际保费 */
+    var actualPremium: Double? = null
 }

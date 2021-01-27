@@ -16,6 +16,8 @@ import tech.chaosmin.framework.module.cdpt.entity.PolicyHolderEntity
 import tech.chaosmin.framework.module.cdpt.entity.PolicyInsurantEntity
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyInsuredReq
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
+import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
+import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyConvert
 import tech.chaosmin.framework.utils.BizNoUtil
 
 /**
@@ -28,8 +30,8 @@ open class IssuePolicyHandler(
     private val modifyPolicyHandler: ModifyPolicyHandler,
     private val modifyPolicyHolderHandler: ModifyPolicyHolderHandler,
     private val modifyPolicyInsurantHandler: ModifyPolicyInsurantHandler
-) : AbstractTemplateOperate<PolicyIssueReq, Void>() {
-    override fun validation(arg: PolicyIssueReq, result: RestResult<Void>) {
+) : AbstractTemplateOperate<PolicyIssueReq, PolicyResp>() {
+    override fun validation(arg: PolicyIssueReq, result: RestResult<PolicyResp>) {
         if (arg.dateScope?.isEmpty() != false) {
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "dateScope")
         }
@@ -39,7 +41,7 @@ open class IssuePolicyHandler(
         super.validation(arg, result)
     }
 
-    override fun processor(arg: PolicyIssueReq, result: RestResult<Void>): RestResult<Void> {
+    override fun processor(arg: PolicyIssueReq, result: RestResult<PolicyResp>): RestResult<PolicyResp> {
         val orderEntity = if (arg.orderId == null) convert2Order(arg)
         else OrderEntity().apply {
             this.status = OrderStatusEnum.SUCCESS
@@ -56,7 +58,9 @@ open class IssuePolicyHandler(
             this.orderId = orderEntity.id
             this.policyId = policyEntity.id
         } }?.map { modifyPolicyInsurantHandler.operate(it) }
-        return result
+        // TODO 此处调用保司接口进行实际出单
+        val responseData = PolicyConvert.INSTANCE.convert2Resp(policyEntity)
+        return result.success(responseData)
     }
 
     private fun convert2Order(arg: PolicyIssueReq): OrderEntity {

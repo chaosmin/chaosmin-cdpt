@@ -12,6 +12,10 @@ class KeyValueEnumMapper {
         return enum?.getCode()
     }
 
+    fun getEnumDesc(enum: KeyValueEnum?): String? {
+        return enum?.getDesc()
+    }
+
     fun <T> getEnum(@TargetType clazz: Class<T>, code: Int?): T? where T : Enum<T>, T : KeyValueEnum {
         return if (code == null) null
         else EnumClient.getEnum(clazz, code)

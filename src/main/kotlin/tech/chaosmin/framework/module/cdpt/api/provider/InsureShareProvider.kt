@@ -14,6 +14,7 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.GoodsPlanExt
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
 import tech.chaosmin.framework.module.cdpt.entity.response.GoodsCategoryResp
 import tech.chaosmin.framework.module.cdpt.entity.response.GoodsInsuredResp
+import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
 import tech.chaosmin.framework.module.cdpt.handler.IssuePolicyHandler
 import tech.chaosmin.framework.module.cdpt.handler.logic.GoodsPlanQueryLogic
 import tech.chaosmin.framework.module.cdpt.helper.convert.PlanLiabilityConvert
@@ -85,8 +86,10 @@ open class InsureShareProvider(
         return RestResultExt.successRestResult(result)
     }
 
-    override fun insurance(req: PolicyIssueReq): RestResult<Void> {
+    override fun insurance(req: PolicyIssueReq): RestResult<PolicyResp> {
         logger.info(JsonUtil.encode(req, true))
+        // mock 调用保司接口
+        Thread.sleep(2 * 1000)
         return issuePolicyHandler.operate(req)
     }
 }

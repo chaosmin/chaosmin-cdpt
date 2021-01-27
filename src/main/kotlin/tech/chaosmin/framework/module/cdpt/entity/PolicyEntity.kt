@@ -19,4 +19,5 @@ class PolicyEntity(id: Long? = null) : BaseEntity(id) {
     var unitPremium: Double? = null
     var totalPremium: Double? = null
     var actualPremium: Double? = null
+    var insuredList: List<PolicyInsurantEntity>? = null
 }

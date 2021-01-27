@@ -9,6 +9,7 @@ import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
 import tech.chaosmin.framework.module.cdpt.entity.response.GoodsCategoryResp
 import tech.chaosmin.framework.module.cdpt.entity.response.GoodsInsuredResp
+import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
 import javax.servlet.http.HttpServletRequest
 
 /**
@@ -25,5 +26,5 @@ interface InsureShareService {
     fun getGoods(request: HttpServletRequest): RestResult<List<GoodsInsuredResp>>
 
     @PostMapping
-    fun insurance(@RequestBody req: PolicyIssueReq): RestResult<Void>
+    fun insurance(@RequestBody req: PolicyIssueReq): RestResult<PolicyResp>
 }

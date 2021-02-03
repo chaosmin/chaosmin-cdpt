@@ -21,8 +21,11 @@ class PolicyIssueReq : BaseReq() {
     @ApiModelProperty("产品计划ID")
     var productPlanId: Long? = null
 
-    @ApiModelProperty("保障范围")
-    var dateScope: List<Date>? = null
+    @ApiModelProperty("起保时间")
+    var startTime: Date? = null
+
+    @ApiModelProperty("终止时间")
+    var endTime: Date? = null
 
     @ApiModelProperty("保障期限")
     var days: Int? = null

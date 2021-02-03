@@ -32,8 +32,8 @@ open class IssuePolicyHandler(
     private val modifyPolicyInsurantHandler: ModifyPolicyInsurantHandler
 ) : AbstractTemplateOperate<PolicyIssueReq, PolicyResp>() {
     override fun validation(arg: PolicyIssueReq, result: RestResult<PolicyResp>) {
-        if (arg.dateScope?.isEmpty() != false) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "dateScope")
+        if (arg.startTime == null || arg.endTime == null) {
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "dateTime")
         }
         if (arg.productPlanId == null) {
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "productPlanId")
@@ -68,8 +68,8 @@ open class IssuePolicyHandler(
         return OrderEntity().apply {
             this.productPlanId = arg.productPlanId
             this.orderNo = arg.orderNo
-            this.startTime = arg.dateScope!![0]
-            this.endTime = arg.dateScope!![1]
+            this.startTime = arg.startTime
+            this.endTime = arg.endTime
             this.travelDestination = arg.address
             this.extraInfo = arg.remark
             this.status = OrderStatusEnum.SUCCESS
@@ -81,8 +81,8 @@ open class IssuePolicyHandler(
         return PolicyEntity().apply {
             this.productPlanId = arg.productPlanId
             this.orderNo = arg.orderNo
-            this.effectiveTime = arg.dateScope!![0]
-            this.expiryTime = arg.dateScope!![1]
+            this.effectiveTime = arg.startTime
+            this.expiryTime = arg.endTime
             this.travelDestination = arg.address
             this.travelDestination = arg.address
             this.extraInfo = arg.remark

@@ -21,6 +21,9 @@ class GoodsPlanExt : GoodsPlan() {
     /** 二级大类 */
     var categorySubName: String? = null
 
+    /** 产品等待期 */
+    var waitingDays: Int? = null
+
     /** 产品代码 */
     var productCode: String? = null
 

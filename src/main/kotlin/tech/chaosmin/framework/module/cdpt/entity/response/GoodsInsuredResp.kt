@@ -28,6 +28,9 @@ class GoodsInsuredResp : Serializable {
     @ApiModelProperty("主险保额")
     var primaryCoverage: String? = null
 
+    @ApiModelProperty("等待期(0为即时起保)")
+    var waitingDays: Int? = null
+
     @ApiModelProperty("佣金比例")
     var comsRatio: Double? = null
 

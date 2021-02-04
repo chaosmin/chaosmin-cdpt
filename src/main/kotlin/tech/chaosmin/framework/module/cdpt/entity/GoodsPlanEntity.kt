@@ -30,6 +30,7 @@ class GoodsPlanEntity(id: Long? = null) : BaseEntity(id) {
     var authorizeTime: Date? = null
     var authorizerId: Long? = null
     var authorizer: String? = null
+    var waitingDays: Int? = null
     var comsRatio: Double? = null
     var maxComsRatio: Double? = null
 

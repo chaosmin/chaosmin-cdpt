@@ -75,6 +75,7 @@ open class InsureShareProvider(
                 this.productName = it?.productName
                 this.productPlanName = it?.productPlanName
                 this.primaryCoverage = it?.primaryCoverage
+                this.waitingDays = it?.waitingDays
                 this.comsRatio = it?.comsRatio
                 this.goodsLiabilities = planLiabilityService.list(Wrappers.query<PlanLiability>().eq("product_plan_id", it?.productPlanId))
                     .mapNotNull { PlanLiabilityConvert.INSTANCE.convert2Resp(PlanLiabilityMapper.INSTANCE.convert2Entity(it)) }

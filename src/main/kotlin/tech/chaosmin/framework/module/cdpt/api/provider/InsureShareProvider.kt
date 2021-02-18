@@ -62,6 +62,7 @@ open class InsureShareProvider(
         queryCondition.wrapper
             .eq("goods_plan.status", BasicStatusEnum.ENABLED.getCode())
             .eq("goods_plan.is_deleted", YesNoEnum.NO.getCode())
+            .orderByAsc("product_plan.id")
         // 如果是非管理员用户仅能查看自己授权的产品信息
         if (SecurityUtil.getUserDetails()?.isAdmin != true) {
             queryCondition.wrapper.eq("user_id", SecurityUtil.getUserId())

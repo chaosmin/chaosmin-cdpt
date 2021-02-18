@@ -13,6 +13,22 @@ create table chaosmin_cdpt.department
     constraint department_code_uindex unique (code)
 ) comment '部门表';
 
+create table chaosmin_cdpt.letter_head
+(
+    id            bigint auto_increment primary key,
+    department_id bigint                             not null comment '部门ID',
+    title         varchar(64) null comment '抬头名称',
+    certi_no      varchar(64) null comment '证件号',
+    status        int      default 1                 not null comment '状态',
+    create_time   datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    creator       varchar(64) null comment '创建人',
+    update_time   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    updater       varchar(64) null comment '更新人',
+    extra_info    varchar(128) null comment '扩展信息',
+    is_deleted    smallint default 0                 not null comment '是否删除',
+    constraint department_code_uindex unique (name)
+) comment '抬头表';
+
 create table chaosmin_cdpt.user
 (
     id            bigint auto_increment primary key,

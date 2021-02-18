@@ -16,6 +16,9 @@ class DepartmentResp : BaseResp() {
     @ApiModelProperty("部门状态")
     var status: DepartmentStatusEnum? = null
 
+    @ApiModelProperty("可用公司抬头")
+    var letterhead: List<LetterheadResp>? = null
+
     @ApiModelProperty("部门人数")
     var numberOfUser: Int? = null
 }

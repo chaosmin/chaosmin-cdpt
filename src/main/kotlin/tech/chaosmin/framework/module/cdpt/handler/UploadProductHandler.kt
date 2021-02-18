@@ -14,6 +14,7 @@ import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.base.enums.ModifyTypeEnum
 import tech.chaosmin.framework.definition.SystemConst.DEFAULT_COMMISSION_RATIO
 import tech.chaosmin.framework.definition.SystemConst.HANDLE_START_LOG
+import tech.chaosmin.framework.definition.SystemConst.INSURED_NOTICE
 import tech.chaosmin.framework.definition.SystemConst.LIABILITY_ZH
 import tech.chaosmin.framework.definition.SystemConst.PLAN_ZH
 import tech.chaosmin.framework.definition.SystemConst.PRODUCT_ZH
@@ -85,6 +86,7 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
                 PLAN_ZH -> handlePlan(sheet, product)
                 LIABILITY_ZH -> handleLiability(sheet, product)
                 RATE_TABLE_ZH -> handleRateTable(sheet, product)
+                // INSURED_NOTICE -> handleInsuredNotice(sheet, product)
                 else -> handleText(sheet, product)
             }
         }

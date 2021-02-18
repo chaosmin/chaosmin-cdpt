@@ -11,5 +11,6 @@ class DepartmentEntity(id: Long? = null) : BaseEntity(id) {
     var code: String? = null
     var name: String? = null
     var status: DepartmentStatusEnum? = null
+    var letterhead: List<LetterheadEntity>? = null
     var numberOfUser: Int? = null
 }

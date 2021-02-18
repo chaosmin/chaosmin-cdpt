@@ -15,4 +15,7 @@ class DepartmentReq : BaseReq() {
 
     @ApiModelProperty("部门状态")
     var status: DepartmentStatusEnum? = null
+
+    @ApiModelProperty("可用公司抬头")
+    var letterhead: List<LetterheadReq>? = null
 }

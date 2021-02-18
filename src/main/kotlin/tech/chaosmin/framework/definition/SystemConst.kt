@@ -13,6 +13,7 @@ object SystemConst {
     const val PRODUCT_ZH = "产品"
     const val PLAN_ZH = "计划"
     const val LIABILITY_ZH = "产品责任"
+    const val INSURED_NOTICE = "投保提示"
     const val RATE_TABLE_ZH = "费率表"
 
     // 系统默认值

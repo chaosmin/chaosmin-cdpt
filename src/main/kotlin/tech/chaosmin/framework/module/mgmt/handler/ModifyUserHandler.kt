@@ -37,7 +37,7 @@ open class ModifyUserHandler(
             ModifyTypeEnum.SAVE -> {
                 user.password = passwordEncoder.encode(arg.password)
                 if (userService.save(user)) {
-                    setUserRoles(user.id, setOf(arg.roleId))
+                    setUserRoles(user.id, arg.roleIds?.toSet())
                 }
             }
             ModifyTypeEnum.UPDATE -> {
@@ -45,9 +45,8 @@ open class ModifyUserHandler(
                     user.password = passwordEncoder.encode(arg.password)
                 }
                 if (userService.updateById(user)) {
-                    setUserRoles(user.id, setOf(arg.roleId))
+                    setUserRoles(user.id, arg.roleIds?.toSet())
                 }
-
             }
             ModifyTypeEnum.REMOVE -> {
                 userService.remove(Wrappers.query(user))
@@ -57,7 +56,7 @@ open class ModifyUserHandler(
         return result.success(arg)
     }
 
-    private fun setUserRoles(userId: Long?, roleIds: Set<Long?>) {
+    private fun setUserRoles(userId: Long?, roleIds: Set<Long?>?) {
         if (userId != null && !roleIds.isNullOrEmpty()) {
             roleService.updateRoles(userId, roleIds.filterNotNull())
         }

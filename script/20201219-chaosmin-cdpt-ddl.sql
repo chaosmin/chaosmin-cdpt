@@ -39,6 +39,7 @@ create table chaosmin_cdpt.user
     status        int      default 1                 not null comment '用户状态',
     phone         varchar(16) null comment '手机号码',
     email         varchar(128) null comment '邮箱',
+    address       varchar(512) null comment '联系地址',
     create_time   datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     creator       varchar(64) null comment '创建人',
     update_time   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',

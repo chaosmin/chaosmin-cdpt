@@ -23,4 +23,7 @@ open class User(id: Long? = null) : BaseDO(id, 0) {
 
     // 邮件
     var email: String? = null
+
+    // 联系地址
+    var address: String? = null
 }

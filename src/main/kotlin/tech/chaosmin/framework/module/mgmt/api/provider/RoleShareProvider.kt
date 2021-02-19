@@ -20,6 +20,11 @@ open class RoleShareProvider(
     private val roleQueryLogic: RoleQueryLogic,
     private val modifyRoleHandler: ModifyRoleHandler
 ) : RoleShareService {
+    override fun fetchAuthorityOfRole(id: Long): RestResult<List<Long>> {
+        val responseData = roleQueryLogic.fetchAuthority(id)
+        return RestResultExt.successRestResult(responseData)
+    }
+
     override fun selectById(id: Long): RestResult<RoleResp?> {
         val role = roleQueryLogic.get(id)
         return if (role == null) RestResultExt.successRestResult()

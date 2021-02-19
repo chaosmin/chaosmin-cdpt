@@ -18,6 +18,7 @@ import tech.chaosmin.framework.exception.AuthenticationException
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.exception.PermissionException
 import tech.chaosmin.framework.exception.ResourceNotExistException
+import javax.validation.ConstraintViolationException
 
 @Order(1)
 @RestControllerAdvice
@@ -69,17 +70,17 @@ class GlobalControllerAdvice {
     fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): RestResult<Void> {
         val message = e.bindingResult.allErrors.joinToString { "${it.defaultMessage};" }
         logger.error("捕获到参数校验异常: {}", message, e)
-        return failureRestResult(msg = message ?: "invalid request parameters")
+        return failureRestResult(msg = message)
     }
 
     /**
      * 参数校验异常
      */
-    // @ExceptionHandler(ConstraintViolationException::class)
-    // fun handleConstraintViolationException(e: ConstraintViolationException): RestResult<Void> {
-    //     logger.error("捕获到参数校验异常", e)
-    //     return failureRestResult(e.message ?: "params validation failed")
-    // }
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleConstraintViolationException(e: ConstraintViolationException): RestResult<Void> {
+        logger.error("捕获到参数校验异常", e)
+        return failureRestResult(msg = e.message ?: "params validation failed")
+    }
 
     /**
      * 参数绑定异常
@@ -106,7 +107,7 @@ class GlobalControllerAdvice {
     @ExceptionHandler(AuthenticationException::class)
     fun handleAuthenticationException(e: AuthenticationException): RestResult<Void> {
         logger.error("捕获到认证异常", e)
-        return RestResult(e.message ?: ErrorCodeEnum.TOKEN_INVALID.code)
+        return failureRestResult(msg = e.message ?: ErrorCodeEnum.TOKEN_INVALID.code)
     }
 
     /**

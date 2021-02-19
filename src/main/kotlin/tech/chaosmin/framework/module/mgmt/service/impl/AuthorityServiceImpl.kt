@@ -10,9 +10,13 @@ import tech.chaosmin.framework.module.mgmt.service.AuthorityService
 
 @Service
 open class AuthorityServiceImpl : ServiceImpl<AuthorityDAO, Authority>(), AuthorityService {
+    override fun findAuthorities(roleId: Long): Set<Authority> {
+        return baseMapper.fetchAuthorityByRoleId(roleId)
+    }
+
     override fun findAuthorities(roleIds: Set<Long>): Set<Authority> {
         return if (roleIds.isEmpty()) emptySet()
-        else baseMapper.findAuthorities(roleIds)
+        else baseMapper.fetchAuthorityByRoleIds(roleIds)
     }
 
     @Cacheable(value = ["authorities"], key = "#authority", unless = "#result == null")
@@ -24,7 +28,7 @@ open class AuthorityServiceImpl : ServiceImpl<AuthorityDAO, Authority>(), Author
 
     override fun updateAuthorities(roleId: Long, authorityIds: List<Long>): Set<Authority> {
         return if (authorityIds.isNotEmpty()) {
-            val assigned = baseMapper.findAuthorities(setOf(roleId)).mapNotNull { it.id }
+            val assigned = baseMapper.fetchAuthorityByRoleId(roleId).mapNotNull { it.id }
             (authorityIds - assigned).run {
                 if (this.isNotEmpty()) baseMapper.addAuthorities(roleId, this)
             }

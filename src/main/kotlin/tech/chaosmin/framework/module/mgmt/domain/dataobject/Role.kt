@@ -2,7 +2,7 @@ package tech.chaosmin.framework.module.mgmt.domain.dataobject
 
 import tech.chaosmin.framework.base.BaseDO
 
-class Role(id: Long? = null) : BaseDO(id, 0) {
+open class Role(id: Long? = null) : BaseDO(id, 0) {
     // 角色编码
     var code: String? = null
 

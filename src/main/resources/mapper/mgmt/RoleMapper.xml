@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="tech.chaosmin.framework.module.mgmt.domain.dao.RoleDAO">
+    <resultMap id="roleExt" type="tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.RoleExt">
+        <result property="id" column="id" />
+        <result property="code" column="code" />
+        <result property="name" column="name" />
+        <result property="priority" column="priority" />
+        <result property="extraInfo" column="extra_info" />
+        <result property="createTime" column="create_time" />
+        <result property="creator" column="creator" />
+        <result property="updateTime" column="update_time" />
+        <result property="updater" column="updater" />
+        <collection property="authorities" ofType="tech.chaosmin.framework.module.mgmt.domain.dataobject.Authority"
+                    select="tech.chaosmin.framework.module.mgmt.domain.dao.AuthorityDAO.fetchAuthorityByRoleId" column="id" />
+    </resultMap>
+
+    <select id="fetchRoleByUserId" resultMap="roleExt">
+        select role.* from role
+        left join user_role on user_role.role_id = role.id and user_role.is_deleted = 0
+        where role.is_deleted = 0 and user_role.user_id = #{id}
+    </select>
+
+    <select id="fetchRoleByUserId" resultType="tech.chaosmin.framework.module.mgmt.domain.dataobject.Role">
+        select role.* from role left join user_role on role.id = user_role.role_id where user_role.user_id = ${userId}
+    </select>
+
+    <insert id="addRoles">
+        insert into user_role(user_id,role_id) VALUES <foreach collection='roleIds' item='id' separator=','>(#{userId},#{id}) </foreach>
+    </insert>
+
+    <delete id="removeRoles">
+        delete from user_role where user_id = ${userId} and role_id in <foreach collection='roleIds' item='id' separator=',' open='(' close=')'>#{id} </foreach>
+    </delete>
+
+    <delete id="clearRoles">
+        delete from user_role where user_id = ${userId}
+    </delete>
+
+</mapper> 

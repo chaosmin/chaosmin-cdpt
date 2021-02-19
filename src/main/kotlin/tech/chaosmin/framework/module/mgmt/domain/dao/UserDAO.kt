@@ -12,8 +12,5 @@ import tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.UserExt
 interface UserDAO : BaseMapper<User> {
     fun getByIdExt(@Param("id") id: Long): UserExt?
 
-    fun pageExt(
-        page: Page<UserExt>,
-        @Param(Constants.WRAPPER) queryWrapper: Wrapper<UserExt>
-    ): IPage<UserExt>
+    fun pageExt(page: Page<UserExt>, @Param(Constants.WRAPPER) queryWrapper: Wrapper<UserExt>): IPage<UserExt>
 }

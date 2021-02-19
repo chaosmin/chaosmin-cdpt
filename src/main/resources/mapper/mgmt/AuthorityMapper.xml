@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="tech.chaosmin.framework.module.mgmt.domain.dao.AuthorityDAO">
+
+    <select id="fetchAuthorityByRoleId" resultType="tech.chaosmin.framework.module.mgmt.domain.dataobject.Authority">
+        select authority.* from authority
+        left join role_authority on role_authority.authority_id = authority.id and role_authority.is_deleted = 0
+        where authority.is_deleted = 0
+          and role_authority.role_id = #{id}
+    </select>
+
+    <select id="fetchAuthorityByRoleIds" resultType="tech.chaosmin.framework.module.mgmt.domain.dataobject.Authority">
+        select authority.* from authority
+        left join role_authority on role_authority.authority_id = authority.id and role_authority.is_deleted = 0
+        where authority.is_deleted = 0 and role_authority.role_id in
+        <foreach collection='roleIds' item='id' separator=',' open='(' close=')'>#{id}</foreach>
+    </select>
+
+    <insert id="addAuthorities">
+        insert into role_authority(role_id,authority_id) VALUES <foreach collection='authorityIds' item='id' separator=','>(#{roleId},#{id}) </foreach>
+    </insert>
+
+    <delete id="removeAuthorities">
+        delete from role_authority where role_id = ${roleId} and authority_id in <foreach collection='authorityIds' item='id' separator=',' open='(' close=')'>#{id}</foreach>
+    </delete>
+
+    <delete id="clearAuthorities">
+        delete from role_authority where role_id = ${roleId}
+    </delete>
+</mapper> 

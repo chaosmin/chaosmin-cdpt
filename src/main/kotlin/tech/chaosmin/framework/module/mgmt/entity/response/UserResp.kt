@@ -28,8 +28,11 @@ class UserResp : BaseResp() {
     @ApiModelProperty("邮箱")
     var email: String? = null
 
+    @ApiModelProperty("联系地址")
+    var address: String? = null
+
     @ApiModelProperty("角色ID")
-    var roleId: Long? = null
+    var roleIds: List<Long>? = null
 
     @ApiModelProperty("角色")
     var role: String? = null

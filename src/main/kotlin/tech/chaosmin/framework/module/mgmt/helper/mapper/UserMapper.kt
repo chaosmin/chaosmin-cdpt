@@ -1,6 +1,8 @@
 package tech.chaosmin.framework.module.mgmt.helper.mapper
 
 import org.mapstruct.Mapper
+import org.mapstruct.Mapping
+import org.mapstruct.Mappings
 import org.mapstruct.factory.Mappers
 import tech.chaosmin.framework.base.BaseMapper
 import tech.chaosmin.framework.base.KeyValueEnumMapper
@@ -18,5 +20,11 @@ interface UserMapper : BaseMapper<UserEntity, User> {
         val INSTANCE: UserMapper = Mappers.getMapper(UserMapper::class.java)
     }
 
+    @Mappings(
+        value = [
+            Mapping(target = "roleIds", expression = "java(source.getRoles().stream().map(i -> i.getId()).collect(java.util.stream.Collectors.toList()))"),
+            Mapping(target = "role", expression = "java(source.getRoles().stream().map(i -> i.getName()).collect(java.util.stream.Collectors.joining(\",\")))")
+        ]
+    )
     fun convertEx2Entity(source: UserExt?): UserEntity?
 }

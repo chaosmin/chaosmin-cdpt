@@ -8,7 +8,7 @@ import tech.chaosmin.framework.module.mgmt.domain.dataobject.User
 import tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.UserExt
 
 interface UserService : IService<User> {
-    fun findByLoginName(loginName: String): User?
+    fun findByLoginName(loginName: String): UserExt?
 
     fun getByIdExt(id: Long): UserExt?
 

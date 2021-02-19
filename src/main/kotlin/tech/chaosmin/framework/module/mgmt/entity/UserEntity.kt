@@ -15,7 +15,8 @@ class UserEntity(id: Long? = null) : BaseEntity(id) {
     var status: UserStatusEnum? = null
     var phone: String? = null
     var email: String? = null
-    var roleId: Long? = null
+    var address: String? = null
+    var roleIds: List<Long>? = null
 
     var department: String? = null
     var role: String? = null

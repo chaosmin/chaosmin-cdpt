@@ -9,12 +9,12 @@ import tech.chaosmin.framework.module.mgmt.service.RoleService
 @Service
 open class RoleServiceImpl : ServiceImpl<RoleDAO, Role>(), RoleService {
     override fun findRoles(userId: Long): Set<Role> {
-        return baseMapper.findRoles(userId)
+        return baseMapper.fetchRoleByUserId(userId)
     }
 
     override fun updateRoles(userId: Long, roleIds: List<Long>): Set<Role> {
         return if (roleIds.isNotEmpty()) {
-            val assigned = baseMapper.findRoles(userId).mapNotNull { it.id }
+            val assigned = baseMapper.fetchRoleByUserId(userId).mapNotNull { it.id }
             (roleIds - assigned).run {
                 if (this.isNotEmpty()) baseMapper.addRoles(userId, this)
             }

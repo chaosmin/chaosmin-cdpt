@@ -75,7 +75,7 @@ open class ModifyGoodsPlanHandler(
     private fun createUserGoodsPlan(user: UserEntity, plans: Map<Long, Double>) {
         val authorizeTime = Date()
         val userDetails = SecurityUtil.getUserDetails()
-        val isOfficer = user.role.equals("officer", true)
+        val isOfficer = user.role?.contains("officer") ?: false
         plans.forEach { (planId, comsRatio) ->
             val exPlan = goodsPlanService.getByUserAndPlan(user.id!!, planId)
             if (exPlan != null) {
@@ -90,7 +90,6 @@ open class ModifyGoodsPlanHandler(
                     this.productId = product?.id
                     this.productPlanId = planId
                     this.departmentName = user.department
-                    this.roleName = user.role
                     this.userId = user.id
                     this.userName = user.username
                     this.partnerCode = product?.partnerCode

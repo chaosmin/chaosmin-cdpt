@@ -20,12 +20,14 @@ class RoleQueryLogic(
     private val authorityService: AuthorityService
 ) : BaseQueryLogic<RoleEntity, Role> {
 
+    fun fetchAuthority(id: Long): List<Long> {
+        val authorities = authorityService.findAuthorities(id)
+        return authorities.mapNotNull { it.id }
+    }
+
     override fun get(id: Long): RoleEntity? {
         val role = roleService.getById(id)
-        return RoleMapper.INSTANCE.convert2Entity(role)?.apply {
-            val authorities = authorityService.findAuthorities(setOf(id))
-            this.authorityIds = authorities.mapNotNull { it.id }.toSet()
-        }
+        return RoleMapper.INSTANCE.convert2Entity(role)
     }
 
     override fun page(cond: PageQuery<Role>): IPage<RoleEntity?> {

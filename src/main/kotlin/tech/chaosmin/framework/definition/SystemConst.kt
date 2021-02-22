@@ -19,6 +19,7 @@ object SystemConst {
     // 系统默认值
     const val DEFAULT_RETRY_TIME = 3
     const val DEFAULT_SLEEP_TIME = 1000L
+    const val DEFAULT_PAGE_SIZE = 100L
     const val DEFAULT_CHARSET_NAME = "UTF-8"
     const val ANONYMOUS = "anonymous"
     const val DEFAULT_CURRENCY = "01"

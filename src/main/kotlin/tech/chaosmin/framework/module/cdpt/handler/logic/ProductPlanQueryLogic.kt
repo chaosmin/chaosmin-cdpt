@@ -24,8 +24,6 @@ class ProductPlanQueryLogic(private val productPlanService: ProductPlanService) 
 
     override fun page(cond: PageQuery<ProductPlanExt>): IPage<ProductPlanEntity?> {
         val page = productPlanService.pageExt(cond.page, cond.wrapper)
-        return page.convert(ProductPlanMapper.INSTANCE::convert2Entity).convert {
-            it.apply { this.iComsRatio = it.comsRatio }
-        }
+        return page.convert(ProductPlanMapper.INSTANCE::convert2Entity)
     }
 }

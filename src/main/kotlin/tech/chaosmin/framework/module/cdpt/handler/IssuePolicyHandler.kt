@@ -26,6 +26,7 @@ import tech.chaosmin.framework.utils.BizNoUtil
  */
 @Component
 open class IssuePolicyHandler(
+    private val validatePolicyHandler: ValidatePolicyHandler,
     private val modifyOrderHandler: ModifyOrderHandler,
     private val modifyPolicyHandler: ModifyPolicyHandler,
     private val modifyPolicyHolderHandler: ModifyPolicyHolderHandler,
@@ -42,23 +43,33 @@ open class IssuePolicyHandler(
     }
 
     override fun processor(arg: PolicyIssueReq, result: RestResult<PolicyResp>): RestResult<PolicyResp> {
+        val validateResult = validatePolicyHandler.operate(arg)
+        if (!validateResult.success) {
+            return result.mapper(validateResult)
+        }
         val orderEntity = if (arg.orderId == null) convert2Order(arg)
         else OrderEntity().apply {
             this.status = OrderStatusEnum.SUCCESS
             this.update(arg.orderId!!)
         }
+        // 更新订单表
         modifyOrderHandler.operate(orderEntity)
         val policyEntity = convert2Policy(arg)
+        // 更新保单表
         modifyPolicyHandler.operate(policyEntity)
+        // 处理投保人数据
         modifyPolicyHolderHandler.operate(convert2PolicyHolder(arg).apply {
             this.orderId = orderEntity.id
             this.policyId = policyEntity.id
         })
+        // 处理被保人数据
         arg.insuredList?.map {convert2PolicyInsurant(it).apply {
             this.orderId = orderEntity.id
             this.policyId = policyEntity.id
         } }?.map { modifyPolicyInsurantHandler.operate(it) }
+
         // TODO 此处调用保司接口进行实际出单
+
         val responseData = PolicyConvert.INSTANCE.convert2Resp(policyEntity)
         return result.success(responseData)
     }

@@ -15,4 +15,7 @@ class ProductPlanExt : ProductPlan() {
 
     // 产品名称
     var productName: String? = null
+
+    // 等待天数(T+N)
+    var waitingDays: Int? = null
 }

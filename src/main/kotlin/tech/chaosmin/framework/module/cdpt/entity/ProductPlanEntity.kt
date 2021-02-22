@@ -11,18 +11,22 @@ import tech.chaosmin.framework.module.cdpt.domain.enums.RateTableTypeEnum
  * @since 2020/12/23 21:35
  */
 class ProductPlanEntity(id: Long? = null) : BaseEntity(id) {
-    var productId: Long? = null
+    // 产品信息
     var partnerName: String? = null
+    var productId: Long? = null
     var productCode: String? = null
     var productName: String? = null
+    var waitingDays: Int? = null
+    // 计划信息
     var planCode: String? = null
     var planName: String? = null
     var primaryCoverage: String? = null
     var currency: String? = null
     var comsRatio: Double? = null
+    // TODO 这个是前端用来调整的佣金比例, 如何优化前端不让后端返回这个值
     var iComsRatio: Double? = null
     var status: BasicStatusEnum? = null
-
+    // 计划责任及费率表
     var liabilities = mutableListOf<PlanLiabilityEntity>()
     var rateTable = mutableListOf<PlanRateTableEntity>()
 

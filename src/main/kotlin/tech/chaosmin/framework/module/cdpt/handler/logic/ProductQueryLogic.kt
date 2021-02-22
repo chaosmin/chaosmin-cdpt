@@ -29,7 +29,10 @@ class ProductQueryLogic(
         val page = productService.pageExt(cond.page, cond.wrapper)
         val result = page.convert(ProductMapper.INSTANCE::convertEx2Entity)
         result.records.filterNotNull().forEach {
-            it.externalText = productAgreementService.selectText(it.id!!)
+            // 填充扩展信息
+            val ex = productAgreementService.getByProductId(it.id!!)
+            it.insuranceNotice = ex.insuranceNotice
+            it.externalText = ex.externalText
         }
         return result
     }

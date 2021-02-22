@@ -8,7 +8,7 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.ProductExternal
  * @since 2020/12/9 13:50
  */
 interface ProductExternalService : IService<ProductExternal> {
-    fun selectText(productId: Long): String
+    fun getByProductId(productId: Long): ProductExternal
 
-    fun updateText(productId: Long, text: String?): String
+    fun updateByProductId(productId: Long, ex: ProductExternal): ProductExternal
 }

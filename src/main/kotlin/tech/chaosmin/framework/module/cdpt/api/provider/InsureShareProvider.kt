@@ -82,7 +82,9 @@ open class InsureShareProvider(
                     .mapNotNull { PlanLiabilityConvert.INSTANCE.convert2Resp(PlanLiabilityMapper.INSTANCE.convert2Entity(it)) }
                 this.goodsRateTable = planRateTableService.list(Wrappers.query<PlanRateTable>().eq("product_plan_id", it?.productPlanId))
                     .mapNotNull { PlanRateTableConvert.INSTANCE.convert2Resp(PlanRateTableMapper.INSTANCE.convert2Entity(it)) }
-                this.productExternal = productExternalService.selectText(it?.productId!!)
+                val ex = productExternalService.getByProductId(it?.productId!!)
+                this.insuranceNotice = ex.insuranceNotice
+                this.productExternal = ex.externalText
             }
         }
         return RestResultExt.successRestResult(result)

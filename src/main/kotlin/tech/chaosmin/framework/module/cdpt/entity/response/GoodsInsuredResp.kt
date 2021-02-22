@@ -40,6 +40,9 @@ class GoodsInsuredResp : Serializable {
     @ApiModelProperty("产品费率表")
     var goodsRateTable: List<PlanRateTableResp>? = null
 
-    @ApiModelProperty("产品扩展文本信息")
+    @ApiModelProperty("投保提示")
+    var insuranceNotice: String? = null
+
+    @ApiModelProperty("产品须知")
     var productExternal: String? = null
 }

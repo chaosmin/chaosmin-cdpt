@@ -11,10 +11,14 @@ class ProductExternal(id: Long? = null) : BaseDO(id, 0) {
     // 产品ID
     var productId: Long? = null
 
+    // 投保提示
+    var insuranceNotice: String? = null
+
     // 产品扩展文本
     var externalText: String? = null
 
-    constructor(text: String?) : this() {
+    constructor(notice: String?, text: String?) : this() {
+        this.insuranceNotice = notice
         this.externalText = text
     }
 }

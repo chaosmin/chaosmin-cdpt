@@ -1,5 +1,11 @@
 package tech.chaosmin.framework.configuration
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.slf4j.LoggerFactory
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.CachingConfigurerSupport
@@ -10,12 +16,14 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
-import org.springframework.data.redis.serializer.*
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
+import org.springframework.data.redis.serializer.RedisSerializationContext
+import org.springframework.data.redis.serializer.RedisSerializer
+import org.springframework.data.redis.serializer.StringRedisSerializer
 import tech.chaosmin.framework.definition.ApplicationParam
 import tech.chaosmin.framework.definition.SystemConst.DEFAULT_CACHE_EXPIRE_TIME
 import tech.chaosmin.framework.definition.SystemConst.INIT_SUCCESSFULLY
 import tech.chaosmin.framework.module.mgmt.domain.auth.Rule
-import tech.chaosmin.framework.utils.JsonUtil
 import java.time.Duration
 
 /**
@@ -42,15 +50,12 @@ open class RedisCacheConfig(private val applicationParam: ApplicationParam) : Ca
 
     @Bean
     open fun authoritiesCacheTemplate(redisConnectionFactory: RedisConnectionFactory): RedisTemplate<String, Rule> {
-        val objectMapper = JsonUtil.objectMapper
-        val template = RedisTemplate<String, Rule>()
-        template.connectionFactory = redisConnectionFactory
-        val serializer = Jackson2JsonRedisSerializer(Rule::class.java)
-        serializer.setObjectMapper(objectMapper)
-        template.keySerializer = StringRedisSerializer()
-        template.hashValueSerializer = serializer
-        template.valueSerializer = serializer
-        return template
+        val redisTemplate = RedisTemplate<String, Rule>()
+        redisTemplate.connectionFactory = redisConnectionFactory
+        redisTemplate.keySerializer = getKeySerializer()
+        redisTemplate.valueSerializer = getValueSerializer()
+        redisTemplate.afterPropertiesSet()
+        return redisTemplate
     }
 
     // key 采用String序列化器
@@ -60,6 +65,11 @@ open class RedisCacheConfig(private val applicationParam: ApplicationParam) : Ca
 
     // value 采用Json序列化器
     private fun getValueSerializer(): RedisSerializer<Any> {
-        return GenericJackson2JsonRedisSerializer()
+        val objectMapper = ObjectMapper()
+        objectMapper.registerModule(JavaTimeModule())
+        objectMapper.registerModule(KotlinModule())
+        objectMapper.registerModule(Jdk8Module())
+        objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.EVERYTHING, JsonTypeInfo.As.PROPERTY)
+        return GenericJackson2JsonRedisSerializer(objectMapper)
     }
 }

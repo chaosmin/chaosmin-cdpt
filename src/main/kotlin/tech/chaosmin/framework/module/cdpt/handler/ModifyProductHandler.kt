@@ -39,7 +39,7 @@ open class ModifyProductHandler(
     @Transactional
     override fun processor(arg: ProductEntity, result: RestResult<ProductEntity>): RestResult<ProductEntity> {
         val product = ProductMapper.INSTANCE.convert2DO(arg) ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code)
-        val productExternal = ProductExternal(arg.externalText)
+        val productExternal = ProductExternal(arg.insuranceNotice, arg.externalText)
         when (arg.modifyType) {
             ModifyTypeEnum.SAVE -> {
                 val category = productCategoryService.getCategoryOrCreate(arg.categoryName!!, arg.categorySubName!!)
@@ -74,9 +74,7 @@ open class ModifyProductHandler(
         if (product.status != null && EnumClient.getEnum(BasicStatusEnum::class.java, product.status!!) != null) {
             productPlanService.switchPlansTo(productId, EnumClient.getEnum(BasicStatusEnum::class.java, product.status!!)!!)
         }
-        if (!ex.externalText.isNullOrBlank()) {
-            productExternalService.updateText(productId, ex.externalText)
-        }
+        productExternalService.updateByProductId(productId, ex)
         if (categoryId != null) {
             productService.setCategories(productId, listOf(categoryId))
         }

@@ -29,6 +29,7 @@ class ProductEntity(id: Long? = null) : BaseEntity(id) {
 
     var plans = mutableListOf<ProductPlanEntity>()
 
+    var insuranceNotice: String? = null
     var externalText: String? = null
 
     var numberOfPlan: Int? = null
@@ -36,6 +37,7 @@ class ProductEntity(id: Long? = null) : BaseEntity(id) {
     fun addPlan(code: String, name: String, ratio: String?) {
         this.plans.add(ProductPlanEntity().apply {
             this.modifyType = ModifyTypeEnum.SAVE
+            this.status = BasicStatusEnum.ENABLED
             this.planCode = code
             this.planName = name
             this.currency = DEFAULT_CURRENCY

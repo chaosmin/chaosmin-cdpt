@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param
 import tech.chaosmin.framework.module.mgmt.domain.dataobject.Role
 
 interface RoleDAO : BaseMapper<Role> {
-    fun fetchRoleByUserId(@Param("userId") userId: Long): Set<Role>
+    fun fetchRoleByUserId(@Param("id") userId: Long): Set<Role>
 
     fun addRoles(@Param("userId") userId: Long, @Param("roleIds") roleIds: List<Long>)
 

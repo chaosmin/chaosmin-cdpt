@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.module.cdpt.helper.mapper
 
 import org.mapstruct.Mapper
+import org.mapstruct.Mapping
 import org.mapstruct.factory.Mappers
 import tech.chaosmin.framework.base.BaseMapper
 import tech.chaosmin.framework.base.KeyValueEnumMapper
@@ -18,5 +19,6 @@ interface ProductPlanMapper : BaseMapper<ProductPlanEntity, ProductPlan> {
         val INSTANCE: ProductPlanMapper = Mappers.getMapper(ProductPlanMapper::class.java)
     }
 
+    @Mapping(target = "IComsRatio", source = "comsRatio")
     fun convert2Entity(source: ProductPlanExt): ProductPlanEntity
 }

@@ -26,4 +26,8 @@ class PlanLiabilityQueryLogic(private val planLiabilityService: PlanLiabilitySer
         val page = planLiabilityService.page(cond.page, cond.wrapper)
         return page.convert(PlanLiabilityMapper.INSTANCE::convert2Entity)
     }
+
+    fun fetchAllOfPlan(productPlanId: Long): List<PlanLiabilityEntity?> {
+        return planLiabilityService.listByPlanId(productPlanId).map { PlanLiabilityMapper.INSTANCE.convert2Entity(it) }
+    }
 }

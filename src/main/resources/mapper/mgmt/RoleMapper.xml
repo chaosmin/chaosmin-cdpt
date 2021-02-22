@@ -21,10 +21,6 @@
         where role.is_deleted = 0 and user_role.user_id = #{id}
     </select>
 
-    <select id="fetchRoleByUserId" resultType="tech.chaosmin.framework.module.mgmt.domain.dataobject.Role">
-        select role.* from role left join user_role on role.id = user_role.role_id where user_role.user_id = ${userId}
-    </select>
-
     <insert id="addRoles">
         insert into user_role(user_id,role_id) VALUES <foreach collection='roleIds' item='id' separator=','>(#{userId},#{id}) </foreach>
     </insert>

@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tech.chaosmin.framework.base.AbstractTemplateOperate
 import tech.chaosmin.framework.base.RestResult
+import tech.chaosmin.framework.base.enums.BasicStatusEnum
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.base.enums.ModifyTypeEnum
 import tech.chaosmin.framework.definition.SystemConst.DEFAULT_COMMISSION_RATIO
-import tech.chaosmin.framework.definition.SystemConst.HANDLE_START_LOG
 import tech.chaosmin.framework.definition.SystemConst.INSURED_NOTICE
 import tech.chaosmin.framework.definition.SystemConst.LIABILITY_ZH
 import tech.chaosmin.framework.definition.SystemConst.PLAN_ZH
@@ -57,6 +57,7 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
     @Transactional(rollbackFor = [FrameworkException::class, Exception::class])
     override fun processor(arg: UploadFileReq, result: RestResult<ProductEntity>): RestResult<ProductEntity> {
         val product = ProductEntity().apply {
+            this.status = BasicStatusEnum.ENABLED
             this.modifyType = ModifyTypeEnum.SAVE
         }
         arg.file!!.inputStream.use { `in` ->
@@ -86,7 +87,7 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
                 PLAN_ZH -> handlePlan(sheet, product)
                 LIABILITY_ZH -> handleLiability(sheet, product)
                 RATE_TABLE_ZH -> handleRateTable(sheet, product)
-                // INSURED_NOTICE -> handleInsuredNotice(sheet, product)
+                INSURED_NOTICE -> handleInsuredNotice(sheet, product)
                 else -> handleText(sheet, product)
             }
         }
@@ -168,12 +169,20 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
     }
 
     private fun handleText(sheet: Sheet, product: ProductEntity) {
-        logger.info(HANDLE_START_LOG, product.productCode, "Product External Text")
-        val exText = sheet.mapNotNull { getRowValue(it, 0) }.joinToString("<br>")
+        val exText = sheet.mapNotNull { "<span>${getRowValue(it, 0)}</span>" }.joinToString("<br>")
         if (product.externalText == null) {
             product.externalText = exText
         } else {
             product.externalText += exText
+        }
+    }
+
+    private fun handleInsuredNotice(sheet: Sheet, product: ProductEntity) {
+        val exText = sheet.mapNotNull { "<span>${getRowValue(it, 0)}</span>" }.joinToString("<br>")
+        if (product.insuranceNotice == null) {
+            product.insuranceNotice = exText
+        } else {
+            product.insuranceNotice += exText
         }
     }
 

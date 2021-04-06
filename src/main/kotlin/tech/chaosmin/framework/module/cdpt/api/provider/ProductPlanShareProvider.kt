@@ -2,6 +2,7 @@ package tech.chaosmin.framework.module.cdpt.api.provider
 
 import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.web.bind.annotation.RestController
+import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.RestResultExt
 import tech.chaosmin.framework.module.cdpt.api.ProductPlanShareService
@@ -23,10 +24,18 @@ import javax.servlet.http.HttpServletRequest
  */
 @RestController
 open class ProductPlanShareProvider(
-    private val goodsPlanService: GoodsPlanService,
     private val productPlanQueryLogic: ProductPlanQueryLogic,
     private val modifyProductPlanHandler: ModifyProductPlanHandler
 ) : ProductPlanShareService {
+    override fun contractPage(): RestResult<IPage<ProductPlanResp?>> {
+        val page = if (SecurityUtil.getUserDetails()?.isAdmin == true) {
+            productPlanQueryLogic.page(PageQuery.emptyQuery())
+        } else {
+            productPlanQueryLogic.contract(SecurityUtil.getUserId())
+        }
+        return RestResultExt.successRestResult(page.convert(ProductPlanConvert.INSTANCE::convert2Resp))
+    }
+
     override fun selectById(id: Long): RestResult<ProductPlanResp?> {
         val productPlan = productPlanQueryLogic.get(id)
         return if (productPlan == null) RestResultExt.successRestResult()
@@ -35,11 +44,6 @@ open class ProductPlanShareProvider(
 
     override fun page(request: HttpServletRequest): RestResult<IPage<ProductPlanResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<ProductPlanExt>(request)
-        // 如果是非管理员用户仅能查看自己被授权的产品计划信息
-        if (SecurityUtil.getUserDetails()?.isAdmin != true) {
-            val planIds = goodsPlanService.getByUser(SecurityUtil.getUserId()).mapNotNull { it.productPlanId }
-            queryCondition.wrapper.`in`("product_plan.id", planIds)
-        }
         val page = productPlanQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(ProductPlanConvert.INSTANCE::convert2Resp))
     }

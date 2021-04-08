@@ -58,8 +58,10 @@ dependencies {
 
     // database
     implementation("mysql:mysql-connector-java:${Vers.Deps.mysqlConnectorVersion}")
+    implementation("p6spy:p6spy:${Vers.Deps.p6spyVersion}")
     implementation("com.baomidou:mybatis-plus-boot-starter:${Vers.Deps.mybatisPlusVersion}") {
         exclude("com.alibaba", "fastjson")
+        exclude("p6spy", "p6spy")
     }
 
     // common tools

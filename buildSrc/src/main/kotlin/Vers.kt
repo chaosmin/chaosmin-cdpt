@@ -20,6 +20,7 @@ object Vers {
         const val mysqlConnectorVersion = "8.0.18"
         const val nacosVersion = "0.9.0.RELEASE"
         const val opencsvVersion = "5.3"
+        const val p6spyVersion = "3.9.1"
         const val poiVersion = "4.1.2"
         const val springBootVersion = "2.3.2.RELEASE"
         const val springCloudVersion = "2.2.4.RELEASE"

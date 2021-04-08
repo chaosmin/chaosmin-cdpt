@@ -11,16 +11,17 @@
 #RUN         ./gradlew clean
 #RUN         ./gradlew bootJar --build-cache -x test
 
-FROM        insideo/jre8:latest
+FROM        openjdk:8u222-jre-slim
 
 ARG         PROJECT_NAME=chaosmin-cdpt
+ARG         PROJECT_VERSION=0.0.1.SNAPSHOT
 
 WORKDIR     /root/
 
 #COPY        --from=builder /${GROUP_NAME}/${PROJECT_NAME}/build/libs/${PROJECT_NAME}.jar .
-COPY        build/libs/${PROJECT_NAME}.jar .
+COPY        build/libs/${PROJECT_NAME}-${PROJECT_VERSION}.jar .
 
-RUN         echo "java -server -Xms518m -Xmx1024m -jar /root/${PROJECT_NAME}.jar" > ./run.sh
+RUN         echo "java -server -Xms518m -Xmx1024m -jar /root/${PROJECT_NAME}-${PROJECT_VERSION}.jar" > ./run.sh
 RUN         chmod +x ./run.sh
 
 CMD         "./run.sh"

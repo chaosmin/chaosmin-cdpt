@@ -109,21 +109,50 @@ tasks.jacocoTestReport {
 }
 
 tasks {
-    getByName<BootJar>("bootJar") {
-        println("准备打包项目...")
-        archiveName = "chaosmin-cdpt.jar"
-        mainClassName = "tech.chaosmin.framework.ApplicationKt"
-    }
-
     getByName<BootRun>("bootRun") {
         main = "tech.chaosmin.framework.ApplicationKt"
         args("--spring.profiles.active=demo")
     }
+
+    getByName<BootJar>("bootJar") {
+        mainClassName = "tech.chaosmin.framework.ApplicationKt"
+    }
+}
+
+tasks.create<Exec>("imageBuild") {
+    dependsOn("bootJar")
+    println("准备创建Docker镜像...")
+    commandLine("docker", "login")
+    commandLine("docker", "build", "-t", "chaosmin/chaosmin-cdpt:latest", ".")
+    println("Docker镜像创建成功!")
+}
+
+tasks.create<Exec>("imagePush") {
+    dependsOn("imageBuild")
+    println("准备推送Docker镜像...")
+    commandLine("docker", "push", "chaosmin/chaosmin-cdpt:latest")
+    println("Docker镜像推送成功!")
 }
 
 tasks.create("deploy") {
-    dependsOn("bootJar").doLast {
-        println("准备部署...")
-        println("项目部署成功!")
+    dependsOn("imagePush")
+    println(">>> Prepare to deploy service to online environment...")
+    val myServer = org.hidetake.groovy.ssh.core.Remote(
+        mapOf<String, String>(
+            "host" to System.getProperty("PSE_HOST"),
+            "user" to System.getProperty("PSE_USERNAME"),
+            "password" to System.getProperty("PSE_PASSWORD")
+        )
+    )
+    doLast {
+        ssh.run(delegateClosureOf<org.hidetake.groovy.ssh.core.RunHandler> {
+            session(myServer, delegateClosureOf<org.hidetake.groovy.ssh.session.SessionHandler> {
+                execute("docker-compose stop chaosmin-cdpt")
+                execute("docker-compose rm -f")
+                execute("docker-compose pull")
+                execute("docker-compose up --build -d chaosmin-cdpt")
+            })
+        })
+        println(">>> Service deployed successfully!")
     }
 }

@@ -90,6 +90,10 @@ open class InsureShareProvider(
         return RestResultExt.successRestResult(result)
     }
 
+    override fun getBizNo(): RestResult<String> {
+        TODO("Not yet implemented")
+    }
+
     override fun insurance(req: PolicyIssueReq): RestResult<PolicyResp> {
         logger.info(JsonUtil.encode(req, true))
         // mock 调用保司接口

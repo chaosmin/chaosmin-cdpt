@@ -25,6 +25,12 @@ interface InsureShareService {
     @GetMapping("/goods")
     fun getGoods(request: HttpServletRequest): RestResult<List<GoodsInsuredResp>>
 
+    /**
+     * 生成全局唯一的投保单号
+     */
+    @GetMapping("/biz-no")
+    fun getBizNo(): RestResult<String>
+
     @PostMapping
     fun insurance(@RequestBody req: PolicyIssueReq): RestResult<PolicyResp>
 }

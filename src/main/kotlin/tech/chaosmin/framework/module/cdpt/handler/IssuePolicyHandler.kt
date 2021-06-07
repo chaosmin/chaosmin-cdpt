@@ -75,7 +75,6 @@ open class IssuePolicyHandler(
     }
 
     private fun convert2Order(arg: PolicyIssueReq): OrderEntity {
-        arg.orderNo = BizNoUtil.generateOrderNo(arg.productPlanId!!)
         return OrderEntity().apply {
             this.productPlanId = arg.productPlanId
             this.orderNo = arg.orderNo

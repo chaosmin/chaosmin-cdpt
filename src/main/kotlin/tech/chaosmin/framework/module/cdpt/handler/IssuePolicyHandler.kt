@@ -9,16 +9,14 @@ import tech.chaosmin.framework.base.enums.GenderEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.domain.enums.CustomerTypeEnum
 import tech.chaosmin.framework.module.cdpt.domain.enums.OrderStatusEnum
+import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyKhsEnum
 import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyStatusEnum
-import tech.chaosmin.framework.module.cdpt.entity.OrderEntity
-import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
-import tech.chaosmin.framework.module.cdpt.entity.PolicyHolderEntity
-import tech.chaosmin.framework.module.cdpt.entity.PolicyInsurantEntity
+import tech.chaosmin.framework.module.cdpt.entity.*
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyInsuredReq
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
 import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyConvert
-import tech.chaosmin.framework.utils.BizNoUtil
+import java.util.*
 
 /**
  * @author Romani min
@@ -30,7 +28,8 @@ open class IssuePolicyHandler(
     private val modifyOrderHandler: ModifyOrderHandler,
     private val modifyPolicyHandler: ModifyPolicyHandler,
     private val modifyPolicyHolderHandler: ModifyPolicyHolderHandler,
-    private val modifyPolicyInsurantHandler: ModifyPolicyInsurantHandler
+    private val modifyPolicyInsurantHandler: ModifyPolicyInsurantHandler,
+    private val modifyPolicyKhsHandler: ModifyPolicyKhsHandler
 ) : AbstractTemplateOperate<PolicyIssueReq, PolicyResp>() {
     override fun validation(arg: PolicyIssueReq, result: RestResult<PolicyResp>) {
         if (arg.startTime == null || arg.endTime == null) {
@@ -63,10 +62,16 @@ open class IssuePolicyHandler(
             this.policyId = policyEntity.id
         })
         // 处理被保人数据
-        arg.insuredList?.map {convert2PolicyInsurant(it).apply {
-            this.orderId = orderEntity.id
-            this.policyId = policyEntity.id
-        } }?.map { modifyPolicyInsurantHandler.operate(it) }
+        arg.insuredList?.map {
+            convert2PolicyInsurant(it).apply {
+                this.orderId = orderEntity.id
+                this.policyId = policyEntity.id
+            }
+        }?.map { modifyPolicyInsurantHandler.operate(it) }
+
+        convert2PolicyKhs(arg).forEach {
+            modifyPolicyKhsHandler.operate(it)
+        }
 
         // TODO 此处调用保司接口进行实际出单
 
@@ -125,6 +130,20 @@ open class IssuePolicyHandler(
             this.birthday = arg.dateOfBirth
             this.phoneNo = arg.mobile
             this.save()
+        }
+    }
+
+    private fun convert2PolicyKhs(arg: PolicyIssueReq): List<PolicyKhsEntity> {
+        return if (arg.khsUrl.isNullOrEmpty()) Collections.emptyList()
+        else {
+            arg.khsUrl!!.map { (key, value) ->
+                PolicyKhsEntity().apply {
+                    this.orderNo = arg.orderNo
+                    this.khsType = PolicyKhsEnum.values().firstOrNull { key == it.name }
+                    this.resourceUrl = value
+                    this.save()
+                }
+            }
         }
     }
 }

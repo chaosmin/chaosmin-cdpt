@@ -134,9 +134,9 @@ tasks.create<Exec>("imageBuild") {
 
 tasks.create("deploy") {
     println(">>> Prepare to deploy service to online environment...")
-    println("HOST：" + System.getProperty("PSE_HOST"))
-    println("USR：" + System.getProperty("PSE_USERNAME"))
-    println("PWD：" + System.getProperty("PSE_PASSWORD"))
+    println("HOST:" + System.getProperty("PSE_HOST"))
+    println("USR :" + System.getProperty("PSE_USERNAME"))
+    println("PWD :" + System.getProperty("PSE_PASSWORD"))
     val myServer = org.hidetake.groovy.ssh.core.Remote(
         mapOf<String, String>(
             "host" to System.getProperty("PSE_HOST"),

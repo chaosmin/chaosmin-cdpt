@@ -24,7 +24,6 @@ import tech.chaosmin.framework.module.cdpt.helper.mapper.PlanRateTableMapper
 import tech.chaosmin.framework.module.cdpt.service.PlanLiabilityService
 import tech.chaosmin.framework.module.cdpt.service.PlanRateTableService
 import tech.chaosmin.framework.module.cdpt.service.ProductExternalService
-import tech.chaosmin.framework.utils.JsonUtil
 import tech.chaosmin.framework.utils.RequestUtil
 import tech.chaosmin.framework.utils.SecurityUtil
 import javax.servlet.http.HttpServletRequest
@@ -95,9 +94,6 @@ open class InsureShareProvider(
     }
 
     override fun insurance(req: PolicyIssueReq): RestResult<PolicyResp> {
-        logger.info(JsonUtil.encode(req, true))
-        // mock 调用保司接口
-        Thread.sleep(2 * 1000)
         return issuePolicyHandler.operate(req)
     }
 }

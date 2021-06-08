@@ -16,7 +16,7 @@ class PolicyKhs(id: Long? = null) : BaseDO(id, 0) {
     var policyNo: String? = null
 
     /** 可回溯材料类型 */
-    var khsType: String? = null
+    var khsType: Int? = null
 
     /** 资源地址 */
     var resourceUrl: String? = null

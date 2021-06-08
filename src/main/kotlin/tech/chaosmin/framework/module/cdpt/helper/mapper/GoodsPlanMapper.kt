@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.module.cdpt.helper.mapper
 
 import org.mapstruct.Mapper
+import org.mapstruct.Mapping
 import org.mapstruct.factory.Mappers
 import tech.chaosmin.framework.base.BaseMapper
 import tech.chaosmin.framework.base.KeyValueEnumMapper
@@ -18,5 +19,6 @@ interface GoodsPlanMapper : BaseMapper<GoodsPlanEntity, GoodsPlan> {
         val INSTANCE: GoodsPlanMapper = Mappers.getMapper(GoodsPlanMapper::class.java)
     }
 
+    @Mapping(target = "saleDateScope", expression = "java(java.util.Arrays.asList(source.getSaleStartTime(),source.getSaleEndTime()))")
     fun convertEx2Entity(source: GoodsPlanExt?): GoodsPlanEntity?
 }

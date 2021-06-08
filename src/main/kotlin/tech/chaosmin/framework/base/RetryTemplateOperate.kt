@@ -9,11 +9,8 @@ import java.util.concurrent.Callable
 import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 
-abstract class RetryTemplateOperate<P, R>(
-    logicName: String? = "",
-    errorCode: String = ErrorCodeEnum.FAILURE.code
-) : AbstractTemplateOperate<P, R>(logicName, errorCode) {
-    private val log = LoggerFactory.getLogger(RetryTemplateOperate::class.java)
+abstract class RetryTemplateOperate<P, R>(errorCode: String = ErrorCodeEnum.FAILURE.code) : AbstractTemplateOperate<P, R>(errorCode) {
+    private val logger = LoggerFactory.getLogger(RetryTemplateOperate::class.java)
 
     private var retryTimes = SystemConst.DEFAULT_RETRY_TIME
     private var waitingTime = SystemConst.DEFAULT_SLEEP_TIME
@@ -39,9 +36,9 @@ abstract class RetryTemplateOperate<P, R>(
                 }
 
                 // 执行后的操作
-                log.info(
+                logger.info(
                     "process {} success, has retried {} times, total cost time is {}ms",
-                    logicName,
+                    this.javaClass.simpleName,
                     i - 1,
                     System.currentTimeMillis() - startTime
                 )
@@ -52,9 +49,9 @@ abstract class RetryTemplateOperate<P, R>(
                     if (progressiveWait) (waitingTime * progressiveStep.pow(i.toDouble())).toLong() else waitingTime
                 if (i != retryTimes) {
                     if (printWarnings) {
-                        log.warn(
+                        logger.warn(
                             "process {} exception, will retry the {}th time, the waiting time is {}ms, init params:{}",
-                            logicName,
+                            this.javaClass.simpleName,
                             i,
                             slp,
                             JsonUtil.encode(arg),
@@ -63,9 +60,9 @@ abstract class RetryTemplateOperate<P, R>(
                     }
                     Thread.sleep(slp)
                 } else {
-                    log.error(
+                    logger.error(
                         "process {} exception, has retried {} times, total cost time is {}ms, init params:{}",
-                        logicName,
+                        this.javaClass.simpleName,
                         i,
                         System.currentTimeMillis() - startTime,
                         JsonUtil.encode(arg),

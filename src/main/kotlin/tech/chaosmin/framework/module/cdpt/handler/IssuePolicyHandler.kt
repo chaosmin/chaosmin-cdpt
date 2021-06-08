@@ -8,7 +8,6 @@ import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.base.enums.GenderEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.domain.enums.CustomerTypeEnum
-import tech.chaosmin.framework.module.cdpt.domain.enums.OrderStatusEnum
 import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyKhsEnum
 import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyStatusEnum
 import tech.chaosmin.framework.module.cdpt.entity.*
@@ -19,12 +18,21 @@ import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyConvert
 import java.util.*
 
 /**
+ * 接口出单逻辑 <br/>
+ * <br/>
+ * STEP 1 基础数据校验处理
+ * STEP 2 创建/更新订单信息
+ * STEP 3 创建保单信息
+ * STEP 4 创建/更新保单关联投保人(投保机构)信息
+ * STEP 5 创建/更新保单关联被保人信息
+ * STEP 6 邮件推送出单(成功/失败)结果
+ * <br/>
  * @author Romani min
  * @since 2021/1/27 10:07
  */
 @Component
 open class IssuePolicyHandler(
-    private val validatePolicyHandler: ValidatePolicyHandler,
+    private val basicDataVerificationHandler: BasicDataVerificationHandler,
     private val modifyOrderHandler: ModifyOrderHandler,
     private val modifyPolicyHandler: ModifyPolicyHandler,
     private val modifyPolicyHolderHandler: ModifyPolicyHolderHandler,
@@ -33,28 +41,28 @@ open class IssuePolicyHandler(
 ) : AbstractTemplateOperate<PolicyIssueReq, PolicyResp>() {
     override fun validation(arg: PolicyIssueReq, result: RestResult<PolicyResp>) {
         if (arg.startTime == null || arg.endTime == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "dateTime")
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "订单日期[dateTime]")
         }
         if (arg.productPlanId == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "productPlanId")
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "保险产品[productPlanId]")
         }
         super.validation(arg, result)
     }
 
     override fun processor(arg: PolicyIssueReq, result: RestResult<PolicyResp>): RestResult<PolicyResp> {
-        val validateResult = validatePolicyHandler.operate(arg)
-        if (!validateResult.success) {
-            return result.mapper(validateResult)
-        }
-        val orderEntity = if (arg.orderId == null) convert2Order(arg)
-        else OrderEntity().apply {
-            this.status = OrderStatusEnum.SUCCESS
-            this.update(arg.orderId!!)
-        }
-        // 更新订单表
+        // step 1
+        val validateResult = basicDataVerificationHandler.operate(arg)
+        if (!validateResult.success) return result.mapper(validateResult)
+
+        // step 2
+        val orderEntity = convert2Order(arg)
+        if (arg.orderId == null) orderEntity.save()
+        else orderEntity.update(arg.orderId!!)
         modifyOrderHandler.operate(orderEntity)
+
+        // step 3
         val policyEntity = convert2Policy(arg)
-        // 更新保单表
+        policyEntity.save()
         modifyPolicyHandler.operate(policyEntity)
         // 处理投保人数据
         modifyPolicyHolderHandler.operate(convert2PolicyHolder(arg).apply {
@@ -87,8 +95,6 @@ open class IssuePolicyHandler(
             this.endTime = arg.endTime
             this.travelDestination = arg.address
             this.extraInfo = arg.remark
-            this.status = OrderStatusEnum.SUCCESS
-            this.save()
         }
     }
 
@@ -102,11 +108,9 @@ open class IssuePolicyHandler(
             this.travelDestination = arg.address
             this.extraInfo = arg.remark
             this.status = PolicyStatusEnum.PROCESS
-            // TODO 后期这里需要在后台重新计算
             this.unitPremium = arg.unitPremium
             this.totalPremium = arg.totalPremium
             this.actualPremium = arg.actualPremium
-            this.save()
         }
     }
 

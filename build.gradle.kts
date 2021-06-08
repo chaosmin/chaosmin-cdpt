@@ -127,18 +127,16 @@ tasks.create<Exec>("imageBuild") {
     commandLine("docker", "login")
     commandLine("docker", "build", "-t", "chaosmin/chaosmin-cdpt:latest", ".")
     println("Docker镜像创建成功!")
-}
-
-tasks.create<Exec>("imagePush") {
-    dependsOn("imageBuild")
     println("准备推送Docker镜像...")
     commandLine("docker", "push", "chaosmin/chaosmin-cdpt:latest")
     println("Docker镜像推送成功!")
 }
 
 tasks.create("deploy") {
-    dependsOn("imagePush")
     println(">>> Prepare to deploy service to online environment...")
+    println("HOST：" + System.getProperty("PSE_HOST"))
+    println("USR：" + System.getProperty("PSE_USERNAME"))
+    println("PWD：" + System.getProperty("PSE_PASSWORD"))
     val myServer = org.hidetake.groovy.ssh.core.Remote(
         mapOf<String, String>(
             "host" to System.getProperty("PSE_HOST"),

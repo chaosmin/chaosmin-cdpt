@@ -17,8 +17,11 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.header.Header
 import org.springframework.security.web.header.writers.StaticHeadersWriter
+import tech.chaosmin.framework.definition.ServerInterceptorParam
 import tech.chaosmin.framework.module.mgmt.service.impl.JwtAuthenticationImpl
+import tech.chaosmin.framework.utils.JsonUtil
 import tech.chaosmin.framework.utils.JwtTokenUtil
+import tech.chaosmin.framework.utils.SecurityUtil
 import tech.chaosmin.framework.web.filter.AccessLogFilter
 import tech.chaosmin.framework.web.filter.JWTAuthenticationFilter
 import tech.chaosmin.framework.web.filter.JWTAuthorizationFilter
@@ -26,8 +29,10 @@ import tech.chaosmin.framework.web.filter.JWTAuthorizationFilter
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-open class WebSecurityConfig(@Qualifier("userDetailsServiceImpl") private val userDetailsService: UserDetailsService) :
-    WebSecurityConfigurerAdapter() {
+open class WebSecurityConfig(
+    @Qualifier("userDetailsServiceImpl") private val userDetailsService: UserDetailsService,
+    private val serverInterceptorParam: ServerInterceptorParam
+) : WebSecurityConfigurerAdapter() {
     private val logger = LoggerFactory.getLogger(AccessLogFilter::class.java)
 
     @Bean
@@ -58,6 +63,11 @@ open class WebSecurityConfig(@Qualifier("userDetailsServiceImpl") private val us
             .addFilter(JWTAuthorizationFilter(authenticationManager()))
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            // .and().formLogin().loginPage("/#/login?redirect=%2Fdashboard")
+            .and().logout().permitAll().logoutSuccessHandler { _, _, authentication ->
+                logger.info("User[${SecurityUtil.getUsername(authentication)}] logout, close session.")
+                SecurityUtil.clean()
+            }
         http.headers().addHeaderWriter(
             StaticHeadersWriter(
                 listOf(
@@ -71,14 +81,8 @@ open class WebSecurityConfig(@Qualifier("userDetailsServiceImpl") private val us
     }
 
     override fun configure(web: WebSecurity) {
-        web.ignoring().antMatchers(
-            "/swagger-ui.html",
-            "/swagger-ui/*",
-            "/swagger-resources/**",
-            "/v2/api-docs",
-            "/v3/api-docs",
-            "/webjars/**",
-            "/cCo14UwY86DZnm9k/actuator/**"
-        )
+        val list = serverInterceptorParam.except.filterNot { it.contains("auth") }.toTypedArray()
+        logger.info("HTTP filter ignore these urls: ${JsonUtil.encode(list)}")
+        web.ignoring().antMatchers(*list)
     }
 }

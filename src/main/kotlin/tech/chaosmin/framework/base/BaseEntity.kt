@@ -36,7 +36,7 @@ open class BaseEntity(var id: Long? = null) {
         this.modifyType = ModifyTypeEnum.SAVE
     }
 
-    fun update(id: Long) {
+    fun update(id: Long? = this.id) {
         this.modifyType = ModifyTypeEnum.UPDATE
         this.id = id
     }

@@ -7,6 +7,7 @@ object Vers {
     }
 
     object Deps {
+        const val caffeineVersion = "3.0.2"
         const val commonsCodecVersion = "1.14"
         const val guavaVersion = "29.0-jre"
         const val hutoolVersion = "5.4.0"

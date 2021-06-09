@@ -26,7 +26,7 @@ spring:
       config:
         enabled: false
       discovery:
-        health-check-path: /actuator/health
+        health-check-path: /cCo14UwY86DZnm9k/actuator/health
         health-check-interval: 15s
         health-check-critical-timeout: 60s
         query-passing: true
@@ -38,6 +38,9 @@ spring:
           enabled: false
         health-indicator:
           enabled: false
+    loadbalancer:
+      ribbon:
+        enabled: false
   sleuth:
     sampler:
       percentage: 1.0

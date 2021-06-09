@@ -63,6 +63,7 @@ dependencies {
         exclude("com.alibaba", "fastjson")
         exclude("p6spy", "p6spy")
     }
+    implementation("com.github.ben-manes.caffeine:caffeine:${Vers.Deps.caffeineVersion}")
 
     // common tools
     implementation("commons-codec:commons-codec:${Vers.Deps.commonsCodecVersion}")

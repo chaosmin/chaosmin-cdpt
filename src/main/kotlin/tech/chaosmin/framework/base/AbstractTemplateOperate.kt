@@ -1,7 +1,7 @@
 package tech.chaosmin.framework.base
 
-import cn.hutool.core.date.StopWatch
 import org.slf4j.LoggerFactory
+import org.springframework.util.StopWatch
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.utils.JsonUtil

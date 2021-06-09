@@ -62,7 +62,7 @@ open class BasicDataVerificationHandler(
 
     private fun orderNoIdempotenceCheck(arg: PolicyIssueReq) {
         val pageRes = policyQueryLogic.page(PageQuery.eqQuery("order_no", arg.orderNo))
-        if ((pageRes.size > 0L)) {
+        if ((pageRes.records.size > 0)) {
             logger.warn("OrderNo[${arg.orderNo}] has insured policy already.")
             throw FrameworkException(ErrorCodeEnum.RESOURCE_EXISTED.code, "该订单号")
         }
@@ -71,7 +71,7 @@ open class BasicDataVerificationHandler(
     private fun productValidityCheck(arg: PolicyIssueReq) {
         val pageRes = productPlanQueryLogic.page(PageQuery.eqQuery("product_plan.id", arg.productPlanId))
         // 无产品数据, 返回校验失败
-        if (pageRes.size == 0L) throw FrameworkException(ErrorCodeEnum.RESOURCE_NOT_EXIST.code, "保险产品")
+        if (pageRes.records.size == 0) throw FrameworkException(ErrorCodeEnum.RESOURCE_NOT_EXIST.code, "保险产品")
         val productPlanEntity = pageRes.records.first()
         // 产品无效, 返回校验失败
         if (BasicStatusEnum.DISABLED == productPlanEntity?.status) {
@@ -119,7 +119,7 @@ open class BasicDataVerificationHandler(
         // 重新计算实收保费
         val wa = Wrappers.query<GoodsPlanExt>().eq("product_plan_id", productPlanId).eq("user_id", userId)
         val pageRes = goodsPlanQueryLogic.page(PageQuery(Page(), wa))
-        if (pageRes.size == 0L) {
+        if (pageRes.records.size == 0) {
             logger.warn("Product plan[$productPlanId] does not assigned to user[$userId]")
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "您无权出单该产品")
         }

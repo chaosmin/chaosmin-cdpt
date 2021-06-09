@@ -1,16 +1,20 @@
 package tech.chaosmin.framework.module.cdpt.handler
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.AbstractTemplateOperate
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.FrameworkException
+import tech.chaosmin.framework.module.cdpt.domain.enums.OrderStatusEnum
 import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyKhsEnum
+import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyStatusEnum
 import tech.chaosmin.framework.module.cdpt.entity.PolicyKhsEntity
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
 import tech.chaosmin.framework.module.cdpt.helper.convert.IssuerConvert
 import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyConvert
+import tech.chaosmin.framework.utils.JsonUtil
 import java.util.*
 
 /**
@@ -35,6 +39,8 @@ open class IssuePolicyHandler(
     private val modifyPolicyInsurantHandler: ModifyPolicyInsurantHandler,
     private val modifyPolicyKhsHandler: ModifyPolicyKhsHandler
 ) : AbstractTemplateOperate<PolicyIssueReq, PolicyResp>() {
+    private val logger = LoggerFactory.getLogger(IssuePolicyHandler::class.java)
+
     override fun validation(arg: PolicyIssueReq, result: RestResult<PolicyResp>) {
         if (arg.startTime == null || arg.endTime == null) {
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "订单日期[dateTime]")
@@ -52,36 +58,58 @@ open class IssuePolicyHandler(
 
         // step 2
         val orderEntity = IssuerConvert.INSTANCE.convert2OrderEntity(arg)
+        orderEntity.status = OrderStatusEnum.SUCCESS
         if (arg.orderId == null) orderEntity.save()
-        else orderEntity.update(arg.orderId!!)
-        modifyOrderHandler.operate(orderEntity)
+        else orderEntity.update()
+        val moResult = modifyOrderHandler.operate(orderEntity)
+        if (!moResult.success) return result.mapper(moResult)
 
         // step 3
         val policyEntity = IssuerConvert.INSTANCE.convert2PolicyEntity(arg)
+        policyEntity.status = PolicyStatusEnum.PROCESS
         policyEntity.save()
-        modifyPolicyHandler.operate(policyEntity)
+        val mpResult = modifyPolicyHandler.operate(policyEntity)
+        if (!mpResult.success) return result.mapper(mpResult)
 
         // 处理投保人数据
         policyEntity.holder?.run {
+            this.save()
             this.policyId = policyEntity.id
-            modifyPolicyHolderHandler.operate(this)
+            val (_, _, _, _, success) = modifyPolicyHolderHandler.operate(this)
+            if (!success) {
+                logger.error("Fail To save policy holder info, please do data patch on this record! # ${JsonUtil.encode(this)}")
+            }
         }
 
         // 处理被保人数据
         policyEntity.insuredList?.forEach {
+            it.save()
             it.policyId = policyEntity.id
-            modifyPolicyInsurantHandler.operate(it)
+            val (_, _, _, _, success) = modifyPolicyInsurantHandler.operate(it)
+            if (!success) {
+                logger.error("Fail To save policy insurant info, please do data patch on this record! # ${JsonUtil.encode(it)}")
+            }
         }
 
         // 2021-06-08 18:57:06 处理可回溯信息
         policyEntity.khsList = convert2PolicyKhs(arg)
         policyEntity.khsList?.forEach {
+            it.save()
             it.policyId = policyEntity.id
-            modifyPolicyKhsHandler.operate(it)
+            val (_, _, _, _, success) = modifyPolicyKhsHandler.operate(it)
+            if (!success) {
+                logger.error("Fail To save policy khs info, please do data patch on this record! # ${JsonUtil.encode(it)}")
+            }
         }
 
         // TODO 此处调用保司接口进行实际出单
+        val callback = true
 
+        policyEntity.status = if (callback) PolicyStatusEnum.SUCCESS else PolicyStatusEnum.FAILED
+        policyEntity.update()
+        modifyPolicyHandler.operate(policyEntity)
+
+        // 返回落地的保单数据
         val responseData = PolicyConvert.INSTANCE.convert2Resp(policyEntity)
         return result.success(responseData)
     }
@@ -93,7 +121,6 @@ open class IssuePolicyHandler(
                 PolicyKhsEntity().apply {
                     this.khsType = PolicyKhsEnum.values().firstOrNull { key == it.name }
                     this.resourceUrl = value
-                    this.save()
                 }
             }
         }

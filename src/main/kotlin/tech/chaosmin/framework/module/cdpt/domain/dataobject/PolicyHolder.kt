@@ -8,9 +8,6 @@ import java.util.*
  * @since 2021/1/26 10:39
  */
 class PolicyHolder(id: Long? = null) : BaseDO(id, 0) {
-    /** 订单ID */
-    var orderId: Long? = null
-
     /** 保单ID */
     var policyId: Long? = null
 

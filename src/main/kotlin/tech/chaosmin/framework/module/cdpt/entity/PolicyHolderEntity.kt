@@ -7,11 +7,12 @@ import tech.chaosmin.framework.module.cdpt.domain.enums.CustomerTypeEnum
 import java.util.*
 
 /**
+ * 保单投保人中间态实体 <br/>
+ * <br/>
  * @author Romani min
  * @since 2021/1/26 15:48
  */
 class PolicyHolderEntity(id: Long? = null) : BaseEntity(id) {
-    var orderId: Long? = null
     var policyId: Long? = null
     var mainInsuredRelation: Int? = null
     var partyType: CustomerTypeEnum? = null

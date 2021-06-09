@@ -7,9 +7,13 @@ import tech.chaosmin.framework.base.BaseQueryLogic
 import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.Policy
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
+import tech.chaosmin.framework.module.cdpt.entity.PolicyInsurantEntity
+import tech.chaosmin.framework.module.cdpt.entity.PolicyKhsEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyInsurantMapper
+import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyKhsMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyMapper
 import tech.chaosmin.framework.module.cdpt.service.PolicyInsurantService
+import tech.chaosmin.framework.module.cdpt.service.PolicyKhsService
 import tech.chaosmin.framework.module.cdpt.service.PolicyService
 import tech.chaosmin.framework.utils.JsonUtil
 
@@ -22,6 +26,7 @@ import tech.chaosmin.framework.utils.JsonUtil
 @Component
 class PolicyQueryLogic(
     private val policyService: PolicyService,
+    private val policyKhsService: PolicyKhsService,
     private val policyInsurantService: PolicyInsurantService
 ) : BaseQueryLogic<PolicyEntity, Policy> {
     private val logger = LoggerFactory.getLogger(PolicyQueryLogic::class.java)
@@ -39,14 +44,20 @@ class PolicyQueryLogic(
         logger.debug("Page(${JsonUtil.encode(cond)}) => ${JsonUtil.encode(page)}")
         val result = page.convert(PolicyMapper.INSTANCE::convert2Entity)
         // 补充被保人列表
-        result.convert {
-            it.apply {
-                this?.insuredList = policyInsurantService.listByPolicyId(it?.id!!).mapNotNull { p ->
-                    PolicyInsurantMapper.INSTANCE.convert2Entity(p)
-                }
-            }
-        }
+        result.convert { it?.apply { this.insuredList = queryInsurant(it.id!!) } }
         logger.debug("Convert2Entity => ${JsonUtil.encode(result)}")
         return result
+    }
+
+    private fun queryInsurant(id: Long): List<PolicyInsurantEntity> {
+        return policyInsurantService.listByPolicyId(id).mapNotNull {
+            PolicyInsurantMapper.INSTANCE.convert2Entity(it)
+        }
+    }
+
+    fun queryKhs(id: Long): List<PolicyKhsEntity> {
+        return policyKhsService.listByPolicyId(id).mapNotNull {
+            PolicyKhsMapper.INSTANCE.convert2Entity(it)
+        }
     }
 }

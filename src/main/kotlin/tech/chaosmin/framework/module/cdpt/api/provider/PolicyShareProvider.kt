@@ -9,9 +9,11 @@ import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.api.PolicyShareService
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.Policy
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyReq
+import tech.chaosmin.framework.module.cdpt.entity.response.PolicyKhsResp
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
 import tech.chaosmin.framework.module.cdpt.handler.logic.PolicyQueryLogic
 import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyConvert
+import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyKhsConvert
 import tech.chaosmin.framework.utils.RequestUtil
 import javax.servlet.http.HttpServletRequest
 
@@ -20,9 +22,12 @@ import javax.servlet.http.HttpServletRequest
  * @since 2020/12/10 13:48
  */
 @RestController
-open class PolicyShareProvider(
-    private val policyQueryLogic: PolicyQueryLogic
-) : PolicyShareService {
+open class PolicyShareProvider(private val policyQueryLogic: PolicyQueryLogic) : PolicyShareService {
+    override fun getKhsList(id: Long): List<PolicyKhsResp> {
+        val policyKhsList = policyQueryLogic.queryKhs(id)
+        return PolicyKhsConvert.INSTANCE.convert2Resp(policyKhsList).filterNotNull()
+    }
+
     override fun selectById(id: Long): RestResult<PolicyResp?> {
         val policy = policyQueryLogic.get(id)
         return if (policy == null) RestResultExt.successRestResult()

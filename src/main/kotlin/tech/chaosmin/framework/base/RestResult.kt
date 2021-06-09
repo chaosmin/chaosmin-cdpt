@@ -54,7 +54,7 @@ object RestResultExt {
     fun <T> successRestResult(msg: String, data: T, meta: Any) = RestResult(ErrorCodeEnum.SUCCESS.code, msg, data, meta)
 
     fun <T> failureRestResult() = RestResult<T>(ErrorCodeEnum.FAILURE.code, OPT_FAILED)
-    fun <T> failureRestResult(msg: String) = RestResult<T>(ErrorCodeEnum.FAILURE.code, msg)
+    fun <T> failureRestResult(msg: String?) = RestResult<T>(ErrorCodeEnum.FAILURE.code, msg)
     fun <T> failureRestResult(code: String, msg: String?) = RestResult<T>(code, msg)
     fun <T> failureRestResult(data: T) = RestResult(ErrorCodeEnum.FAILURE.code, OPT_FAILED, data)
     fun <T> failureRestResult(data: T, meta: Any) = RestResult(ErrorCodeEnum.FAILURE.code, OPT_FAILED, data, meta)

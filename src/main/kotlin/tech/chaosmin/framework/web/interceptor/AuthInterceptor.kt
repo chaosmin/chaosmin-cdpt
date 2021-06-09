@@ -36,7 +36,7 @@ class AuthInterceptor(
 
         val action = Action(request.method, uri)
         val token = request.getHeader(JwtTokenUtil.TOKEN_HEADER).takeUnless { it.isNullOrBlank() }
-            ?: throw AuthenticationException(ErrorCodeEnum.NO_TOKEN.code)
+            ?: throw AuthenticationException.MISSED_TOKEN
         val authentication = JwtTokenUtil.getAuthenticationFromToken(token)
             ?: throw PermissionException(ErrorCodeEnum.NO_PERMISSION.code)
         if (!authService.canAccess(authentication, action)) {

@@ -6,7 +6,6 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
-import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.AuthenticationException
 import tech.chaosmin.framework.module.mgmt.domain.auth.GrantedAuthorityImpl
 import tech.chaosmin.framework.module.mgmt.domain.auth.JwtAuthenticationToken
@@ -168,7 +167,7 @@ object JwtTokenUtil : Serializable {
         return try {
             getClaimsFromToken(token)?.get(USERNAME)?.toString()
         } catch (e: Exception) {
-            throw AuthenticationException(ErrorCodeEnum.TOKEN_INVALID.code, e)
+            throw AuthenticationException.INVALID_TOKEN
         }
     }
 
@@ -186,7 +185,7 @@ object JwtTokenUtil : Serializable {
                 expiration.before(Date())
             } else false
         } catch (e: Exception) {
-            throw AuthenticationException(ErrorCodeEnum.TOKEN_EXPIRED.code, e)
+            throw AuthenticationException.EXPIRED_TOKEN
         }.also {
             if (it) logger.warn("$token has been expired")
         }
@@ -202,7 +201,7 @@ object JwtTokenUtil : Serializable {
         return try {
             Jwts.parser().setSigningKey(APP_SECRET_KEY).parseClaimsJws(token).body
         } catch (e: Exception) {
-            throw AuthenticationException(ErrorCodeEnum.TOKEN_INVALID.code, e)
+            throw AuthenticationException.INVALID_TOKEN
         }
     }
 

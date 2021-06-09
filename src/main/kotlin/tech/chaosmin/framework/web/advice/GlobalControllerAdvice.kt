@@ -13,8 +13,6 @@ import org.springframework.web.servlet.NoHandlerFoundException
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.RestResultExt.failureRestResult
 import tech.chaosmin.framework.base.RestResultExt.noPermissionRestResult
-import tech.chaosmin.framework.base.enums.ErrorCodeEnum
-import tech.chaosmin.framework.exception.AuthenticationException
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.exception.PermissionException
 import tech.chaosmin.framework.exception.ResourceNotExistException
@@ -60,7 +58,7 @@ class GlobalControllerAdvice {
     @ExceptionHandler(MissingServletRequestParameterException::class)
     fun handleMissingServletRequestParameterException(e: MissingServletRequestParameterException): RestResult<Void> {
         logger.error("捕获到请求参数缺失异常", e)
-        return failureRestResult(msg = e.message ?: "missing request parameters")
+        return failureRestResult(msg = e.message)
     }
 
     /**
@@ -99,15 +97,6 @@ class GlobalControllerAdvice {
     fun handleResourceNotExistException(e: ResourceNotExistException): RestResult<Void> {
         logger.error("捕获到资源不存在异常", e)
         return failureRestResult(msg = e.message ?: "resource not exist")
-    }
-
-    /**
-     * 认证失败, token无效
-     */
-    @ExceptionHandler(AuthenticationException::class)
-    fun handleAuthenticationException(e: AuthenticationException): RestResult<Void> {
-        logger.error("捕获到认证异常", e)
-        return failureRestResult(msg = e.message ?: ErrorCodeEnum.TOKEN_INVALID.code)
     }
 
     /**

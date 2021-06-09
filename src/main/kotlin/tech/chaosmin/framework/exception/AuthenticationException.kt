@@ -1,12 +1,11 @@
 package tech.chaosmin.framework.exception
 
-class AuthenticationException : RuntimeException {
-    constructor() : super()
-    constructor(message: String) : super(message)
-    constructor(message: String, cause: Throwable) : super(message, cause)
-    constructor(cause: Throwable) : super(cause)
+import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 
+class AuthenticationException {
     companion object {
-        val INVALID_TOKEN = AuthenticationException("invalid token")
+        val MISSED_TOKEN = FrameworkException(ErrorCodeEnum.NO_TOKEN.code)
+        val INVALID_TOKEN = FrameworkException(ErrorCodeEnum.TOKEN_INVALID.code)
+        val EXPIRED_TOKEN = FrameworkException(ErrorCodeEnum.TOKEN_EXPIRED.code)
     }
 }

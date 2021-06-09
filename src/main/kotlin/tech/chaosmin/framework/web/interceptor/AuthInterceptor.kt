@@ -6,7 +6,6 @@ import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
-import tech.chaosmin.framework.definition.ServerInterceptorParam
 import tech.chaosmin.framework.exception.AuthenticationException
 import tech.chaosmin.framework.exception.PermissionException
 import tech.chaosmin.framework.module.mgmt.domain.auth.Action
@@ -19,21 +18,11 @@ import javax.servlet.http.HttpServletResponse
 
 @Component
 @Order(-1000)
-class AuthInterceptor(
-    private val serverInterceptorParam: ServerInterceptorParam,
-    private val authService: AuthService
-) : HandlerInterceptor {
+class AuthInterceptor(private val authService: AuthService) : HandlerInterceptor {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         val uri: String = request.requestURI
-
-        val except = serverInterceptorParam.except
-        if (except.any { uri.matches((it.replace("**", ".*")).toRegex()) }) {
-            logger.debug("Skip check for url: $uri")
-            return true
-        }
-
         val action = Action(request.method, uri)
         val token = request.getHeader(JwtTokenUtil.TOKEN_HEADER).takeUnless { it.isNullOrBlank() }
             ?: throw AuthenticationException.MISSED_TOKEN

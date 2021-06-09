@@ -72,8 +72,13 @@ open class WebSecurityConfig(@Qualifier("userDetailsServiceImpl") private val us
 
     override fun configure(web: WebSecurity) {
         web.ignoring().antMatchers(
-            "/swagger-ui.html", "/swagger-ui/*", "/swagger-resources/**",
-            "/v2/api-docs", "/v3/api-docs", "/webjars/**", "/actuator/**"
+            "/swagger-ui.html",
+            "/swagger-ui/*",
+            "/swagger-resources/**",
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/webjars/**",
+            "/cCo14UwY86DZnm9k/actuator/**"
         )
     }
 }

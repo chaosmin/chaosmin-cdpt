@@ -4,21 +4,21 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import tech.chaosmin.framework.definition.ServerInterceptorParam
 import tech.chaosmin.framework.web.interceptor.AuthInterceptor
 
 @Configuration
 
-open class WebMvcConfig(private val authInterceptor: AuthInterceptor) : WebMvcConfigurer {
+open class WebMvcConfig(
+    private val authInterceptor: AuthInterceptor,
+    private val serverInterceptorParam: ServerInterceptorParam
+) : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
+        val list = serverInterceptorParam.except.toTypedArray()
         registry.addInterceptor(authInterceptor)
             .addPathPatterns("/**")
-            .excludePathPatterns("/swagger**/**", "/webjars/**", "/v3/**", "/doc.html")
-            .excludePathPatterns("/auth/**")
-            .excludePathPatterns("/event/**")
-            .excludePathPatterns("/ddl-change")
-            .excludePathPatterns("/actuator/**")
-            .excludePathPatterns("/system/ping-without-auth")
+            .excludePathPatterns(*list)
         // registry.addInterceptor(limitInterceptor)
         //     .addPathPatterns("/${version}/api/**")
         //     .excludePathPatterns("/swagger**/**", "/webjars/**", "/v3/**", "/doc.html")

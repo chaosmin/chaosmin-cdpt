@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import tech.chaosmin.framework.base.BaseShareService
+import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyReq
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyKhsResp
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
@@ -13,5 +14,5 @@ import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
 @RequestMapping("/\${application.version}/api/policies")
 interface PolicyShareService : BaseShareService<PolicyReq, PolicyResp> {
     @GetMapping("/{id}/khs")
-    fun getKhsList(@PathVariable("id") id: Long): List<PolicyKhsResp>
+    fun getKhsList(@PathVariable("id") id: Long): RestResult<List<PolicyKhsResp>>
 }

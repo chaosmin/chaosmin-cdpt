@@ -3,6 +3,7 @@ package tech.chaosmin.framework.module.cdpt.entity.response
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseResp
+import java.util.*
 
 /**
  * @author Romani min
@@ -15,6 +16,9 @@ class PolicyKhsResp : BaseResp() {
 
     @ApiModelProperty("可回溯材料类型")
     var khsType: String? = null
+
+    @ApiModelProperty("可回溯材料生成时间")
+    var fileTime: Date? = null
 
     @ApiModelProperty("资源地址")
     var resourceUrl: String? = null

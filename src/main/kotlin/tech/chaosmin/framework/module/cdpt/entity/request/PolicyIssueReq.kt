@@ -61,5 +61,5 @@ class PolicyIssueReq : BaseReq() {
     var payMethod: PayMethodEnum? = null
 
     @ApiModelProperty("可回溯信息文件集合")
-    var khsUrl: Map<String, String>? = null
+    var khsUrl: List<PolicyKhsReq>? = null
 }

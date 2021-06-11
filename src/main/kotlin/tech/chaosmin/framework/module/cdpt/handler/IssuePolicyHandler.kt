@@ -7,15 +7,12 @@ import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.domain.enums.OrderStatusEnum
-import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyKhsEnum
 import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyStatusEnum
-import tech.chaosmin.framework.module.cdpt.entity.PolicyKhsEntity
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
 import tech.chaosmin.framework.module.cdpt.helper.convert.IssuerConvert
 import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyConvert
 import tech.chaosmin.framework.utils.JsonUtil
-import java.util.*
 
 /**
  * 接口出单逻辑 <br/>
@@ -92,7 +89,6 @@ open class IssuePolicyHandler(
         }
 
         // 2021-06-08 18:57:06 处理可回溯信息
-        policyEntity.khsList = convert2PolicyKhs(arg)
         policyEntity.khsList?.forEach {
             it.save()
             it.policyId = policyEntity.id
@@ -112,17 +108,5 @@ open class IssuePolicyHandler(
         // 返回落地的保单数据
         val responseData = PolicyConvert.INSTANCE.convert2Resp(policyEntity)
         return result.success(responseData)
-    }
-
-    private fun convert2PolicyKhs(arg: PolicyIssueReq): List<PolicyKhsEntity> {
-        return if (arg.khsUrl.isNullOrEmpty()) Collections.emptyList()
-        else {
-            arg.khsUrl!!.map { (key, value) ->
-                PolicyKhsEntity().apply {
-                    this.khsType = PolicyKhsEnum.values().firstOrNull { key == it.name }
-                    this.resourceUrl = value
-                }
-            }
-        }
     }
 }

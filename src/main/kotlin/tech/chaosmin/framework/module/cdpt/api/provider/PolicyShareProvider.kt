@@ -23,9 +23,10 @@ import javax.servlet.http.HttpServletRequest
  */
 @RestController
 open class PolicyShareProvider(private val policyQueryLogic: PolicyQueryLogic) : PolicyShareService {
-    override fun getKhsList(id: Long): List<PolicyKhsResp> {
+    override fun getKhsList(id: Long): RestResult<List<PolicyKhsResp>> {
         val policyKhsList = policyQueryLogic.queryKhs(id)
-        return PolicyKhsConvert.INSTANCE.convert2Resp(policyKhsList).filterNotNull()
+        val list = PolicyKhsConvert.INSTANCE.convert2Resp(policyKhsList).filterNotNull()
+        return RestResultExt.successRestResult(list)
     }
 
     override fun selectById(id: Long): RestResult<PolicyResp?> {

@@ -18,6 +18,7 @@ import tech.chaosmin.framework.module.cdpt.handler.logic.PlanRateTableQueryLogic
 import tech.chaosmin.framework.module.cdpt.handler.logic.PolicyQueryLogic
 import tech.chaosmin.framework.module.cdpt.handler.logic.ProductPlanQueryLogic
 import tech.chaosmin.framework.utils.SecurityUtil
+import java.math.BigDecimal
 import java.util.*
 
 /**
@@ -125,7 +126,8 @@ open class BasicDataVerificationHandler(
         }
         val goodsPlan = pageRes.records.first()!!
         val comsRatio = goodsPlan.comsRatio ?: 0.0
-        arg.actualPremium = arg.totalPremium!! * (1 - comsRatio)
+        arg.actualPremium = (BigDecimal(100).minus(BigDecimal(comsRatio)))
+            .divide(BigDecimal(100)).multiply(BigDecimal(arg.totalPremium!!)).toDouble()
         if (arg.actualPremium == null || arg.actualPremium == 0.0) {
             logger.error("Actual premium of this order is zero.")
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "实收保费")

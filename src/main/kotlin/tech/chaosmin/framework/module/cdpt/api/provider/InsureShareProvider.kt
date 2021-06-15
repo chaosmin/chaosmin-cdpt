@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.RestResultExt
 import tech.chaosmin.framework.base.enums.BasicStatusEnum
+import tech.chaosmin.framework.base.enums.BizNoTypeEnum
 import tech.chaosmin.framework.base.enums.YesNoEnum
 import tech.chaosmin.framework.module.cdpt.api.InsureShareService
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.PlanLiability
@@ -24,6 +25,7 @@ import tech.chaosmin.framework.module.cdpt.helper.mapper.PlanRateTableMapper
 import tech.chaosmin.framework.module.cdpt.service.PlanLiabilityService
 import tech.chaosmin.framework.module.cdpt.service.PlanRateTableService
 import tech.chaosmin.framework.module.cdpt.service.ProductExternalService
+import tech.chaosmin.framework.utils.BizNoUtil
 import tech.chaosmin.framework.utils.RequestUtil
 import tech.chaosmin.framework.utils.SecurityUtil
 import javax.servlet.http.HttpServletRequest
@@ -90,7 +92,8 @@ open class InsureShareProvider(
     }
 
     override fun getBizNo(): RestResult<String> {
-        TODO("Not yet implemented")
+        val bizNo = BizNoUtil.nextBizNo(BizNoTypeEnum.DATETIME, 18, "O")
+        return RestResultExt.successRestResult(bizNo)
     }
 
     override fun insurance(req: PolicyIssueReq): RestResult<PolicyResp> {

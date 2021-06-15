@@ -20,4 +20,9 @@ class KeyValueEnumMapper {
         return if (code == null) null
         else EnumClient.getEnum(clazz, code)
     }
+
+    fun <T> getEnum(@TargetType clazz: Class<T>, desc: String?): T? where T : Enum<T>, T : KeyValueEnum {
+        return if (desc.isNullOrBlank()) null
+        else EnumClient.getEnum(clazz, desc)
+    }
 }

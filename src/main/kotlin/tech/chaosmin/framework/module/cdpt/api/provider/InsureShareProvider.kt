@@ -93,7 +93,7 @@ open class InsureShareProvider(
 
     override fun getBizNo(): RestResult<String> {
         val bizNo = BizNoUtil.nextBizNo(BizNoTypeEnum.DATETIME, 18, "O")
-        return RestResultExt.successRestResult(bizNo)
+        return RestResultExt.successRestResult(data = bizNo)
     }
 
     override fun insurance(req: PolicyIssueReq): RestResult<PolicyResp> {

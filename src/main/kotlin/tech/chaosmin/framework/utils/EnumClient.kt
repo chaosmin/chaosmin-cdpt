@@ -24,4 +24,8 @@ object EnumClient {
     fun <T> getEnum(clazz: Class<T>, code: Int): T? where T : Enum<T>, T : KeyValueEnum {
         return clazz.enumConstants.firstOrNull { it.getCode() == code }
     }
+
+    fun <T> getEnum(clazz: Class<T>, desc: String): T? where T : Enum<T>, T : KeyValueEnum {
+        return clazz.enumConstants.firstOrNull { it.getDesc() == desc }
+    }
 }

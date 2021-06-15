@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.type.TypeFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.IOException
@@ -14,7 +15,7 @@ import java.util.*
 object JsonUtil {
     private val logger: Logger = LoggerFactory.getLogger(JsonUtil::class.java)
 
-    val objectMapper = ObjectMapper().apply {
+    private val objectMapper = ObjectMapper().apply {
         findAndRegisterModules()
         // 允许 Java风格 注释
         configure(JsonParser.Feature.ALLOW_COMMENTS, true)
@@ -59,5 +60,12 @@ object JsonUtil {
             logger.error("decode(String, Class<T>) error: ${e.message}", e)
             null
         }
+    }
+
+    fun convert2Map(json: String?): Map<String, String> {
+        if (json.isNullOrBlank()) return emptyMap()
+        val typeFactory = TypeFactory.defaultInstance()
+        val constructMapType = typeFactory.constructMapType(HashMap::class.java, String::class.java, String::class.java)
+        return objectMapper.readValue(json, constructMapType)
     }
 }

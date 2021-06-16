@@ -54,7 +54,7 @@ open class SpringFoxConfig(
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
             .title(applicationParam.name)
-            .description("<b>Application description:</b> ${applicationParam.description}<br/><b>Springboot Version:</b> ${SpringBootVersion.getVersion()}")
+            .description("<b>Application description:</b> ${applicationParam.description}<p><b>Springboot Version:</b> ${SpringBootVersion.getVersion()}")
             .termsOfServiceUrl("http://localhost:8080/")
             .contact(Contact(swaggerParam.contact.name, swaggerParam.contact.url, swaggerParam.contact.email))
             .version(applicationParam.version)

@@ -3,8 +3,9 @@ package tech.chaosmin.framework.module.cdpt.entity.channel.request
 import java.util.*
 
 /**
- * 永诚保险对接请求体 <br/>
- * <br/>
+ * 永诚保险对接请求体 <p>
+ * <p>
+ *
  * @author Romani min
  * @since 2021/6/11 10:17
  */

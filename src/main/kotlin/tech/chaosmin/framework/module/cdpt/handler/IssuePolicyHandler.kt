@@ -15,15 +15,15 @@ import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyConvert
 import tech.chaosmin.framework.utils.JsonUtil
 
 /**
- * 接口出单逻辑 <br/>
- * <br/>
+ * 接口出单逻辑 <p>
+ * <p>
  * STEP 1 基础数据校验处理
  * STEP 2 创建/更新订单信息
  * STEP 3 创建保单信息
  * STEP 4 创建保单关联投保人(投保机构)信息
  * STEP 5 创建保单关联被保人信息
  * STEP 6 邮件推送出单(成功/失败)结果
- * <br/>
+ * <p>
  * @author Romani min
  * @since 2021/1/27 10:07
  */

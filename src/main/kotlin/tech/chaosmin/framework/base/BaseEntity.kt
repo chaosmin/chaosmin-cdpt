@@ -4,8 +4,8 @@ import tech.chaosmin.framework.base.enums.ModifyTypeEnum
 import java.util.*
 
 /**
- * 系统操作中间态基类 <br/>
- * <br/>
+ * 系统操作中间态基类 <p>
+ * <p>
  * @author Romani min
  * @since 2020/12/23 15:50
  */

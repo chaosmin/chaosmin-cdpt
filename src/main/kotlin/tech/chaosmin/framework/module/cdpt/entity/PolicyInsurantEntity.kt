@@ -7,8 +7,8 @@ import tech.chaosmin.framework.module.cdpt.domain.enums.CustomerTypeEnum
 import java.util.*
 
 /**
- * 保单被保人中间态实体 <br/>
- * <br/>
+ * 保单被保人中间态实体 <p>
+ * <p>
  * @author Romani min
  * @since 2021/1/26 15:48
  */

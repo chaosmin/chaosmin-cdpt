@@ -8,25 +8,25 @@ import java.util.*
 import javax.servlet.http.HttpServletRequest
 
 /**
- * 前端查询条件解析工具 <br/>
- * <br/>
- * 语法如下: <br/>
- * 分页查询: P_NUM=1 <br/>
- * 分页大小: P_SIZE=10 <br/>
- * 查询顺序: O_field=1 顺序查询 O_filed=0 逆序查询, 如 O_name=1 <br/>
- * equals查询: EQ_filed=`value`, 如EQ_name=romani <br/>
- * not equals查询: NEQ_field=`value`, 如NEQ_name=romani <br/>
- * 右匹配like查询: LIKE_field=`value`, 如LIKE_name=romani <br/>
- * 模糊匹配like查询: ALIKE_field=`value`, 如ALIKE_name=romani <br/>
- * 大于查询: GT_field=`value`, 如GT_sum=10 <br/>
- * 大于等于查询: GE_field=`value`, 如GE_sum=10 <br/>
- * 小于查询: LT_field=`value`, 如LT_sum=10 <br/>
- * 小于等于查询: LE_field=`value`, 如LE_sum=10 <br/>
- * in查询: IN_field=`value`, 如IN_name=romani,akiman <br/>
- * not in查询: NIN_field=`value`, 如NIN_name=romani,akiman <br/>
- * 区间查询: BETWEEN_field=`value`, 如BETWEEN_time=2020-01-01,2020-02-01 <br/>
- * <br/>
- * 其中field命名格式为驼峰式, 当转换为查询sql时会根据驼峰命名自动转换为下划线格式 <br/>
+ * 前端查询条件解析工具 <p>
+ * <p>
+ * 语法如下: <p>
+ * 分页查询: P_NUM=1 <p>
+ * 分页大小: P_SIZE=10 <p>
+ * 查询顺序: O_field=1 顺序查询 O_filed=0 逆序查询, 如 O_name=1 <p>
+ * equals查询: EQ_filed=`value`, 如EQ_name=romani <p>
+ * not equals查询: NEQ_field=`value`, 如NEQ_name=romani <p>
+ * 右匹配like查询: LIKE_field=`value`, 如LIKE_name=romani <p>
+ * 模糊匹配like查询: ALIKE_field=`value`, 如ALIKE_name=romani <p>
+ * 大于查询: GT_field=`value`, 如GT_sum=10 <p>
+ * 大于等于查询: GE_field=`value`, 如GE_sum=10 <p>
+ * 小于查询: LT_field=`value`, 如LT_sum=10 <p>
+ * 小于等于查询: LE_field=`value`, 如LE_sum=10 <p>
+ * in查询: IN_field=`value`, 如IN_name=romani,akiman <p>
+ * not in查询: NIN_field=`value`, 如NIN_name=romani,akiman <p>
+ * 区间查询: BETWEEN_field=`value`, 如BETWEEN_time=2020-01-01,2020-02-01 <p>
+ * <p>
+ * 其中field命名格式为驼峰式, 当转换为查询sql时会根据驼峰命名自动转换为下划线格式 <p>
  * 如`EQ_userName=romani&GE_age=10`转换为`user_name=romani and age>=10`
  */
 object RequestUtil {

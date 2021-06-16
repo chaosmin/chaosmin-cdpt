@@ -3,11 +3,11 @@ package tech.chaosmin.framework.base
 import com.baomidou.mybatisplus.core.metadata.IPage
 
 /**
- * 基础数据查询逻辑 <br/>
- * <br/>
+ * 基础数据查询逻辑 <p>
+ * <p>
  * E: 中间态实体变量,需继承于[BaseEntity]
  * D: 底层实体变量,需继承与[BaseDO]
- * <br/>
+ * <p>
  * @author Romani min
  * @since 2020/12/23 17:05
  */

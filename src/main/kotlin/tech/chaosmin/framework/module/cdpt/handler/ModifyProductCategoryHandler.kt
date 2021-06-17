@@ -10,7 +10,7 @@ import tech.chaosmin.framework.base.enums.ModifyTypeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.entity.ProductCategoryEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.ProductCategoryMapper
-import tech.chaosmin.framework.module.cdpt.service.ProductCategoryService
+import tech.chaosmin.framework.module.cdpt.service.inner.ProductCategoryService
 
 /**
  * @author Romani min

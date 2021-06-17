@@ -5,11 +5,9 @@ import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.BaseQueryLogic
 import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.PlanRateTable
-import tech.chaosmin.framework.module.cdpt.entity.PlanLiabilityEntity
 import tech.chaosmin.framework.module.cdpt.entity.PlanRateTableEntity
-import tech.chaosmin.framework.module.cdpt.helper.mapper.PlanLiabilityMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PlanRateTableMapper
-import tech.chaosmin.framework.module.cdpt.service.PlanRateTableService
+import tech.chaosmin.framework.module.cdpt.service.inner.PlanRateTableService
 
 /**
  * @author Romani min

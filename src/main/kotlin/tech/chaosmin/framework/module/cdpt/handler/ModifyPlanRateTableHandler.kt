@@ -10,7 +10,7 @@ import tech.chaosmin.framework.base.enums.ModifyTypeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.entity.PlanRateTableEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PlanRateTableMapper
-import tech.chaosmin.framework.module.cdpt.service.PlanRateTableService
+import tech.chaosmin.framework.module.cdpt.service.inner.PlanRateTableService
 
 /**
  * @author Romani min

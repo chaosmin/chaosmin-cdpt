@@ -7,7 +7,7 @@ import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ProductCategory
 import tech.chaosmin.framework.module.cdpt.entity.ProductCategoryEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.ProductCategoryMapper
-import tech.chaosmin.framework.module.cdpt.service.ProductCategoryService
+import tech.chaosmin.framework.module.cdpt.service.inner.ProductCategoryService
 
 /**
  * @author Romani min

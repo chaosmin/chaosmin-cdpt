@@ -62,6 +62,12 @@ object JsonUtil {
         }
     }
 
+    fun <T> decode(json: String?, valueType: Class<T>, vararg elementClasses: Class<*>): T? {
+        if (json.isNullOrBlank()) return null
+        val javaType = objectMapper.typeFactory.constructParametricType(valueType, *elementClasses)
+        return objectMapper.readValue(json, javaType)
+    }
+
     fun convert2Map(json: String?): Map<String, String> {
         if (json.isNullOrBlank()) return emptyMap()
         val typeFactory = TypeFactory.defaultInstance()

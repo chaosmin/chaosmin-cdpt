@@ -7,7 +7,7 @@ import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.Order
 import tech.chaosmin.framework.module.cdpt.entity.OrderEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.OrderMapper
-import tech.chaosmin.framework.module.cdpt.service.OrderService
+import tech.chaosmin.framework.module.cdpt.service.inner.OrderService
 
 /**
  * @author Romani min

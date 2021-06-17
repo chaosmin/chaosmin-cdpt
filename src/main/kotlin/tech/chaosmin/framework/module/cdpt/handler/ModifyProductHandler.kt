@@ -13,10 +13,10 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.Product
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ProductExternal
 import tech.chaosmin.framework.module.cdpt.entity.ProductEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.ProductMapper
-import tech.chaosmin.framework.module.cdpt.service.ProductCategoryService
-import tech.chaosmin.framework.module.cdpt.service.ProductExternalService
-import tech.chaosmin.framework.module.cdpt.service.ProductPlanService
-import tech.chaosmin.framework.module.cdpt.service.ProductService
+import tech.chaosmin.framework.module.cdpt.service.inner.ProductCategoryService
+import tech.chaosmin.framework.module.cdpt.service.inner.ProductExternalService
+import tech.chaosmin.framework.module.cdpt.service.inner.ProductPlanService
+import tech.chaosmin.framework.module.cdpt.service.inner.ProductService
 import tech.chaosmin.framework.utils.EnumClient
 
 /**

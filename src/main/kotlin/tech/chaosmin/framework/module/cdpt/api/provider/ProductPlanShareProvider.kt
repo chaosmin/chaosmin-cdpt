@@ -13,7 +13,6 @@ import tech.chaosmin.framework.module.cdpt.entity.response.ProductPlanResp
 import tech.chaosmin.framework.module.cdpt.handler.ModifyProductPlanHandler
 import tech.chaosmin.framework.module.cdpt.handler.logic.ProductPlanQueryLogic
 import tech.chaosmin.framework.module.cdpt.helper.convert.ProductPlanConvert
-import tech.chaosmin.framework.module.cdpt.service.GoodsPlanService
 import tech.chaosmin.framework.utils.RequestUtil
 import tech.chaosmin.framework.utils.SecurityUtil
 import javax.servlet.http.HttpServletRequest

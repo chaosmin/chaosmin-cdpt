@@ -9,7 +9,7 @@ import tech.chaosmin.framework.base.enums.ModifyTypeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.entity.OrderEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.OrderMapper
-import tech.chaosmin.framework.module.cdpt.service.OrderService
+import tech.chaosmin.framework.module.cdpt.service.inner.OrderService
 
 /**
  * @author Romani min

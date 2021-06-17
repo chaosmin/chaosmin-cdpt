@@ -15,7 +15,7 @@ import tech.chaosmin.framework.module.cdpt.entity.GoodsPlanEntity
 import tech.chaosmin.framework.module.cdpt.handler.logic.ProductPlanQueryLogic
 import tech.chaosmin.framework.module.cdpt.handler.logic.ProductQueryLogic
 import tech.chaosmin.framework.module.cdpt.helper.mapper.GoodsPlanMapper
-import tech.chaosmin.framework.module.cdpt.service.GoodsPlanService
+import tech.chaosmin.framework.module.cdpt.service.inner.GoodsPlanService
 import tech.chaosmin.framework.module.mgmt.entity.UserEntity
 import tech.chaosmin.framework.module.mgmt.handler.logic.UserQueryLogic
 import tech.chaosmin.framework.utils.SecurityUtil

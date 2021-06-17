@@ -7,8 +7,8 @@ import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductPlanExt
 import tech.chaosmin.framework.module.cdpt.entity.ProductPlanEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.ProductPlanMapper
-import tech.chaosmin.framework.module.cdpt.service.GoodsPlanService
-import tech.chaosmin.framework.module.cdpt.service.ProductPlanService
+import tech.chaosmin.framework.module.cdpt.service.inner.GoodsPlanService
+import tech.chaosmin.framework.module.cdpt.service.inner.ProductPlanService
 
 /**
  * @author Romani min

@@ -7,7 +7,7 @@ import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.Partner
 import tech.chaosmin.framework.module.cdpt.entity.PartnerEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PartnerMapper
-import tech.chaosmin.framework.module.cdpt.service.PartnerService
+import tech.chaosmin.framework.module.cdpt.service.inner.PartnerService
 
 /**
  * @author Romani min

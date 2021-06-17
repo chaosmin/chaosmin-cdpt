@@ -7,7 +7,7 @@ import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.PlanLiability
 import tech.chaosmin.framework.module.cdpt.entity.PlanLiabilityEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PlanLiabilityMapper
-import tech.chaosmin.framework.module.cdpt.service.PlanLiabilityService
+import tech.chaosmin.framework.module.cdpt.service.inner.PlanLiabilityService
 
 /**
  * @author Romani min

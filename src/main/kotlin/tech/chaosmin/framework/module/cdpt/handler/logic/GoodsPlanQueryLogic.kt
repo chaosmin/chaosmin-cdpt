@@ -9,8 +9,8 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.GoodsPlanExt
 import tech.chaosmin.framework.module.cdpt.entity.GoodsCategoryEntity
 import tech.chaosmin.framework.module.cdpt.entity.GoodsPlanEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.GoodsPlanMapper
-import tech.chaosmin.framework.module.cdpt.service.GoodsPlanService
-import tech.chaosmin.framework.module.cdpt.service.ProductCategoryService
+import tech.chaosmin.framework.module.cdpt.service.inner.GoodsPlanService
+import tech.chaosmin.framework.module.cdpt.service.inner.ProductCategoryService
 import tech.chaosmin.framework.utils.JsonUtil
 
 /**

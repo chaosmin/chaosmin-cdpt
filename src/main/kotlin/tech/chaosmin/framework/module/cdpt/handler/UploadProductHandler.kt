@@ -21,7 +21,7 @@ import tech.chaosmin.framework.definition.SystemConst.PRODUCT_ZH
 import tech.chaosmin.framework.definition.SystemConst.RATE_TABLE_ZH
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.entity.ProductEntity
-import tech.chaosmin.framework.module.cdpt.service.PartnerService
+import tech.chaosmin.framework.module.cdpt.service.inner.PartnerService
 import tech.chaosmin.framework.module.mgmt.entity.request.UploadFileReq
 import tech.chaosmin.framework.utils.StringUtil.isNumber
 import java.math.BigDecimal

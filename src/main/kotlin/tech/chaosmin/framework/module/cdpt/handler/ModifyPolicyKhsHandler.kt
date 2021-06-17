@@ -9,7 +9,7 @@ import tech.chaosmin.framework.base.enums.ModifyTypeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.entity.PolicyKhsEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyKhsMapper
-import tech.chaosmin.framework.module.cdpt.service.PolicyKhsService
+import tech.chaosmin.framework.module.cdpt.service.inner.PolicyKhsService
 
 /**
  * @author Romani min

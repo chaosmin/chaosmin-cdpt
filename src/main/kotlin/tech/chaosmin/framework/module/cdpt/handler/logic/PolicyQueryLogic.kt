@@ -12,9 +12,9 @@ import tech.chaosmin.framework.module.cdpt.entity.PolicyKhsEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyInsurantMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyKhsMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyMapper
-import tech.chaosmin.framework.module.cdpt.service.PolicyInsurantService
-import tech.chaosmin.framework.module.cdpt.service.PolicyKhsService
-import tech.chaosmin.framework.module.cdpt.service.PolicyService
+import tech.chaosmin.framework.module.cdpt.service.inner.PolicyInsurantService
+import tech.chaosmin.framework.module.cdpt.service.inner.PolicyKhsService
+import tech.chaosmin.framework.module.cdpt.service.inner.PolicyService
 import tech.chaosmin.framework.utils.JsonUtil
 
 /**

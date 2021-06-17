@@ -19,9 +19,9 @@ import tech.chaosmin.framework.module.cdpt.entity.ProductPlanEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PlanLiabilityMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PlanRateTableMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.ProductPlanMapper
-import tech.chaosmin.framework.module.cdpt.service.PlanLiabilityService
-import tech.chaosmin.framework.module.cdpt.service.PlanRateTableService
-import tech.chaosmin.framework.module.cdpt.service.ProductPlanService
+import tech.chaosmin.framework.module.cdpt.service.inner.PlanLiabilityService
+import tech.chaosmin.framework.module.cdpt.service.inner.PlanRateTableService
+import tech.chaosmin.framework.module.cdpt.service.inner.ProductPlanService
 
 /**
  * @author Romani min

@@ -4,9 +4,11 @@ import cn.hutool.http.HttpRequest
 import cn.hutool.http.HttpUtil
 import cn.hutool.http.Method
 import org.slf4j.LoggerFactory
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service
 import sun.misc.BASE64Encoder
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
+import tech.chaosmin.framework.configuration.channel.DadiInsurerProperties
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.DDReq
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.obj.DDCPReq
@@ -20,6 +22,7 @@ import tech.chaosmin.framework.module.cdpt.service.external.DadiPolicyService
 import tech.chaosmin.framework.utils.JsonUtil
 import tech.chaosmin.framework.utils.SignUtil
 import java.nio.charset.Charset
+import javax.annotation.Resource
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
@@ -31,15 +34,15 @@ import javax.crypto.spec.SecretKeySpec
  * @since 2021/6/16 13:58
  */
 @Service
+@EnableConfigurationProperties(value = [DadiInsurerProperties::class])
 class DadiPolicyServiceImpl : DadiPolicyService {
     private val logger = LoggerFactory.getLogger(DadiPolicyService::class.java)
 
-    private val server = "https://iopen-uat.ccic-net.com.cn"
-    private val accessKey = "maMMK7ZrZlyKc8WK"
-    private val securityKey = "Evlbxk7ZMfZv0bDa4cXo7P44OjUw5l7Q"
+    @Resource
+    lateinit var properties: DadiInsurerProperties
 
     private fun doBefore(httpRequest: HttpRequest, signature: String): HttpRequest {
-        httpRequest.header("AG-Access-Key", accessKey)
+        httpRequest.header("AG-Access-Key", properties.accessKey)
         httpRequest.header("AG-Signature", signature)
         return httpRequest
     }
@@ -49,7 +52,7 @@ class DadiPolicyServiceImpl : DadiPolicyService {
         val bodyMD5 = SignUtil.base64AndMD5(bodyBytes)
         val content = "POST\n$bodyMD5\n$url"
         logger.info("Dadi content => $content")
-        val keyBytes = securityKey.toByteArray(Charset.defaultCharset())
+        val keyBytes = properties.securityKey.toByteArray(Charset.defaultCharset())
         val contentBytes = content.toByteArray(Charset.defaultCharset())
         val mac = Mac.getInstance("HmacSHA256")
         val key = SecretKeySpec(keyBytes, "HmacSHA256")
@@ -65,10 +68,10 @@ class DadiPolicyServiceImpl : DadiPolicyService {
 
     override fun calculatePremium(request: DDReq<*>): DDResp<*> {
         if (request.requestBody is DDCReq) {
-            val url = "/CCIC/1.0/ah/commonProposalQuotePrice"
+            val url = properties.calculatePremiumUrl
             val body = JsonUtil.encode(request)
             logger.info("request string: $body")
-            val httpRequest = doBefore(HttpUtil.createRequest(Method.POST, "${server}${url}"), signature(url, body))
+            val httpRequest = doBefore(HttpUtil.createRequest(Method.POST, "${properties.server}${url}"), signature(url, body))
             httpRequest.timeout(60 * 1000).body(body).execute().use {
                 val responseBody = it.body()
                 val resp = JsonUtil.decode(responseBody, DDResp::class.java, DDCResp::class.java)
@@ -82,9 +85,9 @@ class DadiPolicyServiceImpl : DadiPolicyService {
 
     override fun underwriting(request: DDReq<*>): DDResp<*> {
         if (request.requestBody is DDUReq) {
-            val url = "/CCIC/1.0/ah/commonSubmitUnderWritingPayment"
+            val url = properties.underwritingUrl
             val body = JsonUtil.encode(request)
-            val httpRequest = doBefore(HttpUtil.createRequest(Method.POST, "${server}${url}"), signature(url, body))
+            val httpRequest = doBefore(HttpUtil.createRequest(Method.POST, "${properties.server}${url}"), signature(url, body))
             httpRequest.timeout(60 * 1000).body(body).execute().use {
                 val responseBody = it.body()
                 val resp = JsonUtil.decode(responseBody, DDResp::class.java, DDUResp::class.java)
@@ -98,9 +101,9 @@ class DadiPolicyServiceImpl : DadiPolicyService {
 
     override fun cancelPolicy(request: DDReq<*>): DDResp<*> {
         if (request.requestBody is DDCPReq) {
-            val url = "/CCIC/1.0/ah/commonCancelPolicy"
+            val url = properties.cancelPolicyUrl
             val body = JsonUtil.encode(request)
-            val httpRequest = doBefore(HttpUtil.createRequest(Method.POST, "${server}${url}"), signature(url, body))
+            val httpRequest = doBefore(HttpUtil.createRequest(Method.POST, "${properties.server}${url}"), signature(url, body))
             httpRequest.timeout(60 * 1000).body(body).execute().use {
                 val responseBody = it.body()
                 val resp = JsonUtil.decode(responseBody, DDResp::class.java, DDCPResp::class.java)
@@ -113,7 +116,7 @@ class DadiPolicyServiceImpl : DadiPolicyService {
     }
 
     override fun refundPolicy(request: DDReq<*>): DDResp<*> {
-        val url = "/CCIC/1.0/ah/commonCancelPolicy"
+        val url = properties.refundPolicyUrl
         throw FrameworkException(ErrorCodeEnum.NOT_SUPPORTED_FUNCTION.code)
     }
 }

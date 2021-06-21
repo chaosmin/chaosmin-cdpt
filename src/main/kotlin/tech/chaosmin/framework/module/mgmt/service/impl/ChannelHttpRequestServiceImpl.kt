@@ -11,4 +11,4 @@ import tech.chaosmin.framework.module.mgmt.service.ChannelHttpRequestService
  * @since 2021/6/21 15:15
  */
 @Service
-class ChannelHttpRequestServiceImpl : ServiceImpl<ChannelHttpRequestDAO, ChannelHttpRequest>(), ChannelHttpRequestService
+open class ChannelHttpRequestServiceImpl : ServiceImpl<ChannelHttpRequestDAO, ChannelHttpRequest>(), ChannelHttpRequestService

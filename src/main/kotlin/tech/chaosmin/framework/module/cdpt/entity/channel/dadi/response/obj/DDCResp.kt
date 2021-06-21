@@ -55,6 +55,7 @@ class DDCResp {
     var sequenceNumber: Int? = null
 
     // 核保通过时间
+    @JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss")
     var underwritingDate: Date? = null
 
     // 归属机构代码

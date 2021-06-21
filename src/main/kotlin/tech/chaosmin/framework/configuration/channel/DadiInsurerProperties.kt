@@ -9,16 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
  * @since 2021/6/21 13:27
  */
 @ConfigurationProperties(prefix = DadiInsurerProperties.DADI_CONFIGURATION_PREFIX)
-class DadiInsurerProperties {
-    // 服务请求地址
-    var server: String = ""
-    var accessKey: String = ""
-    var securityKey: String = ""
-    var calculatePremiumUrl: String = ""
-    var underwritingUrl: String = ""
-    var cancelPolicyUrl: String = ""
-    var refundPolicyUrl: String = ""
-
+class DadiInsurerProperties : InsurerProperties() {
     companion object {
         const val DADI_CONFIGURATION_PREFIX = "channel.dadi"
     }

@@ -1,11 +1,17 @@
 package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.response.obj
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
+
 /**
  * 大地保险保单核保响应体 <p>
  *
  * @author Romani min
  * @since 2021/6/17 21:40
  */
+@JsonIgnoreProperties(value = ["epolicyURL"], ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 class DDUResp {
     // 移动端支付链接
     var mobilePaymentLink: String? = null
@@ -22,12 +28,14 @@ class DDUResp {
     // 总保费
     var sumPremium: String? = null
 
-    // 是否能下载电子保单
-    var isDownLoadPolicy: String? = null
+    // [HAS] 是否能下载电子保单
+    @JsonProperty("isDownloadPolicy")
+    var isDownloadPolicy: String? = null
 
-    // 保单号
+    // [HAS] 保单号
     var policyNo: String? = null
 
-    // 电子保单/批单链接
-    var ePolicyUrl: String? = null
+    // [HAS] 电子保单/批单链接
+    @JsonProperty("ePolicyURL")
+    var ePolicyURL: String? = null
 }

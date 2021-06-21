@@ -1,5 +1,8 @@
 package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.response.obj
 
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner.*
 import java.math.BigDecimal
 import java.util.*
@@ -10,18 +13,32 @@ import java.util.*
  * @author Romani min
  * @since 2021/6/17 21:26
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 class DDCResp {
-    // 投保单号
+    // [HAS]
+    var isEProposal: String? = null
+
+    // [HAS] 保单性质(团单标记, 区分个团)
+    var policyNature: String? = null
+
+    // [HAS]
+    var beforeVatPremium: BigDecimal? = null
+
+    // [HAS] 司法管辖
+    var judicalScopeCode: String? = null
+
+    // [HAS] 是否打包产品
+    var isPackageProduct: String? = null
+
+    // [HAS] 投保单号
     var proposalNo: String? = null
 
     // 原保单号
     var historyPolicyNo: String? = null
 
-    // 业务来源属性
+    // [HAS] 业务来源属性
     var businessAttribute: String? = null
-
-    // 保单性质(团单标记, 区分个团)
-    var policyNature: String? = null
 
     // 分户类型(被保险人清单类型)
     var insuredListType: String? = null
@@ -32,6 +49,11 @@ class DDCResp {
     // 请求业务类型
     var businessType: String? = null
 
+    // [HAS] 是否自动核保
+    var isAutoUw: String? = null
+
+    var sequenceNumber: Int? = null
+
     // 核保通过时间
     var underwritingDate: Date? = null
 
@@ -41,13 +63,13 @@ class DDCResp {
     // 出单机构代码
     var issueOrgCode: String? = null
 
-    // 出单员代码
+    // [HAS] 出单员代码
     var issueUserCode: String? = null
 
     // 出单点地址
     var issueAddress: String? = null
 
-    // 业务来源1
+    // [HAS] 业务来源1
     var businessSourceCode: String? = null
 
     // 业务来源2
@@ -57,12 +79,15 @@ class DDCResp {
     var repairChannelCode: String? = null
 
     // 起保日期/起始生效日期, 支持时分秒
+    @JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss")
     var effectiveDate: Date? = null
 
     // 终保日期/终止失效日期, 支持时分秒
+    @JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss")
     var expiryDate: Date? = null
 
     // 投保日期
+    @JsonFormat(pattern = "yyyy-MM-dd")
     var proposalDate: Date? = null
 
     // 定期结算方式
@@ -77,10 +102,10 @@ class DDCResp {
     // 定期结算最晚结算日期
     var latestRegularSettleDate: Date? = null
 
-    // 保额币种
+    // [HAS] 保额币种
     var siCurrencyCode: String? = null
 
-    // 保额
+    // [HAS] 保额
     var sumInsured: BigDecimal? = null
 
     // 保费币种
@@ -89,8 +114,11 @@ class DDCResp {
     // 应收保费/真实保费
     var duePremium: BigDecimal? = null
 
-    // 总折扣率
+    // [HAS] 总折扣率
     var totalDiscountRate: BigDecimal? = null
+
+    // [HAS]
+    var groupBusinessCode: String? = null
 
     // 短期费率方式
     var shortRateType: String? = null
@@ -113,13 +141,10 @@ class DDCResp {
     // 是否发送短信
     var isSendSms: String? = null
 
-    // 司法管辖
-    var judicalScopeCode: String? = null
-
     // 单证流水号
     var printNo: String? = null
 
-    // 主险保费
+    // [HAS] 主险保费
     var sumMainPrem: BigDecimal? = null
 
     // 附加险保费
@@ -134,7 +159,7 @@ class DDCResp {
     // 业务风险分类
     var belongToHandler2Code: String? = null
 
-    // 业务风险分类名称
+    // [HAS] 业务风险分类名称
     var belongToHandler2Name: String? = null
 
     // 产品二级险类
@@ -143,16 +168,16 @@ class DDCResp {
     // 代理人姓名
     var agentName: String? = null
 
-    // 归属机构名称
+    // [HAS] 归属机构名称
     var orgName: String? = null
 
-    // 产品名称
+    // [HAS] 产品名称
     var productName: String? = null
 
     // 出单机构名称
     var issueOrgName: String? = null
 
-    // 出单人员名称
+    // [HAS] 出单人员名称
     var issueUserName: String? = null
 
     // 销售单位
@@ -161,7 +186,7 @@ class DDCResp {
     // 归属机构地址
     var comAddress: String? = null
 
-    // 归属机构邮编
+    // [HAS] 归属机构邮编
     var comPostCode: String? = null
 
     // 操作日期
@@ -178,6 +203,8 @@ class DDCResp {
 
     // 保单状态
     var policyStatus: String? = null
+
+    // 渠道信息
     var channelOpInfoList: List<ChannelOpInfo>? = null
     var policyCustomerList: List<PolicyCustomer>? = null
     var policyLobList: List<PolicyLob>? = null

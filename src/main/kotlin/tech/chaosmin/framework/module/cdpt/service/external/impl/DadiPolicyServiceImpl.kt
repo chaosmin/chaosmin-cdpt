@@ -67,13 +67,16 @@ class DadiPolicyServiceImpl : DadiPolicyService {
         if (request.requestBody is DDCReq) {
             val url = "/CCIC/1.0/ah/commonProposalQuotePrice"
             val body = JsonUtil.encode(request)
+            logger.info("request string: $body")
             val httpRequest = doBefore(HttpUtil.createRequest(Method.POST, "${server}${url}"), signature(url, body))
-            val responseBody = httpRequest.timeout(60 * 1000).body(body).execute().body()
-            val resp = JsonUtil.decode(responseBody, DDResp::class.java, DDCResp::class.java)
-            return if (resp == null) {
-                logger.error("Failed to parse response string: $responseBody")
-                DDResp<DDCResp>()
-            } else resp
+            httpRequest.timeout(60 * 1000).body(body).execute().use {
+                val responseBody = it.body()
+                val resp = JsonUtil.decode(responseBody, DDResp::class.java, DDCResp::class.java)
+                return if (resp == null) {
+                    logger.error("Failed to parse response string: $responseBody")
+                    DDResp<DDCResp>()
+                } else resp
+            }
         } else throw FrameworkException(ErrorCodeEnum.NOT_SUPPORTED_PARAM_TYPE.code)
     }
 
@@ -82,26 +85,30 @@ class DadiPolicyServiceImpl : DadiPolicyService {
             val url = "/CCIC/1.0/ah/commonSubmitUnderWritingPayment"
             val body = JsonUtil.encode(request)
             val httpRequest = doBefore(HttpUtil.createRequest(Method.POST, "${server}${url}"), signature(url, body))
-            val responseBody = httpRequest.timeout(60 * 1000).body(body).execute().body()
-            val resp = JsonUtil.decode(responseBody, DDResp::class.java, DDUResp::class.java)
-            return if (resp == null) {
-                logger.error("Failed to parse response string: $responseBody")
-                DDResp<DDUResp>()
-            } else resp
+            httpRequest.timeout(60 * 1000).body(body).execute().use {
+                val responseBody = it.body()
+                val resp = JsonUtil.decode(responseBody, DDResp::class.java, DDUResp::class.java)
+                return if (resp == null) {
+                    logger.error("Failed to parse response string: $responseBody")
+                    DDResp<DDUResp>()
+                } else resp
+            }
         } else throw FrameworkException(ErrorCodeEnum.NOT_SUPPORTED_PARAM_TYPE.code)
     }
 
     override fun cancelPolicy(request: DDReq<*>): DDResp<*> {
         if (request.requestBody is DDCPReq) {
-            val url = "/CCIC/1.0/ah/commonSurrenderEndorsement"
+            val url = "/CCIC/1.0/ah/commonCancelPolicy"
             val body = JsonUtil.encode(request)
             val httpRequest = doBefore(HttpUtil.createRequest(Method.POST, "${server}${url}"), signature(url, body))
-            val responseBody = httpRequest.timeout(60 * 1000).body(body).execute().body()
-            val resp = JsonUtil.decode(responseBody, DDResp::class.java, DDCPResp::class.java)
-            return if (resp == null) {
-                logger.error("Failed to parse response string: $responseBody")
-                DDResp<DDCPResp>()
-            } else resp
+            httpRequest.timeout(60 * 1000).body(body).execute().use {
+                val responseBody = it.body()
+                val resp = JsonUtil.decode(responseBody, DDResp::class.java, DDCPResp::class.java)
+                return if (resp == null) {
+                    logger.error("Failed to parse response string: $responseBody")
+                    DDResp<DDCPResp>()
+                } else resp
+            }
         } else throw FrameworkException(ErrorCodeEnum.NOT_SUPPORTED_PARAM_TYPE.code)
     }
 

@@ -81,7 +81,7 @@ class DDCReq {
     var siCurrencyCode: String? = null
 
     // 保额
-    var sumInsured: BigDecimal? = null
+    var sumInsured: String? = null
 
     // 保费币种
     var premiumCurrencyCode: String? = null

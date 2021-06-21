@@ -1,7 +1,7 @@
 package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.obj
 
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner.ChannelOpInfo
-import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner.PolicyDTO
+import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner.Policy
 
 /**
  * 大地保险保单核保请求体 <p>
@@ -11,5 +11,5 @@ import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner.PolicyDTO
  */
 class DDUReq {
     var channelOpInfoDTO: ChannelOpInfo? = null
-    var policyDTO: PolicyDTO? = null
+    var policyDTO: Policy? = null
 }

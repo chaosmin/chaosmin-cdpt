@@ -1,5 +1,7 @@
 package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
 import java.math.BigDecimal
 import java.util.*
 
@@ -8,6 +10,8 @@ import java.util.*
  * @author Romani min
  * @since 2021/6/17 11:25
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 class PolicyLob {
     // 附属被保险人人数,仅团险使用
     var addInsuredCount: Long? = null
@@ -67,7 +71,7 @@ class PolicyLob {
     var policyFormList: List<PolicyForm>? = null
 
     // 标的信息列表
-    var policyRiskList: List<PersonInsured>? = null
+    var policyRiskList: List<PolicyRisk>? = null
 
     // 工程类信息列表
     var engineeringList: List<Engineering>? = null

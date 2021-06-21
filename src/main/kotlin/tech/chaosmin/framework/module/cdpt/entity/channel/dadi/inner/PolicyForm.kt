@@ -1,11 +1,15 @@
 package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
 import java.math.BigDecimal
 
 /**
  * @author Romani min
  * @since 2021/6/17 18:57
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 class PolicyForm {
     // 序号
     var sequenceNumber: String? = null

@@ -63,6 +63,12 @@ class PolicyIssueReq : BaseReq() {
     @ApiModelProperty("实际保费")
     var actualPremium: Double? = null
 
+    @ApiModelProperty("保额")
+    var sa: Double? = null
+
+    @ApiModelProperty("总保额")
+    var totalSa: Double? = null
+
     @ApiModelProperty("支付方式")
     var payMethod: PayMethodEnum? = null
 

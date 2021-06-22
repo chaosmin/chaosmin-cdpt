@@ -13,10 +13,7 @@ import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.GoodsPlanExt
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
-import tech.chaosmin.framework.module.cdpt.handler.logic.GoodsPlanQueryLogic
-import tech.chaosmin.framework.module.cdpt.handler.logic.PlanRateTableQueryLogic
-import tech.chaosmin.framework.module.cdpt.handler.logic.PolicyQueryLogic
-import tech.chaosmin.framework.module.cdpt.handler.logic.ProductPlanQueryLogic
+import tech.chaosmin.framework.module.cdpt.handler.logic.*
 import tech.chaosmin.framework.utils.SecurityUtil
 import java.math.BigDecimal
 import java.util.*
@@ -36,6 +33,7 @@ open class BasicDataVerificationHandler(
     private val policyQueryLogic: PolicyQueryLogic,
     private val productPlanQueryLogic: ProductPlanQueryLogic,
     private val planRateTableQueryLogic: PlanRateTableQueryLogic,
+    private val planLiabilityQueryLogic: PlanLiabilityQueryLogic,
     private val goodsPlanQueryLogic: GoodsPlanQueryLogic
 ) : AbstractTemplateOperate<PolicyIssueReq, PolicyIssueReq>() {
     private val logger = LoggerFactory.getLogger(BasicDataVerificationHandler::class.java)
@@ -133,5 +131,17 @@ open class BasicDataVerificationHandler(
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "实收保费")
         }
         logger.info("Order[${arg.orderNo}] => premium: ${arg.unitPremium}, total-premium: ${arg.totalPremium}, actual-premium: ${arg.actualPremium}")
+        // 计算保额总额
+        val liabilities = planLiabilityQueryLogic.fetchAllOfPlan(productPlanId)
+        val insuredAmount = liabilities.sumByDouble {
+            val amount = it?.amount ?: "0"
+            if (amount.contains("元/天")) {
+                val sa = BigDecimal(amount.replace("""元/天""", ""))
+                sa.multiply(BigDecimal(travelDays)).toDouble()
+            } else BigDecimal(amount).toDouble()
+        }
+        arg.sa = insuredAmount
+        arg.totalSa = insuredAmount.times(arg.insuredList?.size ?: 0)
+        logger.info("Order[${arg.orderNo}] => sa: ${arg.sa}, total-sa: ${arg.totalSa}")
     }
 }

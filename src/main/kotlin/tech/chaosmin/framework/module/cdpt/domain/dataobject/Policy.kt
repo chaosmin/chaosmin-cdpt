@@ -11,11 +11,20 @@ class Policy(id: Long? = null) : BaseDO(id, 0) {
     /** 订单号 */
     var orderNo: String? = null
 
+    /** 投保单号 */
+    var proposalNo: String? = null
+
     /** 保单号 */
     var policyNo: String? = null
 
+    /** 产品Code */
+    var productCode: String? = null
+
     /** 产品计划ID */
     var productPlanId: Long? = null
+
+    /** 产品计划Code */
+    var productPlanCode: String? = null
 
     /** 起保时间 */
     var effectiveTime: Date? = null
@@ -26,7 +35,7 @@ class Policy(id: Long? = null) : BaseDO(id, 0) {
     /** 旅行目的地 */
     var travelDestination: String? = null
 
-    /** 0-待出单 1-出单成功 2-出单失败 */
+    /** 0-待出单 1-出单成功 2-出单失败 3-出单中 */
     var status: Int? = null
 
     /** 单价保费 */
@@ -37,4 +46,10 @@ class Policy(id: Long? = null) : BaseDO(id, 0) {
 
     /** 实际保费 */
     var actualPremium: Double? = null
+
+    /** 单人保额 */
+    var sa: Double? = null
+
+    /** 总保额 */
+    var totalSa: Double? = null
 }

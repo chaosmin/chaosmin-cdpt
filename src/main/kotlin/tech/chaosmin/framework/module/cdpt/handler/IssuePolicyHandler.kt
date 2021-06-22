@@ -56,56 +56,21 @@ open class IssuePolicyHandler(
     }
 
     override fun processor(arg: PolicyIssueReq, result: RestResult<PolicyResp>): RestResult<PolicyResp> {
-        // step 1
+        // step 1 简易数据校验及数据补充
         val validateResult = basicDataVerificationHandler.operate(arg)
         if (!validateResult.success) return result.mapper(validateResult)
 
-        // step 2
+        // step 2 保存订单状态
         val orderEntity = IssuerConvert.INSTANCE.convert2OrderEntity(arg)
-        orderEntity.status = OrderStatusEnum.SUCCESS
+        orderEntity.status = OrderStatusEnum.INIT
         if (arg.orderId == null) orderEntity.save()
         else orderEntity.update()
         val moResult = modifyOrderHandler.operate(orderEntity)
         if (!moResult.success) return result.mapper(moResult)
 
-        // step 3
+        // step 3 创建保司请求报文
+        // TODO 请求保司接口超时兜底处理逻辑开发
         val policyEntity = IssuerConvert.INSTANCE.convert2PolicyEntity(arg)
-        policyEntity.status = PolicyStatusEnum.INIT
-        policyEntity.save()
-        val mpResult = modifyPolicyHandler.operate(policyEntity)
-        if (!mpResult.success) return result.mapper(mpResult)
-
-        // 处理投保人数据
-        policyEntity.holder?.run {
-            this.save()
-            this.policyId = policyEntity.id
-            val (_, _, _, _, success) = modifyPolicyHolderHandler.operate(this)
-            if (!success) {
-                logger.error("Fail To save policy holder info, please do data patch on this record! # ${JsonUtil.encode(this)}")
-            }
-        }
-
-        // 处理被保人数据
-        policyEntity.insuredList?.forEach {
-            it.save()
-            it.policyId = policyEntity.id
-            val (_, _, _, _, success) = modifyPolicyInsurantHandler.operate(it)
-            if (!success) {
-                logger.error("Fail To save policy insurant info, please do data patch on this record! # ${JsonUtil.encode(it)}")
-            }
-        }
-
-        // 2021-06-08 18:57:06 处理可回溯信息
-        policyEntity.khsList?.forEach {
-            it.save()
-            it.policyId = policyEntity.id
-            val (_, _, _, _, success) = modifyPolicyKhsHandler.operate(it)
-            if (!success) {
-                logger.error("Fail To save policy khs info, please do data patch on this record! # ${JsonUtil.encode(it)}")
-            }
-        }
-
-        policyEntity.status = PolicyStatusEnum.PROCESS
         val ddReq = ChannelRequestConvert.convert2DDCReq(policyEntity)
         dadiChannelRequestService.request(PolicyProcessEnum.PREMIUM_TRIAL, ddReq) { ddcResp ->
             val ddcRespEntity = JsonUtil.decode(ddcResp, DDResp::class.java, DDCResp::class.java)
@@ -115,15 +80,54 @@ open class IssuePolicyHandler(
                 dadiChannelRequestService.request(PolicyProcessEnum.UNDERWRITING, ddReq1) { dduResp ->
                     val dduRespEntity = JsonUtil.decode(dduResp, DDResp::class.java, DDUResp::class.java)
                     if (dduRespEntity?.responseBody is DDUResp && "0" == dduRespEntity.responseHead?.resultCode) {
-                        policyEntity.status = PolicyStatusEnum.SUCCESS
-                        policyEntity.policyNo = (dduRespEntity.responseBody as DDUResp).policyNo
-                        policyEntity.ePolicyUrl = (dduRespEntity.responseBody as DDUResp).ePolicyURL
-                    } else policyEntity.status = PolicyStatusEnum.FAILED
+                        orderEntity.status = OrderStatusEnum.SUCCESS
+                        policyEntity.run {
+                            this.status = PolicyStatusEnum.SUCCESS
+                            this.policyNo = (dduRespEntity.responseBody as DDUResp).policyNo
+                            this.ePolicyUrl = (dduRespEntity.responseBody as DDUResp).ePolicyURL
+                            this.save()
+                            val (_, _, _, _, success) = modifyPolicyHandler.operate(this)
+                            if (!success) {
+                                logger.error("Fail To save policy info, please do data patch on this record! # ${JsonUtil.encode(this)}")
+                            }
+                        }
+
+                        // 处理投保人数据
+                        policyEntity.holder?.run {
+                            this.save()
+                            this.policyId = policyEntity.id
+                            val (_, _, _, _, success) = modifyPolicyHolderHandler.operate(this)
+                            if (!success) {
+                                logger.error("Fail To save policy holder info, please do data patch on this record! # ${JsonUtil.encode(this)}")
+                            }
+                        }
+
+                        // 处理被保人数据
+                        policyEntity.insuredList?.forEach {
+                            it.save()
+                            it.policyId = policyEntity.id
+                            val (_, _, _, _, success) = modifyPolicyInsurantHandler.operate(it)
+                            if (!success) {
+                                logger.error("Fail To save policy insurant info, please do data patch on this record! # ${JsonUtil.encode(it)}")
+                            }
+                        }
+
+                        // 2021-06-08 18:57:06 处理可回溯信息
+                        policyEntity.khsList?.forEach {
+                            it.save()
+                            it.policyId = policyEntity.id
+                            val (_, _, _, _, success) = modifyPolicyKhsHandler.operate(it)
+                            if (!success) {
+                                logger.error("Fail To save policy khs info, please do data patch on this record! # ${JsonUtil.encode(it)}")
+                            }
+                        }
+                    } else orderEntity.status = OrderStatusEnum.PROCESS
                 }
-            } else policyEntity.status = PolicyStatusEnum.FAILED
-            policyEntity.update()
-            modifyPolicyHandler.operate(policyEntity)
+            } else orderEntity.status = OrderStatusEnum.FAILED
+            orderEntity.update()
+            modifyOrderHandler.operate(orderEntity)
         }
+
         // 返回落地的保单数据
         val responseData = PolicyConvert.INSTANCE.convert2Resp(policyEntity)
         return result.success(responseData)

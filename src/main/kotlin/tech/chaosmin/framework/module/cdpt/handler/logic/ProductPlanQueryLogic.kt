@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.module.cdpt.handler.logic
 
 import com.baomidou.mybatisplus.core.metadata.IPage
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.BaseQueryLogic
 import tech.chaosmin.framework.base.PageQuery
@@ -32,6 +33,9 @@ class ProductPlanQueryLogic(
 
     fun contract(userId: Long): IPage<ProductPlanEntity?> {
         val contactPlans = goodsPlanService.getByUser(userId)
+        if (contactPlans.isEmpty()) {
+            return Page<ProductPlanEntity>()
+        }
         val ew = PageQuery.inQuery<ProductPlanExt>("product_plan.id", contactPlans.mapNotNull { it.productPlanId })
         val result = this.page(ew)
         // 更新一下可用的授权佣金比例

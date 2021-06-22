@@ -50,7 +50,8 @@ open class InsureShareProvider(
         val result = mutableListOf<GoodsCategoryResp>()
         goodsCategories.groupBy { it.categoryName }.forEach { (c, l) ->
             result.add(GoodsCategoryResp(c!!, c).apply {
-                this.children = l.map { g -> GoodsCategoryResp(g.id.toString(), g.categorySubName!!) }
+                this.children = l.distinctBy { it.categorySubName }
+                    .map { GoodsCategoryResp(it.id.toString(), it.categorySubName!!) }
             })
         }
         return RestResultExt.successRestResult(result)
@@ -79,6 +80,7 @@ open class InsureShareProvider(
                 this.primaryCoverage = it?.primaryCoverage
                 this.waitingDays = it?.waitingDays
                 this.comsRatio = it?.comsRatio
+                this.clauseUrl = it?.clauseUrl
                 this.goodsLiabilities = planLiabilityService.list(Wrappers.query<PlanLiability>().eq("product_plan_id", it?.productPlanId))
                     .mapNotNull { PlanLiabilityConvert.INSTANCE.convert2Resp(PlanLiabilityMapper.INSTANCE.convert2Entity(it)) }
                 this.goodsRateTable = planRateTableService.list(Wrappers.query<PlanRateTable>().eq("product_plan_id", it?.productPlanId))

@@ -52,4 +52,7 @@ class Policy(id: Long? = null) : BaseDO(id, 0) {
 
     /** 总保额 */
     var totalSa: Double? = null
+
+    /** 电子保单下载地址 */
+    var ePolicyUrl: String? = null
 }

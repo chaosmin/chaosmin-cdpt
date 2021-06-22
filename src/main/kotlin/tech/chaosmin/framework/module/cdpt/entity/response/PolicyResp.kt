@@ -45,6 +45,9 @@ class PolicyResp : BaseResp() {
     @ApiModelProperty("实收保费")
     var actualPremium: Double? = null
 
+    @ApiModelProperty("电子保单下载地址")
+    var ePolicyUrl: String? = null
+
     @ApiModelProperty("被保人列表")
     var insuredList: List<PolicyInsurantResp>? = null
 }

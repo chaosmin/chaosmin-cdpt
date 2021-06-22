@@ -70,7 +70,7 @@ open class IssuePolicyHandler(
 
         // step 3
         val policyEntity = IssuerConvert.INSTANCE.convert2PolicyEntity(arg)
-        policyEntity.status = PolicyStatusEnum.PROCESS
+        policyEntity.status = PolicyStatusEnum.INIT
         policyEntity.save()
         val mpResult = modifyPolicyHandler.operate(policyEntity)
         if (!mpResult.success) return result.mapper(mpResult)
@@ -105,15 +105,16 @@ open class IssuePolicyHandler(
             }
         }
 
+        policyEntity.status = PolicyStatusEnum.PROCESS
         val ddReq = ChannelRequestConvert.convert2DDCReq(policyEntity)
         dadiChannelRequestService.request(PolicyProcessEnum.PREMIUM_TRIAL, ddReq) { ddcResp ->
             val ddcRespEntity = JsonUtil.decode(ddcResp, DDResp::class.java, DDCResp::class.java)
-            if (ddcRespEntity?.responseBody is DDCResp) {
+            if (ddcRespEntity?.responseBody is DDCResp && "0" == ddcRespEntity.responseHead?.resultCode) {
                 policyEntity.proposalNo = (ddcRespEntity.responseBody as DDCResp).proposalNo
                 val ddReq1 = ChannelRequestConvert.convert2DDUReq(policyEntity)
                 dadiChannelRequestService.request(PolicyProcessEnum.UNDERWRITING, ddReq1) { dduResp ->
-                    val dduRespEntity = JsonUtil.decode(dduResp, DDResp::class.java, DDCResp::class.java)
-                    if (dduRespEntity?.responseBody is DDUResp) {
+                    val dduRespEntity = JsonUtil.decode(dduResp, DDResp::class.java, DDUResp::class.java)
+                    if (dduRespEntity?.responseBody is DDUResp && "0" == dduRespEntity.responseHead?.resultCode) {
                         policyEntity.status = PolicyStatusEnum.SUCCESS
                         policyEntity.policyNo = (dduRespEntity.responseBody as DDUResp).policyNo
                         policyEntity.ePolicyUrl = (dduRespEntity.responseBody as DDUResp).ePolicyURL

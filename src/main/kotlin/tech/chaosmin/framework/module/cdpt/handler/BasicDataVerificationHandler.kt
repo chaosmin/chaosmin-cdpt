@@ -77,6 +77,8 @@ open class BasicDataVerificationHandler(
             logger.error("Product-plan[${arg.productPlanId}] has been invalided.")
             throw FrameworkException(ErrorCodeEnum.RESOURCE_INVALID.code, "保险产品")
         }
+        arg.productCode = productPlanEntity?.productCode
+        arg.productPlanCode = productPlanEntity?.planCode
         val waitingDays = productPlanEntity?.waitingDays ?: 0
         // 即时起保的产品仍然有【两小时】的起保间隔期
         if (waitingDays == 0) arg.startTime = DateUtil.offsetHour(arg.startTime, 2).toJdkDate()
@@ -134,7 +136,7 @@ open class BasicDataVerificationHandler(
         // 计算保额总额
         val liabilities = planLiabilityQueryLogic.fetchAllOfPlan(productPlanId)
         val insuredAmount = liabilities.sumByDouble {
-            val amount = it?.amount ?: "0"
+            val amount = it?.amount?.replace(",", "") ?: "0"
             if (amount.contains("元/天")) {
                 val sa = BigDecimal(amount.replace("""元/天""", ""))
                 sa.multiply(BigDecimal(travelDays)).toDouble()

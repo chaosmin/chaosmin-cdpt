@@ -49,14 +49,14 @@ object ChannelRequestConvert {
         request.requestBody = DDCReq().apply {
             this.businessAttribute = "E00149"
             this.businessType = "1"
-            this.policyNature = "02"
-            this.duePremium = policy.totalPremium?.toBigDecimal()
+            this.policyNature = if ((policy.insuredList?.size ?: 0) < 3) "01" else "02"
+            // 旅意险定额产品不需要传保费保额
+            // this.duePremium = policy.totalPremium?.toBigDecimal()
+            // this.sumInsured = BigDecimal(policy.totalSa!!).toString()
             this.effectiveDate = policy.effectiveTime
             this.expiryDate = policy.expiryTime
             this.productCode = policy.productCode
             this.proposalDate = Date()
-            // this.sumInsured = BigDecimal(policy.totalSa!!).toString()
-            this.sumInsured = "1607800"
             this.channelOpInfoList = Collections.singletonList(ChannelOpInfo().apply {
                 this.channelProductCode = policy.productCode
                 this.channelSeqNo = policy.orderNo
@@ -78,7 +78,7 @@ object ChannelRequestConvert {
                     })
                     this.personInsuredList = policy.insuredList?.mapIndexed { index, i ->
                         PersonInsured().apply {
-                            this.sequenceNumber = index.toLong()
+                            this.sequenceNumber = index.toLong() + 1
                             this.customerName = i.name
                             this.customerRoleCode = "2"
                             this.idNo = i.certiNo

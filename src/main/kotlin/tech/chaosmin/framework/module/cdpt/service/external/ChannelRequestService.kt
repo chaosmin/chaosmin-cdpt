@@ -17,9 +17,10 @@ import tech.chaosmin.framework.utils.JsonUtil
 abstract class ChannelRequestService(private var channelHttpRequestService: ChannelHttpRequestService) {
     private val logger = LoggerFactory.getLogger(ChannelRequestService::class.java)
 
-    abstract val requestUrl: Map<PolicyProcessEnum, String>
-    abstract fun header(url: String, body: BaseChannelReq): Map<String, String>
     abstract val server: String
+    abstract val requestUrl: Map<PolicyProcessEnum, String>
+
+    abstract fun header(url: String, body: BaseChannelReq): Map<String, String>
 
     fun <T> request(process: PolicyProcessEnum, requestBody: BaseChannelReq, func: (String?) -> T): T? {
         var result: T?

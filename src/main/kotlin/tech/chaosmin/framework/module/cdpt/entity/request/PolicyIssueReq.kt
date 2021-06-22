@@ -18,8 +18,14 @@ class PolicyIssueReq : BaseReq() {
     @ApiModelProperty("订单号")
     var orderNo: String? = null
 
+    @ApiModelProperty("产品Code")
+    var productCode: String? = null
+
     @ApiModelProperty("产品计划ID")
     var productPlanId: Long? = null
+
+    @ApiModelProperty("产品计划Code")
+    var productPlanCode: String? = null
 
     @ApiModelProperty("起保时间")
     var startTime: Date? = null

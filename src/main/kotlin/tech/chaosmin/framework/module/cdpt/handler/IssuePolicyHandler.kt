@@ -7,11 +7,17 @@ import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.domain.enums.OrderStatusEnum
+import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyProcessEnum
 import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyStatusEnum
+import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.response.DDResp
+import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.response.obj.DDCResp
+import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.response.obj.DDUResp
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
+import tech.chaosmin.framework.module.cdpt.helper.convert.ChannelRequestConvert
 import tech.chaosmin.framework.module.cdpt.helper.convert.IssuerConvert
 import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyConvert
+import tech.chaosmin.framework.module.cdpt.service.external.impl.DadiChannelRequestService
 import tech.chaosmin.framework.utils.JsonUtil
 
 /**
@@ -34,7 +40,8 @@ open class IssuePolicyHandler(
     private val modifyPolicyHandler: ModifyPolicyHandler,
     private val modifyPolicyHolderHandler: ModifyPolicyHolderHandler,
     private val modifyPolicyInsurantHandler: ModifyPolicyInsurantHandler,
-    private val modifyPolicyKhsHandler: ModifyPolicyKhsHandler
+    private val modifyPolicyKhsHandler: ModifyPolicyKhsHandler,
+    private val dadiChannelRequestService: DadiChannelRequestService
 ) : AbstractTemplateOperate<PolicyIssueReq, PolicyResp>() {
     private val logger = LoggerFactory.getLogger(IssuePolicyHandler::class.java)
 
@@ -98,13 +105,24 @@ open class IssuePolicyHandler(
             }
         }
 
-        // TODO 此处调用保司接口进行实际出单
-        val callback = true
-
-        policyEntity.status = if (callback) PolicyStatusEnum.SUCCESS else PolicyStatusEnum.FAILED
-        policyEntity.update()
-        modifyPolicyHandler.operate(policyEntity)
-
+        val ddReq = ChannelRequestConvert.convert2DDCReq(policyEntity)
+        dadiChannelRequestService.request(PolicyProcessEnum.PREMIUM_TRIAL, ddReq) { ddcResp ->
+            val ddcRespEntity = JsonUtil.decode(ddcResp, DDResp::class.java, DDCResp::class.java)
+            if (ddcRespEntity?.responseBody is DDCResp) {
+                policyEntity.proposalNo = (ddcRespEntity.responseBody as DDCResp).proposalNo
+                val ddReq1 = ChannelRequestConvert.convert2DDUReq(policyEntity)
+                dadiChannelRequestService.request(PolicyProcessEnum.UNDERWRITING, ddReq1) { dduResp ->
+                    val dduRespEntity = JsonUtil.decode(dduResp, DDResp::class.java, DDCResp::class.java)
+                    if (dduRespEntity?.responseBody is DDUResp) {
+                        policyEntity.status = PolicyStatusEnum.SUCCESS
+                        policyEntity.policyNo = (dduRespEntity.responseBody as DDUResp).policyNo
+                        policyEntity.ePolicyUrl = (dduRespEntity.responseBody as DDUResp).ePolicyURL
+                    } else policyEntity.status = PolicyStatusEnum.FAILED
+                }
+            } else policyEntity.status = PolicyStatusEnum.FAILED
+            policyEntity.update()
+            modifyPolicyHandler.operate(policyEntity)
+        }
         // 返回落地的保单数据
         val responseData = PolicyConvert.INSTANCE.convert2Resp(policyEntity)
         return result.success(responseData)

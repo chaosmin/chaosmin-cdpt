@@ -32,4 +32,7 @@ class GoodsPlanExt : GoodsPlan() {
 
     /** 主险保额 */
     var primaryCoverage: String? = null
+
+    /** 条款下载地址 */
+    var clauseUrl: String? = null
 }

@@ -7,11 +7,14 @@ import tech.chaosmin.framework.base.BaseQueryLogic
 import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.Policy
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
+import tech.chaosmin.framework.module.cdpt.entity.PolicyHolderEntity
 import tech.chaosmin.framework.module.cdpt.entity.PolicyInsurantEntity
 import tech.chaosmin.framework.module.cdpt.entity.PolicyKhsEntity
+import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyHolderMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyInsurantMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyKhsMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyMapper
+import tech.chaosmin.framework.module.cdpt.service.inner.PolicyHolderService
 import tech.chaosmin.framework.module.cdpt.service.inner.PolicyInsurantService
 import tech.chaosmin.framework.module.cdpt.service.inner.PolicyKhsService
 import tech.chaosmin.framework.module.cdpt.service.inner.PolicyService
@@ -27,6 +30,7 @@ import tech.chaosmin.framework.utils.JsonUtil
 class PolicyQueryLogic(
     private val policyService: PolicyService,
     private val policyKhsService: PolicyKhsService,
+    private val policyHolderService: PolicyHolderService,
     private val policyInsurantService: PolicyInsurantService
 ) : BaseQueryLogic<PolicyEntity, Policy> {
     private val logger = LoggerFactory.getLogger(PolicyQueryLogic::class.java)
@@ -44,9 +48,20 @@ class PolicyQueryLogic(
         logger.debug("Page(${JsonUtil.encode(cond)}) => ${JsonUtil.encode(page)}")
         val result = page.convert(PolicyMapper.INSTANCE::convert2Entity)
         // 补充被保人列表
-        result.convert { it?.apply { this.insuredList = queryInsurant(it.id!!) } }
+        result.convert {
+            it?.apply {
+                this.holder = queryHolder(it.id!!)[0]
+                this.insuredList = queryInsurant(it.id!!)
+            }
+        }
         logger.debug("Convert2Entity => ${JsonUtil.encode(result)}")
         return result
+    }
+
+    private fun queryHolder(id: Long): List<PolicyHolderEntity> {
+        return policyHolderService.listByPolicyId(id).mapNotNull {
+            PolicyHolderMapper.INSTANCE.convert2Entity(it)
+        }
     }
 
     private fun queryInsurant(id: Long): List<PolicyInsurantEntity> {

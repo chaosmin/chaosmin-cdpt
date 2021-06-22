@@ -45,4 +45,7 @@ class GoodsInsuredResp : Serializable {
 
     @ApiModelProperty("产品须知")
     var productExternal: String? = null
+
+    @ApiModelProperty("产品条款下载地址")
+    var clauseUrl: String? = null
 }

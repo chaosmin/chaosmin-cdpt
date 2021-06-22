@@ -34,6 +34,9 @@ class GoodsPlanEntity(id: Long? = null) : BaseEntity(id) {
     var comsRatio: Double? = null
     var maxComsRatio: Double? = null
 
+    /** 条款下载地址 */
+    var clauseUrl: String? = null
+
     /**
      * 返回扩展字段
      */

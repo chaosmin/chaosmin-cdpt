@@ -19,15 +19,18 @@ class PolicyResp : BaseResp() {
     @ApiModelProperty("保单号")
     var policyNo: String? = null
 
+    @ApiModelProperty("保险公司")
+    var partnerName: String? = null
+
     @ApiModelProperty("产品计划ID")
     var productPlanId: Long? = null
 
     @ApiModelProperty("起保时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     var effectiveTime: Date? = null
 
     @ApiModelProperty("停保时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     var expiryTime: Date? = null
 
     @ApiModelProperty("旅行目的地")
@@ -47,6 +50,9 @@ class PolicyResp : BaseResp() {
 
     @ApiModelProperty("电子保单下载地址")
     var ePolicyUrl: String? = null
+
+    @ApiModelProperty("投保人")
+    var holder: PolicyHolderResp? = null
 
     @ApiModelProperty("被保人列表")
     var insuredList: List<PolicyInsurantResp>? = null

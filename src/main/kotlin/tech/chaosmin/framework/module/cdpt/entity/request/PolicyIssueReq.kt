@@ -18,6 +18,9 @@ class PolicyIssueReq : BaseReq() {
     @ApiModelProperty("订单号")
     var orderNo: String? = null
 
+    @ApiModelProperty("承保公司名称")
+    var partnerName: String? = null
+
     @ApiModelProperty("产品Code")
     var productCode: String? = null
 

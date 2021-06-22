@@ -17,6 +17,9 @@ class Policy(id: Long? = null) : BaseDO(id, 0) {
     /** 保单号 */
     var policyNo: String? = null
 
+    /** 承保公司 */
+    var partnerName: String? = null
+
     /** 产品Code */
     var productCode: String? = null
 

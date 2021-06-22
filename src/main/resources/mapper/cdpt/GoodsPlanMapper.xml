@@ -4,7 +4,7 @@
     <sql id="extSelectFields">
         goods_plan.*,
         product_category.category_name,product_category.category_sub_name,
-        product.product_code,product.product_name,product.waiting_days,
+        product.product_code,product.product_name,product.waiting_days,product.clause_url,
         product_plan.plan_name as 'product_plan_name',product_plan.coms_ratio as 'max_coms_ratio', product_plan.primary_coverage
     </sql>
 

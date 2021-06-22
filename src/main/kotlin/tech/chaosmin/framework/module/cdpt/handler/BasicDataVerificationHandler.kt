@@ -77,6 +77,7 @@ open class BasicDataVerificationHandler(
             logger.error("Product-plan[${arg.productPlanId}] has been invalided.")
             throw FrameworkException(ErrorCodeEnum.RESOURCE_INVALID.code, "保险产品")
         }
+        arg.partnerName = productPlanEntity?.partnerName
         arg.productCode = productPlanEntity?.productCode
         arg.productPlanCode = productPlanEntity?.planCode
         val waitingDays = productPlanEntity?.waitingDays ?: 0

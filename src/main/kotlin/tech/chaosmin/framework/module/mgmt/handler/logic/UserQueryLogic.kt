@@ -8,6 +8,7 @@ import tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.UserExt
 import tech.chaosmin.framework.module.mgmt.entity.UserEntity
 import tech.chaosmin.framework.module.mgmt.helper.mapper.UserMapper
 import tech.chaosmin.framework.module.mgmt.service.UserService
+import tech.chaosmin.framework.utils.SecurityUtil
 
 /**
  * @author Romani min
@@ -22,7 +23,12 @@ class UserQueryLogic(private val userService: UserService) : BaseQueryLogic<User
     }
 
     override fun page(cond: PageQuery<UserExt>): IPage<UserEntity?> {
-        val page = userService.pageExt(cond.page, cond.wrapper)
+        var queryWrapper = cond.wrapper
+        if (!SecurityUtil.getUserDetails().isAdmin) {
+            val userName = SecurityUtil.getUserDetails().userName
+            queryWrapper = queryWrapper.eq("user.creator", userName)
+        }
+        val page = userService.pageExt(cond.page, queryWrapper)
         return page.convert(UserMapper.INSTANCE::convertEx2Entity)
     }
 }

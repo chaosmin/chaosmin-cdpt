@@ -8,6 +8,7 @@ import tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.DepartmentExt
 import tech.chaosmin.framework.module.mgmt.entity.DepartmentEntity
 import tech.chaosmin.framework.module.mgmt.helper.mapper.DepartmentMapper
 import tech.chaosmin.framework.module.mgmt.service.DepartmentService
+import tech.chaosmin.framework.utils.SecurityUtil
 
 /**
  * @author Romani min
@@ -22,7 +23,11 @@ class DepartmentQueryLogic(private val departmentService: DepartmentService) : B
     }
 
     override fun page(cond: PageQuery<DepartmentExt>): IPage<DepartmentEntity?> {
-        val page = departmentService.pageExt(cond.page, cond.wrapper)
+        var queryWrapper = cond.wrapper
+        if (!SecurityUtil.getUserDetails().isAdmin) {
+            queryWrapper = queryWrapper.eq("id", SecurityUtil.getUserDetails().departmentId)
+        }
+        val page = departmentService.pageExt(cond.page, queryWrapper)
         return page.convert(DepartmentMapper.INSTANCE::convert2Entity)
     }
 }

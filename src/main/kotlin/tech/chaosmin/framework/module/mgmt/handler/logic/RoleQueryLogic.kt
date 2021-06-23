@@ -1,5 +1,6 @@
 package tech.chaosmin.framework.module.mgmt.handler.logic
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.BaseQueryLogic
@@ -9,6 +10,7 @@ import tech.chaosmin.framework.module.mgmt.entity.RoleEntity
 import tech.chaosmin.framework.module.mgmt.helper.mapper.RoleMapper
 import tech.chaosmin.framework.module.mgmt.service.AuthorityService
 import tech.chaosmin.framework.module.mgmt.service.RoleService
+import tech.chaosmin.framework.utils.SecurityUtil
 
 /**
  * @author Romani min
@@ -31,7 +33,14 @@ class RoleQueryLogic(
     }
 
     override fun page(cond: PageQuery<Role>): IPage<RoleEntity?> {
-        val page = roleService.page(cond.page, cond.wrapper)
+        var queryWrapper = cond.wrapper
+        if (!SecurityUtil.getUserDetails().isAdmin) {
+            val roles = SecurityUtil.getUserDetails().roles
+            val priority = roleService.list(QueryWrapper<Role?>().`in`("code", roles))
+                .minBy { it.priority ?: Int.MAX_VALUE }?.priority
+            queryWrapper = queryWrapper.gt("priority", priority)
+        }
+        val page = roleService.page(cond.page, queryWrapper)
         return page.convert(RoleMapper.INSTANCE::convert2Entity)
     }
 }

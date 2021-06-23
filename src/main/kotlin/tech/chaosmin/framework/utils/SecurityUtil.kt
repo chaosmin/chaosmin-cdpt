@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import tech.chaosmin.framework.definition.SystemConst
+import tech.chaosmin.framework.exception.AuthenticationException
 import tech.chaosmin.framework.module.mgmt.domain.auth.JwtUserDetails
 import tech.chaosmin.framework.module.mgmt.entity.response.UserDetailResp
 
@@ -14,7 +15,7 @@ object SecurityUtil {
 
     fun getUsername(): String = getUsername(getAuthentication())
 
-    fun getUserDetails(): UserDetailResp? = getUserDetails(getAuthentication())
+    fun getUserDetails(): UserDetailResp = getUserDetails(getAuthentication())
 
     fun getUserId(authentication: Authentication?): Long {
         if (authentication != null) {
@@ -37,14 +38,14 @@ object SecurityUtil {
         return username
     }
 
-    fun getUserDetails(authentication: Authentication?): UserDetailResp? {
+    fun getUserDetails(authentication: Authentication?): UserDetailResp {
         if (authentication != null) {
             val principal: Any = authentication.principal
             if (principal is JwtUserDetails) {
                 return UserDetailResp(principal)
             }
         }
-        return null
+        throw AuthenticationException.MISSED_TOKEN
     }
 
     fun setAuthentication(authentication: Authentication) {

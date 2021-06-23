@@ -1,18 +1,19 @@
 package tech.chaosmin.framework.module.cdpt.handler.logic
 
+import cn.hutool.core.date.DateUtil
 import com.baomidou.mybatisplus.core.metadata.IPage
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.BaseQueryLogic
 import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.Policy
+import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyKhsEnum
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
 import tech.chaosmin.framework.module.cdpt.entity.PolicyHolderEntity
 import tech.chaosmin.framework.module.cdpt.entity.PolicyInsurantEntity
 import tech.chaosmin.framework.module.cdpt.entity.PolicyKhsEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyHolderMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyInsurantMapper
-import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyKhsMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyMapper
 import tech.chaosmin.framework.module.cdpt.service.inner.PolicyHolderService
 import tech.chaosmin.framework.module.cdpt.service.inner.PolicyInsurantService
@@ -70,9 +71,23 @@ class PolicyQueryLogic(
         }
     }
 
-    fun queryKhs(id: Long): List<PolicyKhsEntity> {
-        return policyKhsService.listByPolicyId(id).mapNotNull {
-            PolicyKhsMapper.INSTANCE.convert2Entity(it)
+    fun queryKhs(id: Long): PolicyKhsEntity {
+        val policy = this.page(PageQuery.eqQuery("policy.id", id)).records.firstOrNull() ?: return PolicyKhsEntity()
+        val list = policyKhsService.listByPolicyId(id)
+        val policyKhsEntity = PolicyKhsEntity().apply {
+            this.orderNo = policy.orderNo
+            this.policyNo = policy.policyNo
+            this.holderName = policy.holder?.name
+            this.issuerName = policy.creator
         }
+        list.firstOrNull { PolicyKhsEnum.POLICY_NOTICE.getCode() == it.khsType }?.run {
+            policyKhsEntity.readTime = DateUtil.formatDateTime(this.fileTime)
+            policyKhsEntity.readPicUrl = this.resourceUrl
+        }
+        list.firstOrNull { PolicyKhsEnum.INSU_CONFIRM.getCode() == it.khsType }?.run {
+            policyKhsEntity.issueTime = DateUtil.formatDateTime(this.fileTime)
+            policyKhsEntity.issuePicUrl = this.resourceUrl
+        }
+        return policyKhsEntity
     }
 }

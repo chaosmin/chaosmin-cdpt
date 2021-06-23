@@ -14,5 +14,5 @@ import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
 @RequestMapping("/\${application.version}/api/policies")
 interface PolicyShareService : BaseShareService<PolicyReq, PolicyResp> {
     @GetMapping("/{id}/khs")
-    fun getKhsList(@PathVariable("id") id: Long): RestResult<List<PolicyKhsResp>>
+    fun getKhsList(@PathVariable("id") id: Long): RestResult<PolicyKhsResp>
 }

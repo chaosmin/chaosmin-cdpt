@@ -1,10 +1,8 @@
 package tech.chaosmin.framework.module.cdpt.entity.response
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseResp
-import java.util.*
 
 /**
  * @author Romani min
@@ -15,13 +13,33 @@ class PolicyKhsResp : BaseResp() {
     @ApiModelProperty("保单ID")
     var policyId: Long? = null
 
-    @ApiModelProperty("可回溯材料类型")
-    var khsType: String? = null
+    @ApiModelProperty("订单号")
+    var orderNo: String? = null
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @ApiModelProperty("可回溯材料生成时间")
-    var fileTime: Date? = null
+    @ApiModelProperty("保单号")
+    var policyNo: String? = null
 
-    @ApiModelProperty("资源地址")
-    var resourceUrl: String? = null
+    @ApiModelProperty("投保人名称")
+    var holderName: String? = null
+
+    @ApiModelProperty("出单人名称")
+    var issuerName: String? = null
+
+    @ApiModelProperty("进入页面时间")
+    var enterPageTime: String? = null
+
+    @ApiModelProperty("离开页面时间")
+    var leavePageTime: String? = null
+
+    @ApiModelProperty("阅读须知时间")
+    var readTime: String? = null
+
+    @ApiModelProperty("确认投保时间")
+    var issueTime: String? = null
+
+    @ApiModelProperty("阅读须知截图下载地址")
+    var readPicUrl: String? = null
+
+    @ApiModelProperty("确认投保截图下载地址")
+    var issuePicUrl: String? = null
 }

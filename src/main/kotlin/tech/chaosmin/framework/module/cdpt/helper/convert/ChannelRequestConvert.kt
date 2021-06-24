@@ -1,10 +1,12 @@
 package tech.chaosmin.framework.module.cdpt.helper.convert
 
+import cn.hutool.core.date.DateUtil
 import tech.chaosmin.framework.base.enums.GenderEnum
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner.*
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.DDReq
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.DDRequestHead
+import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.obj.DDCPReq
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.obj.DDCReq
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.obj.DDUReq
 import java.util.*
@@ -103,6 +105,19 @@ object ChannelRequestConvert {
                 this.businessNo = policy.proposalNo
             }
             this.channelOpInfoDTO = ChannelOpInfo()
+        }
+        return request
+    }
+
+    fun convert2DDCPReq(policy: PolicyEntity): DDReq<DDCPReq> {
+        val request = DDReq<DDCPReq>()
+        request.requestHead = DDRequestHead(policy.orderNo!!)
+        request.requestBody = DDCPReq().apply {
+            this.endorseMainInfo = EndorseMainInfo().apply {
+                this.policyNo = policy.policyNo
+                this.applyDate = DateUtil.format(Date(), "yyyy-MM-dd HH:mm:ss")
+            }
+            this.channelOpInfo = ChannelOpInfo()
         }
         return request
     }

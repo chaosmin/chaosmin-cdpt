@@ -11,6 +11,7 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.Policy
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyReq
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyKhsResp
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
+import tech.chaosmin.framework.module.cdpt.handler.CancelPolicyHandler
 import tech.chaosmin.framework.module.cdpt.handler.logic.PolicyQueryLogic
 import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyConvert
 import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyKhsConvert
@@ -22,7 +23,10 @@ import javax.servlet.http.HttpServletRequest
  * @since 2020/12/10 13:48
  */
 @RestController
-open class PolicyShareProvider(private val policyQueryLogic: PolicyQueryLogic) : PolicyShareService {
+open class PolicyShareProvider(
+    private val policyQueryLogic: PolicyQueryLogic,
+    private val cancelPolicyHandler: CancelPolicyHandler
+) : PolicyShareService {
     override fun getKhsList(id: Long): RestResult<PolicyKhsResp> {
         val policyKhsList = policyQueryLogic.queryKhs(id)
         val khsResp = PolicyKhsConvert.INSTANCE.convert2Resp(policyKhsList)
@@ -46,7 +50,8 @@ open class PolicyShareProvider(private val policyQueryLogic: PolicyQueryLogic) :
     }
 
     override fun update(id: Long, req: PolicyReq): RestResult<PolicyResp> {
-        throw FrameworkException(ErrorCodeEnum.NOT_SUPPORTED_FUNCTION.code)
+        val restResult = cancelPolicyHandler.cancelPolicy(id)
+        return RestResultExt.mapper(restResult)
     }
 
     override fun delete(id: Long): RestResult<PolicyResp> {

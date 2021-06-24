@@ -19,7 +19,9 @@ import tech.chaosmin.framework.module.cdpt.service.inner.PolicyHolderService
 import tech.chaosmin.framework.module.cdpt.service.inner.PolicyInsurantService
 import tech.chaosmin.framework.module.cdpt.service.inner.PolicyKhsService
 import tech.chaosmin.framework.module.cdpt.service.inner.PolicyService
+import tech.chaosmin.framework.module.mgmt.handler.SubordinateHandler
 import tech.chaosmin.framework.utils.JsonUtil
+import tech.chaosmin.framework.utils.SecurityUtil
 
 /**
  * 保单数据查询逻辑 <p>
@@ -29,6 +31,7 @@ import tech.chaosmin.framework.utils.JsonUtil
  */
 @Component
 class PolicyQueryLogic(
+    private val subordinateHandler: SubordinateHandler,
     private val policyService: PolicyService,
     private val policyKhsService: PolicyKhsService,
     private val policyHolderService: PolicyHolderService,
@@ -45,7 +48,13 @@ class PolicyQueryLogic(
     }
 
     override fun page(cond: PageQuery<Policy>): IPage<PolicyEntity?> {
-        val page = policyService.page(cond.page, cond.wrapper)
+        var queryWrapper = cond.wrapper
+        if (!SecurityUtil.getUserDetails().isAdmin) {
+            val username = SecurityUtil.getUsername()
+            val subordinate = subordinateHandler.findAll(username)
+            queryWrapper = queryWrapper.`in`("policy.creator", subordinate)
+        }
+        val page = policyService.page(cond.page, queryWrapper)
         logger.debug("Page(${JsonUtil.encode(cond)}) => ${JsonUtil.encode(page)}")
         val result = page.convert(PolicyMapper.INSTANCE::convert2Entity)
         // 补充被保人列表

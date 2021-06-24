@@ -1,5 +1,6 @@
 package tech.chaosmin.framework.module.cdpt.entity.request
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseReq
@@ -31,9 +32,11 @@ class PolicyIssueReq : BaseReq() {
     var productPlanCode: String? = null
 
     @ApiModelProperty("起保时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     var startTime: Date? = null
 
     @ApiModelProperty("终止时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     var endTime: Date? = null
 
     @ApiModelProperty("保障期限")

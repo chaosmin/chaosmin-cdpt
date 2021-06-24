@@ -21,6 +21,9 @@ WORKDIR     /root/
 #COPY        --from=builder /${GROUP_NAME}/${PROJECT_NAME}/build/libs/${PROJECT_NAME}.jar .
 COPY        build/libs/${PROJECT_NAME}-${PROJECT_VERSION}.jar .
 
+RUN         ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN         echo 'Asia/Shanghai' >/etc/timezone
+
 RUN         echo "java -server -Xms518m -Xmx1024m -jar /root/${PROJECT_NAME}-${PROJECT_VERSION}.jar" > ./run.sh
 RUN         chmod +x ./run.sh
 

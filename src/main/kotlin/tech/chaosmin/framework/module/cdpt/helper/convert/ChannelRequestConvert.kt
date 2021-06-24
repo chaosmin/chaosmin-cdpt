@@ -85,7 +85,7 @@ object ChannelRequestConvert {
                             this.customerRoleCode = "2"
                             this.idNo = i.certiNo
                             this.dateOfBirth = i.birthday
-                            this.idType = "111"
+                            this.idType = i.certiType?.getCode().toString()
                             this.indiMobile = i.phoneNo
                             this.indiGenderCode = if (GenderEnum.MALE == i.gender!!) "1" else "2"
                             this.polHolderInsuredRelaCode = "80"

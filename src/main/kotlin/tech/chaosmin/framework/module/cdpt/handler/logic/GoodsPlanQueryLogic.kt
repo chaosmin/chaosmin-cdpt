@@ -1,16 +1,21 @@
 package tech.chaosmin.framework.module.cdpt.handler.logic
 
 import com.baomidou.mybatisplus.core.metadata.IPage
-import org.slf4j.LoggerFactory
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.BaseQueryLogic
 import tech.chaosmin.framework.base.PageQuery
-import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.GoodsPlanExt
-import tech.chaosmin.framework.module.cdpt.entity.GoodsCategoryEntity
+import tech.chaosmin.framework.module.cdpt.domain.dataobject.GoodsPlan
 import tech.chaosmin.framework.module.cdpt.entity.GoodsPlanEntity
+import tech.chaosmin.framework.module.cdpt.entity.response.GoodsCategoryResp
 import tech.chaosmin.framework.module.cdpt.helper.mapper.GoodsPlanMapper
+import tech.chaosmin.framework.module.cdpt.helper.mapper.PlanLiabilityMapper
+import tech.chaosmin.framework.module.cdpt.helper.mapper.PlanRateTableMapper
 import tech.chaosmin.framework.module.cdpt.service.inner.GoodsPlanService
-import tech.chaosmin.framework.module.cdpt.service.inner.ProductCategoryService
+import tech.chaosmin.framework.module.cdpt.service.inner.PlanLiabilityService
+import tech.chaosmin.framework.module.cdpt.service.inner.PlanRateTableService
+import tech.chaosmin.framework.module.cdpt.service.inner.ProductExternalService
 import tech.chaosmin.framework.utils.JsonUtil
 
 /**
@@ -21,30 +26,56 @@ import tech.chaosmin.framework.utils.JsonUtil
  */
 @Component
 class GoodsPlanQueryLogic(
+    private val stringRedisTemplate: StringRedisTemplate,
     private val goodsPlanService: GoodsPlanService,
-    private val productCategoryService: ProductCategoryService
-) : BaseQueryLogic<GoodsPlanEntity, GoodsPlanExt> {
-    private val logger = LoggerFactory.getLogger(GoodsPlanQueryLogic::class.java)
+    private val planLiabilityService: PlanLiabilityService,
+    private val planRateTableService: PlanRateTableService,
+    private val productExternalService: ProductExternalService
+) : BaseQueryLogic<GoodsPlanEntity, GoodsPlan> {
 
     override fun get(id: Long): GoodsPlanEntity? {
-        val goodsPlan = goodsPlanService.getByIdExt(id)
-        logger.debug("GetById($id) => ${JsonUtil.encode(goodsPlan)}")
-        val goodsPlanEntity = GoodsPlanMapper.INSTANCE.convertEx2Entity(goodsPlan)
-        logger.debug("Convert2Entity => ${JsonUtil.encode(goodsPlanEntity)}")
-        return goodsPlanEntity
+        val goodsPlan = goodsPlanService.getById(id)
+        return GoodsPlanMapper.INSTANCE.convert2Entity(goodsPlan)?.apply {
+            liabilities = PlanLiabilityMapper.INSTANCE.convert2Entity(planLiabilityService.listByPlanId(this.productPlanId!!))
+            rateTable = PlanRateTableMapper.INSTANCE.convert2Entity(planRateTableService.listByPlanId(this.productPlanId!!))
+            productExternal = productExternalService.getByProductId(this.productId!!).externalText
+        }
     }
 
-    override fun page(cond: PageQuery<GoodsPlanExt>): IPage<GoodsPlanEntity?> {
-        val page = goodsPlanService.pageExt(cond.page, cond.wrapper)
-        logger.debug("Page(${JsonUtil.encode(cond)}) => ${JsonUtil.encode(page)}")
-        val result = page.convert(GoodsPlanMapper.INSTANCE::convertEx2Entity)
-        logger.debug("Convert2Entity => ${JsonUtil.encode(result)}")
-        return result
+    override fun page(cond: PageQuery<GoodsPlan>): IPage<GoodsPlanEntity?> {
+        val page = goodsPlanService.page(cond.page, cond.wrapper)
+        return page.convert(GoodsPlanMapper.INSTANCE::convert2Entity)
     }
 
-    fun getGoodsCategories(userId: Long): List<GoodsCategoryEntity> {
-        val productIds = goodsPlanService.getProductIdByUser(userId)
-        val categories = productCategoryService.getByProductIds(productIds)
-        return categories.map { GoodsCategoryEntity(it) }
+    fun searchCategories(userId: Long): List<GoodsCategoryResp> {
+        val list = searchGoodsPlan(userId, PageQuery.emptyQuery()).map { it.categoryName to it.categorySubName }
+        return list.groupBy { it.first }.map { (key, value) ->
+            GoodsCategoryResp(key!!, key).apply {
+                this.children = value.mapNotNull { it.second }.distinct().map { GoodsCategoryResp(it, it) }
+            }
+        }
+    }
+
+    fun searchGoodsPlan(userId: Long, cond: PageQuery<GoodsPlan>): List<GoodsPlanEntity> {
+        val goodsPlanList = mutableListOf<GoodsPlanEntity?>()
+        val cacheNameSpace = "goods-plan:$userId"
+        var currentPage = 0L
+        val ew = cond.wrapper.eq("user_id", userId)
+        do {
+            val page = goodsPlanService.page(Page(currentPage, 1000), ew)
+            currentPage += 1
+            val records = page.records.filterNotNull().mapNotNull { GoodsPlanMapper.INSTANCE.convert2Entity(it) }
+            records.forEach {
+                // 扩展属性
+                it.liabilities = PlanLiabilityMapper.INSTANCE.convert2Entity(planLiabilityService.listByPlanId(it.productPlanId!!))
+                it.rateTable = PlanRateTableMapper.INSTANCE.convert2Entity(planRateTableService.listByPlanId(it.productPlanId!!))
+                it.productExternal = productExternalService.getByProductId(it.productId!!).externalText
+                stringRedisTemplate.opsForSet().add(cacheNameSpace, JsonUtil.encode(it))
+            }
+            goodsPlanList.addAll(records)
+        } while (page.records.isNotEmpty() && page.pages <= currentPage)
+        return stringRedisTemplate.opsForSet().members(cacheNameSpace)?.mapNotNull {
+            JsonUtil.decode(it, GoodsPlanEntity::class.java)
+        } ?: emptyList()
     }
 }

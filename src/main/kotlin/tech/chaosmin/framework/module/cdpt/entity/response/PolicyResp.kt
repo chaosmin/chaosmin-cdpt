@@ -19,12 +19,6 @@ class PolicyResp : BaseResp() {
     @ApiModelProperty("保单号")
     var policyNo: String? = null
 
-    @ApiModelProperty("保险公司")
-    var partnerName: String? = null
-
-    @ApiModelProperty("产品计划ID")
-    var productPlanId: Long? = null
-
     @ApiModelProperty("起保时间")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     var effectiveTime: Date? = null
@@ -36,20 +30,29 @@ class PolicyResp : BaseResp() {
     @ApiModelProperty("旅行目的地")
     var travelDestination: String? = null
 
+    @ApiModelProperty("团单号")
+    var groupNo: String? = null
+
     @ApiModelProperty("保单状态")
     var status: PolicyStatusEnum? = null
 
-    @ApiModelProperty("单价保费")
+    @ApiModelProperty("被保人数")
+    var insuredSize: Int? = null
+
+    @ApiModelProperty("单价保费(元)")
     var unitPremium: Double? = null
 
-    @ApiModelProperty("总保费")
+    @ApiModelProperty("总保费(元)")
     var totalPremium: Double? = null
 
-    @ApiModelProperty("实收保费")
+    @ApiModelProperty("实收保费(元)")
     var actualPremium: Double? = null
 
     @ApiModelProperty("电子保单下载地址")
     var ePolicyUrl: String? = null
+
+    @ApiModelProperty("保险产品信息")
+    var goodsPlan: GoodsPlanResp? = null
 
     @ApiModelProperty("投保人")
     var holder: PolicyHolderResp? = null

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="tech.chaosmin.framework.module.cdpt.domain.dao.PolicyDAO">
+    <sql id="extSelectFields">
+        distinct policy.*, policy_holder.name as 'holder_name', goods_plan.partner_name
+    </sql>
+
+    <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyExt">
+        SELECT
+        <include refid="extSelectFields"/>
+        FROM policy
+        left join policy_holder on policy.id = policy_holder.policy_id
+        left join goods_plan on policy.goods_plan_id = goods_plan.id
+        ${ew.customSqlSegment}
+    </select>
+</mapper> 

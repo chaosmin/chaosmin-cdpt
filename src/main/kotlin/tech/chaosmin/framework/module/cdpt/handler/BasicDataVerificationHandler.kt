@@ -1,8 +1,6 @@
 package tech.chaosmin.framework.module.cdpt.handler
 
 import cn.hutool.core.date.DateUtil
-import com.baomidou.mybatisplus.core.toolkit.Wrappers
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.AbstractTemplateOperate
@@ -11,9 +9,9 @@ import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.enums.BasicStatusEnum
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.FrameworkException
-import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.GoodsPlanExt
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
-import tech.chaosmin.framework.module.cdpt.handler.logic.*
+import tech.chaosmin.framework.module.cdpt.handler.logic.GoodsPlanQueryLogic
+import tech.chaosmin.framework.module.cdpt.handler.logic.PolicyQueryLogic
 import tech.chaosmin.framework.utils.SecurityUtil
 import java.math.BigDecimal
 import java.util.*
@@ -31,9 +29,6 @@ import java.util.*
 @Component
 open class BasicDataVerificationHandler(
     private val policyQueryLogic: PolicyQueryLogic,
-    private val productPlanQueryLogic: ProductPlanQueryLogic,
-    private val planRateTableQueryLogic: PlanRateTableQueryLogic,
-    private val planLiabilityQueryLogic: PlanLiabilityQueryLogic,
     private val goodsPlanQueryLogic: GoodsPlanQueryLogic
 ) : AbstractTemplateOperate<PolicyIssueReq, PolicyIssueReq>() {
     private val logger = LoggerFactory.getLogger(BasicDataVerificationHandler::class.java)
@@ -42,8 +37,8 @@ open class BasicDataVerificationHandler(
         if (arg.orderNo == null) {
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "订单号[orderNo]")
         }
-        if (arg.productPlanId == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "保险产品[productPlanId]")
+        if (arg.goodsPlanId == null) {
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "授权产品[goodsPlanId]")
         }
         super.validation(arg, result)
     }
@@ -68,19 +63,20 @@ open class BasicDataVerificationHandler(
     }
 
     private fun productValidityCheck(arg: PolicyIssueReq) {
-        val pageRes = productPlanQueryLogic.page(PageQuery.eqQuery("product_plan.id", arg.productPlanId))
-        // 无产品数据, 返回校验失败
-        if (pageRes.records.size == 0) throw FrameworkException(ErrorCodeEnum.RESOURCE_NOT_EXIST.code, "保险产品")
-        val productPlanEntity = pageRes.records.first()
+        val goodsPlanId = arg.goodsPlanId!!
+        val goodsPlanEntity = goodsPlanQueryLogic.get(goodsPlanId)
         // 产品无效, 返回校验失败
-        if (BasicStatusEnum.DISABLED == productPlanEntity?.status) {
-            logger.error("Product-plan[${arg.productPlanId}] has been invalided.")
-            throw FrameworkException(ErrorCodeEnum.RESOURCE_INVALID.code, "保险产品")
+        if (goodsPlanEntity == null || BasicStatusEnum.DISABLED == goodsPlanEntity.status) {
+            logger.error("Goods plan[$goodsPlanId] has been invalided.")
+            throw FrameworkException(ErrorCodeEnum.RESOURCE_INVALID.code, "产品授权")
         }
-        arg.partnerName = productPlanEntity?.partnerName
-        arg.productCode = productPlanEntity?.productCode
-        arg.productPlanCode = productPlanEntity?.planCode
-        val waitingDays = productPlanEntity?.waitingDays ?: 0
+        if (goodsPlanEntity.userId != SecurityUtil.getUserId()) {
+            logger.error("Goods plan[$goodsPlanId] does not assigned to user[${SecurityUtil.getUserId()}]")
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "您无权出单该产品")
+        }
+        arg.goodsPlan = goodsPlanEntity
+
+        val waitingDays = arg.goodsPlan?.waitingDays ?: 0
         // 即时起保的产品仍然有【两小时】的起保间隔期
         if (waitingDays == 0) arg.startTime = DateUtil.offsetHour(arg.startTime, 2).toJdkDate()
         // 计算保单有效期起期与当前时间的差值是否小于起保等待期(即提前生效)
@@ -97,11 +93,7 @@ open class BasicDataVerificationHandler(
             logger.warn("The number of days calculated on the front[${arg.days}] and back[$travelDays] does not match!")
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "旅行天数")
         }
-        val userId = SecurityUtil.getUserId()
-        val productPlanId = arg.productPlanId
-        val rateTable = planRateTableQueryLogic.fetchAllOfPlan(productPlanId!!)
-        // TODO 引入规则引擎计算
-        val hitRateRecord = rateTable.firstOrNull { it?.dayStart!! <= travelDays && it.dayEnd!! >= travelDays }
+        val hitRateRecord = arg.goodsPlan?.rateTable?.firstOrNull { it.dayStart!! <= travelDays && it.dayEnd!! >= travelDays }
         if (hitRateRecord == null) {
             logger.error("Days[$travelDays] is not hit in the rate table.")
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "旅行天数&费率表")
@@ -118,15 +110,7 @@ open class BasicDataVerificationHandler(
             logger.error("Total premium of this order is zero.")
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "总保费")
         }
-        // 重新计算实收保费
-        val wa = Wrappers.query<GoodsPlanExt>().eq("product_plan_id", productPlanId).eq("user_id", userId)
-        val pageRes = goodsPlanQueryLogic.page(PageQuery(Page(), wa))
-        if (pageRes.records.size == 0) {
-            logger.warn("Product plan[$productPlanId] does not assigned to user[$userId]")
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "您无权出单该产品")
-        }
-        val goodsPlan = pageRes.records.first()!!
-        val comsRatio = goodsPlan.comsRatio ?: 0.0
+        val comsRatio = arg.goodsPlan?.comsRatio ?: 0.0
         arg.actualPremium = (BigDecimal(100).minus(BigDecimal(comsRatio)))
             .divide(BigDecimal(100)).multiply(BigDecimal(arg.totalPremium!!)).toDouble()
         if (arg.actualPremium == null || arg.actualPremium == 0.0) {
@@ -134,17 +118,5 @@ open class BasicDataVerificationHandler(
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "实收保费")
         }
         logger.info("Order[${arg.orderNo}] => premium: ${arg.unitPremium}, total-premium: ${arg.totalPremium}, actual-premium: ${arg.actualPremium}")
-        // 计算保额总额
-        val liabilities = planLiabilityQueryLogic.fetchAllOfPlan(productPlanId)
-        val insuredAmount = liabilities.sumByDouble {
-            val amount = it?.amount?.replace(",", "") ?: "0"
-            if (amount.contains("元/天")) {
-                val sa = BigDecimal(amount.replace("""元/天""", ""))
-                sa.multiply(BigDecimal(travelDays)).toDouble()
-            } else BigDecimal(amount).toDouble()
-        }
-        arg.sa = insuredAmount
-        arg.totalSa = insuredAmount.times(arg.insuredList?.size ?: 0)
-        logger.info("Order[${arg.orderNo}] => sa: ${arg.sa}, total-sa: ${arg.totalSa}")
     }
 }

@@ -20,7 +20,7 @@ class PageQuery<T>(var page: Page<T>, var wrapper: QueryWrapper<T>) {
         }
 
         fun <T> emptyQuery(page: Page<T> = Page(0, DEFAULT_PAGE_SIZE)): PageQuery<T> {
-            return PageQuery(page, Wrappers.emptyWrapper())
+            return PageQuery(page, Wrappers.query())
         }
     }
 }

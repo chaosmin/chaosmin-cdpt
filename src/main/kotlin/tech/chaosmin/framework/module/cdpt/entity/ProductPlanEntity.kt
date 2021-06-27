@@ -11,23 +11,44 @@ import tech.chaosmin.framework.module.cdpt.domain.enums.RateTableTypeEnum
  * @since 2020/12/23 21:35
  */
 class ProductPlanEntity(id: Long? = null) : BaseEntity(id) {
-    // 产品信息
+    // 保险公司
     var partnerName: String? = null
+
+    // 产品ID
     var productId: Long? = null
+
+    // 产品编号
     var productCode: String? = null
+
+    // 产品名称
     var productName: String? = null
-    var waitingDays: Int? = null
+
     // 计划信息
     var planCode: String? = null
+
+    // 计划名称
     var planName: String? = null
+
+    // 主险保额
     var primaryCoverage: String? = null
+
+    // 币种
     var currency: String? = null
+
+    // 佣金比例
     var comsRatio: Double? = null
+
+    // 设置佣金比例
     // TODO 这个是前端用来调整的佣金比例, 如何优化前端不让后端返回这个值
     var iComsRatio: Double? = null
+
+    // 产品计划状态
     var status: BasicStatusEnum? = null
-    // 计划责任及费率表
+
+    // 计划责任
     var liabilities = mutableListOf<PlanLiabilityEntity>()
+
+    // 计划费率表
     var rateTable = mutableListOf<PlanRateTableEntity>()
 
     fun addLiability(category: String, liability: String, amount: String) {

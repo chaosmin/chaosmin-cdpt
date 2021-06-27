@@ -57,10 +57,10 @@ object ChannelRequestConvert {
             // this.sumInsured = BigDecimal(policy.totalSa!!).toString()
             this.effectiveDate = policy.effectiveTime
             this.expiryDate = policy.expiryTime
-            this.productCode = policy.productCode
+            this.productCode = policy.goodsPlan?.productCode
             this.proposalDate = Date()
             this.channelOpInfoList = Collections.singletonList(ChannelOpInfo().apply {
-                this.channelProductCode = policy.productCode
+                this.channelProductCode = policy.goodsPlan?.productCode
                 this.channelSeqNo = policy.orderNo
             })
             this.policyCustomerList = Collections.singletonList(PolicyCustomer().apply {
@@ -76,7 +76,7 @@ object ChannelRequestConvert {
                         this.insuredCount = policy.insuredList?.size?.toLong()
                         this.insuredGroupNo = 1L
                         this.numberOfCopies = 1
-                        this.planCode = policy.productPlanCode
+                        this.planCode = policy.goodsPlan?.productPlanCode
                     })
                     this.personInsuredList = policy.insuredList?.mapIndexed { index, i ->
                         PersonInsured().apply {

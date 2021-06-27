@@ -12,4 +12,7 @@ import tech.chaosmin.framework.base.BaseResp
 class PolicyHolderResp : BaseResp() {
     @ApiModelProperty("姓名")
     var name: String? = null
+
+    @ApiModelProperty("证件号")
+    var certiNo: String? = null
 }

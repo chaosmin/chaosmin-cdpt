@@ -26,6 +26,7 @@ class ProductEntity(id: Long? = null) : BaseEntity(id) {
     var productDesc: String? = null
     var productRatio: String? = null
     var status: BasicStatusEnum? = null
+    var clauseUrl: String? = null
 
     var plans = mutableListOf<ProductPlanEntity>()
 

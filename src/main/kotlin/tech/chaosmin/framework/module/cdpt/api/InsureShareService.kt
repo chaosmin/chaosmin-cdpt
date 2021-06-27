@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
-import tech.chaosmin.framework.module.cdpt.entity.response.GoodsCategoryResp
-import tech.chaosmin.framework.module.cdpt.entity.response.GoodsInsuredResp
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
-import javax.servlet.http.HttpServletRequest
 
 /**
  * @author Romani min
@@ -19,15 +16,6 @@ import javax.servlet.http.HttpServletRequest
 @Api(tags = ["投保操作接口"], consumes = "application/json;charset=utf-8")
 @RequestMapping("/\${application.version}/api/insure")
 interface InsureShareService {
-    @GetMapping("/goods-categories")
-    fun getGoodsCategories(): RestResult<List<GoodsCategoryResp>>
-
-    @GetMapping("/goods")
-    fun getGoods(request: HttpServletRequest): RestResult<List<GoodsInsuredResp>>
-
-    /**
-     * 生成全局唯一的投保单号
-     */
     @GetMapping("/biz-no")
     fun getBizNo(): RestResult<String>
 

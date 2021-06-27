@@ -1,16 +1,14 @@
 package tech.chaosmin.framework.module.cdpt.handler
 
-import cn.hutool.core.date.DateUtil
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tech.chaosmin.framework.base.AbstractTemplateOperate
 import tech.chaosmin.framework.base.RestResult
+import tech.chaosmin.framework.base.RestResultExt
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.base.enums.ModifyTypeEnum
-import tech.chaosmin.framework.base.enums.YesNoEnum
 import tech.chaosmin.framework.exception.FrameworkException
-import tech.chaosmin.framework.module.cdpt.domain.dataobject.GoodsPlan
 import tech.chaosmin.framework.module.cdpt.entity.GoodsPlanEntity
 import tech.chaosmin.framework.module.cdpt.handler.logic.ProductPlanQueryLogic
 import tech.chaosmin.framework.module.cdpt.handler.logic.ProductQueryLogic
@@ -18,6 +16,7 @@ import tech.chaosmin.framework.module.cdpt.helper.mapper.GoodsPlanMapper
 import tech.chaosmin.framework.module.cdpt.service.inner.GoodsPlanService
 import tech.chaosmin.framework.module.mgmt.entity.UserEntity
 import tech.chaosmin.framework.module.mgmt.handler.logic.UserQueryLogic
+import tech.chaosmin.framework.utils.JsonUtil
 import tech.chaosmin.framework.utils.SecurityUtil
 import java.util.*
 
@@ -43,7 +42,17 @@ open class ModifyGoodsPlanHandler(
     @Transactional
     override fun processor(arg: GoodsPlanEntity, result: RestResult<GoodsPlanEntity>): RestResult<GoodsPlanEntity> {
         when (arg.modifyType) {
-            ModifyTypeEnum.SAVE -> createGoodsPlan(arg)
+            ModifyTypeEnum.SAVE -> {
+                val failedRecord = createGoodsPlan(arg)
+                if (failedRecord.isNotEmpty()) {
+                    val joiner = StringJoiner("\n")
+                    failedRecord.forEach { (username, list) ->
+                        joiner.add("User[$username] has already assigned these product plan: ${JsonUtil.encode(list)}")
+                    }
+                    logger.warn(joiner.toString())
+                    return RestResultExt.successRestResult(msg = joiner.toString(), data = arg)
+                }
+            }
             ModifyTypeEnum.UPDATE -> updateGoodsPlan(arg)
             ModifyTypeEnum.REMOVE -> goodsPlanService.removeById(arg.id)
             else -> throw FrameworkException(ErrorCodeEnum.NOT_SUPPORTED_FUNCTION.code)
@@ -51,15 +60,16 @@ open class ModifyGoodsPlanHandler(
         return result.success(arg)
     }
 
-    private fun createGoodsPlan(arg: GoodsPlanEntity) {
+    private fun createGoodsPlan(arg: GoodsPlanEntity): Map<String, Set<Long>> {
         if (arg.plans == null) {
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "plans")
         }
-        arg.userIds?.forEach { userId ->
-            userQueryLogic.get(userId)?.run {
-                createUserGoodsPlan(this, arg.plans!!)
-            }
+        val failedRecord = mutableMapOf<String, Set<Long>>()
+        arg.userIds?.mapNotNull { userQueryLogic.get(it) }?.forEach {
+            val list = createUserGoodsPlan(it, arg.plans!!)
+            if (list.isNotEmpty()) failedRecord[it.username!!] = list
         }
+        return failedRecord
     }
 
     private fun updateGoodsPlan(arg: GoodsPlanEntity) {
@@ -72,37 +82,26 @@ open class ModifyGoodsPlanHandler(
         goodsPlanService.updateById(goodsPlan)
     }
 
-    private fun createUserGoodsPlan(user: UserEntity, plans: Map<Long, Double>) {
-        val authorizeTime = Date()
-        val userDetails = SecurityUtil.getUserDetails()
-        val isOfficer = user.role?.contains("officer") ?: false
-        plans.forEach { (planId, comsRatio) ->
-            val exPlan = goodsPlanService.getByUserAndPlan(user.id!!, planId)
-            if (exPlan != null) {
-                logger.error("product-plan[{}] has already auth to user[{}]", exPlan.id, user.id)
-                // goodsPlanService.removeById(exPlan.id)
-                throw FrameworkException(ErrorCodeEnum.FAILURE.code, "已为用户[${user.username}]分配过计划[${exPlan.productPlanId}]")
-            }
+    private fun createUserGoodsPlan(user: UserEntity, plans: Map<Long, Double>): Set<Long> {
+        val authorizer = SecurityUtil.getUserDetails()
+        val userId = user.id!!
+        val filteredPlans = plans.filter { (planId, _) -> goodsPlanService.getByUserAndPlan(userId, planId) == null }
+        filteredPlans.forEach { (planId, comsRatio) ->
             val plan = productPlanQueryLogic.get(planId)
-            if (plan != null) {
-                val product = productQueryLogic.get(plan.productId!!)
-                goodsPlanService.save(GoodsPlan().apply {
-                    this.productId = product?.id
-                    this.productPlanId = planId
-                    this.departmentName = user.department
-                    this.userId = user.id
-                    this.userName = user.username
-                    this.partnerCode = product?.partnerCode
-                    this.partnerName = product?.partnerName
-                    this.isForSale = if (isOfficer) YesNoEnum.YES.getCode() else YesNoEnum.NO.getCode()
-                    this.saleStartTime = DateUtil.beginOfDay(authorizeTime)
-                    this.saleEndTime = DateUtil.offsetMonth(this.saleStartTime, 1200)
-                    this.authorizeTime = authorizeTime
-                    this.authorizerId = userDetails?.userId
-                    this.authorizer = userDetails?.userName
-                    this.comsRatio = comsRatio
-                })
+            plan?.run {
+                productQueryLogic.get(plan.productId!!)?.run {
+                    val goodsPlan = GoodsPlanMapper.INSTANCE.buildDO(user, this, plan).apply {
+                        this.authorizerId = authorizer.userId
+                        this.authorizer = authorizer.userName
+                        // 设置授权最大佣金比例
+                        val authorizerPlan = goodsPlanService.getByUserAndPlan(authorizer.userId!!, planId)
+                        this.maxComsRatio = if (authorizerPlan == null) plan.comsRatio else authorizerPlan.comsRatio
+                        this.comsRatio = comsRatio
+                    }
+                    goodsPlanService.save(goodsPlan)
+                }
             }
         }
+        return plans.keys - filteredPlans.keys
     }
 }

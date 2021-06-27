@@ -19,6 +19,7 @@ import tech.chaosmin.framework.module.cdpt.helper.convert.ChannelRequestConvert
 import tech.chaosmin.framework.module.cdpt.helper.convert.IssuerConvert
 import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyConvert
 import tech.chaosmin.framework.module.cdpt.service.external.impl.DadiChannelRequestService
+import tech.chaosmin.framework.module.cdpt.service.inner.OrderTempService
 import tech.chaosmin.framework.utils.JsonUtil
 
 /**
@@ -42,6 +43,7 @@ open class IssuePolicyHandler(
     private val modifyPolicyHolderHandler: ModifyPolicyHolderHandler,
     private val modifyPolicyInsurantHandler: ModifyPolicyInsurantHandler,
     private val modifyPolicyKhsHandler: ModifyPolicyKhsHandler,
+    private val orderTempService: OrderTempService,
     private val dadiChannelRequestService: DadiChannelRequestService
 ) : AbstractTemplateOperate<PolicyIssueReq, PolicyResp>() {
     private val logger = LoggerFactory.getLogger(IssuePolicyHandler::class.java)
@@ -50,8 +52,11 @@ open class IssuePolicyHandler(
         if (arg.startTime == null || arg.endTime == null) {
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "订单日期[dateTime]")
         }
-        if (arg.productPlanId == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "保险产品[productPlanId]")
+        if (arg.orderNo == null) {
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "订单号[orderNo]")
+        }
+        if (arg.goodsPlanId == null) {
+            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "保险产品[goodsPlanId]")
         }
         super.validation(arg, result)
     }
@@ -62,6 +67,7 @@ open class IssuePolicyHandler(
         if (!validateResult.success) return result.mapper(validateResult)
 
         // step 2.1 创建保司下单请求报文
+        orderTempService.saveOrUpdate(arg.orderNo!!, JsonUtil.encode(arg))
         // TODO 请求保司接口超时兜底处理逻辑开发
         val policyEntity = IssuerConvert.INSTANCE.convert2PolicyEntity(arg)
         val ddReq = ChannelRequestConvert.convert2DDCReq(policyEntity)

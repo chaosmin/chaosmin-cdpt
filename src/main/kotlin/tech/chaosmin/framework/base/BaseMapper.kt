@@ -11,4 +11,6 @@ interface BaseMapper<E : BaseEntity, D : BaseDO> {
 
     @Mapping(target = "modifyType", ignore = true)
     fun convert2Entity(source: D?): E?
+
+    fun convert2Entity(source: List<D>): List<E>
 }

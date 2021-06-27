@@ -7,7 +7,8 @@ import tech.chaosmin.framework.base.RestResultExt
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.api.PolicyShareService
-import tech.chaosmin.framework.module.cdpt.domain.dataobject.Policy
+import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyExt
+import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyReq
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyKhsResp
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
@@ -15,6 +16,7 @@ import tech.chaosmin.framework.module.cdpt.handler.CancelPolicyHandler
 import tech.chaosmin.framework.module.cdpt.handler.logic.PolicyQueryLogic
 import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyConvert
 import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyKhsConvert
+import tech.chaosmin.framework.utils.JsonUtil
 import tech.chaosmin.framework.utils.RequestUtil
 import javax.servlet.http.HttpServletRequest
 
@@ -27,6 +29,11 @@ open class PolicyShareProvider(
     private val policyQueryLogic: PolicyQueryLogic,
     private val cancelPolicyHandler: CancelPolicyHandler
 ) : PolicyShareService {
+    override fun policyDetail(orderNo: String): RestResult<PolicyIssueReq> {
+        val paramJson = policyQueryLogic.queryDetail(orderNo)
+        return RestResultExt.successRestResult(JsonUtil.decode(paramJson, PolicyIssueReq::class.java)!!)
+    }
+
     override fun getKhsList(id: Long): RestResult<PolicyKhsResp> {
         val policyKhsList = policyQueryLogic.queryKhs(id)
         val khsResp = PolicyKhsConvert.INSTANCE.convert2Resp(policyKhsList)
@@ -40,7 +47,7 @@ open class PolicyShareProvider(
     }
 
     override fun page(request: HttpServletRequest): RestResult<IPage<PolicyResp?>> {
-        val queryCondition = RequestUtil.getQueryCondition<Policy>(request)
+        val queryCondition = RequestUtil.getQueryCondition<PolicyExt>(request)
         val page = policyQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(PolicyConvert.INSTANCE::convert2Resp))
     }

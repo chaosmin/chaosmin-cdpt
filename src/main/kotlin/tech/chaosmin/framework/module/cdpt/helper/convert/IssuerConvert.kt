@@ -20,13 +20,7 @@ interface IssuerConvert {
         val INSTANCE: IssuerConvert = Mappers.getMapper(IssuerConvert::class.java)
     }
 
-    @Mappings(
-        value = [
-            Mapping(target = "id", source = "orderId"),
-            Mapping(target = "travelDestination", source = "address"),
-            Mapping(target = "extraInfo", source = "remark")
-        ]
-    )
+    @Mapping(target = "id", source = "orderId")
     fun convert2OrderEntity(arg: PolicyIssueReq): OrderEntity
 
     @Mappings(
@@ -36,7 +30,7 @@ interface IssuerConvert {
             Mapping(target = "effectiveTime", source = "startTime"),
             Mapping(target = "expiryTime", source = "endTime"),
             Mapping(target = "travelDestination", source = "address"),
-            Mapping(target = "extraInfo", source = "remark")
+            Mapping(target = "insuredSize", expression = "java(arg.getInsuredList().size())")
         ]
     )
     fun convert2PolicyEntity(arg: PolicyIssueReq): PolicyEntity

@@ -7,7 +7,7 @@ import java.util.*
  * @author Romani min
  * @since 2021/1/26 10:38
  */
-class Policy(id: Long? = null) : BaseDO(id, 0) {
+open class Policy(id: Long? = null) : BaseDO(id, 0) {
     /** 订单号 */
     var orderNo: String? = null
 
@@ -17,17 +17,8 @@ class Policy(id: Long? = null) : BaseDO(id, 0) {
     /** 保单号 */
     var policyNo: String? = null
 
-    /** 承保公司 */
-    var partnerName: String? = null
-
-    /** 产品Code */
-    var productCode: String? = null
-
-    /** 产品计划ID */
-    var productPlanId: Long? = null
-
-    /** 产品计划Code */
-    var productPlanCode: String? = null
+    /** 产品授权ID */
+    var goodsPlanId: Long? = null
 
     /** 起保时间 */
     var effectiveTime: Date? = null
@@ -37,6 +28,12 @@ class Policy(id: Long? = null) : BaseDO(id, 0) {
 
     /** 旅行目的地 */
     var travelDestination: String? = null
+
+    /** 团单号 */
+    var groupNo: String? = null
+
+    /** 被保人数 */
+    var insuredSize: Int? = null
 
     /** 0-待出单 1-出单成功 2-出单失败 3-出单中 */
     var status: Int? = null

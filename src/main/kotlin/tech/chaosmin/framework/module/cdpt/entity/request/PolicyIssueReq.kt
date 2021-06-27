@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseReq
 import tech.chaosmin.framework.module.cdpt.domain.enums.PayMethodEnum
+import tech.chaosmin.framework.module.cdpt.entity.GoodsPlanEntity
 import java.util.*
 
 /**
@@ -19,17 +20,8 @@ class PolicyIssueReq : BaseReq() {
     @ApiModelProperty("订单号")
     var orderNo: String? = null
 
-    @ApiModelProperty("承保公司名称")
-    var partnerName: String? = null
-
-    @ApiModelProperty("产品Code")
-    var productCode: String? = null
-
-    @ApiModelProperty("产品计划ID")
-    var productPlanId: Long? = null
-
-    @ApiModelProperty("产品计划Code")
-    var productPlanCode: String? = null
+    @ApiModelProperty("授权产品ID")
+    var goodsPlanId: Long? = null
 
     @ApiModelProperty("起保时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -46,7 +38,7 @@ class PolicyIssueReq : BaseReq() {
     var address: String? = null
 
     @ApiModelProperty("团单/备注")
-    var remark: String? = null
+    var groupNo: String? = null
 
     @ApiModelProperty("被保人列表")
     var insuredList: List<PolicyInsuredReq>? = null
@@ -69,15 +61,12 @@ class PolicyIssueReq : BaseReq() {
     @ApiModelProperty("实际保费")
     var actualPremium: Double? = null
 
-    @ApiModelProperty("保额")
-    var sa: Double? = null
-
-    @ApiModelProperty("总保额")
-    var totalSa: Double? = null
-
     @ApiModelProperty("支付方式")
     var payMethod: PayMethodEnum? = null
 
     @ApiModelProperty("可回溯信息文件集合")
     var khsUrl: List<PolicyKhsReq>? = null
+
+    // 授权产品信息 后台扩展补充字段
+    var goodsPlan: GoodsPlanEntity? = null
 }

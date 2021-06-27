@@ -31,4 +31,7 @@ open class Product(id: Long? = null) : BaseDO(id, 0) {
 
     // 状态
     var status: Int? = null
+
+    // 产品条款下载地址
+    var clauseUrl: String? = null
 }

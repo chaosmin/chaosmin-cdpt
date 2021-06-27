@@ -11,7 +11,7 @@ import java.util.*
 class OrderEntity(id: Long? = null) : BaseEntity(id) {
     var orderNo: String? = null
     var proposalNo: String? = null
-    var productPlanId: Long? = null
+    var goodsPlanId: Long? = null
     var startTime: Date? = null
     var endTime: Date? = null
     var travelDestination: String? = null

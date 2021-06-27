@@ -68,10 +68,14 @@ class PolicyQueryLogic(
         val policy = this.page(PageQuery.eqQuery("policy.id", id)).records.firstOrNull() ?: return PolicyKhsEntity()
         val list = policyKhsService.listByPolicyId(id)
         val policyKhsEntity = PolicyKhsEntity().apply {
+            this.leavePageTime = DateUtil.formatDateTime(policy.createTime)
             this.orderNo = policy.orderNo
             this.policyNo = policy.policyNo
             this.holderName = policy.holder?.name
             this.issuerName = policy.creator
+        }
+        list.firstOrNull { PolicyKhsEnum.ENTER_PAGE.getCode() == it.khsType }?.run {
+            policyKhsEntity.enterPageTime = DateUtil.formatDateTime(this.fileTime)
         }
         list.firstOrNull { PolicyKhsEnum.POLICY_NOTICE.getCode() == it.khsType }?.run {
             policyKhsEntity.readTime = DateUtil.formatDateTime(this.fileTime)

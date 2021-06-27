@@ -9,9 +9,11 @@ import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.api.OrderShareService
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.Order
 import tech.chaosmin.framework.module.cdpt.entity.request.OrderReq
+import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
 import tech.chaosmin.framework.module.cdpt.entity.response.OrderResp
 import tech.chaosmin.framework.module.cdpt.handler.logic.OrderQueryLogic
 import tech.chaosmin.framework.module.cdpt.helper.convert.OrderConvert
+import tech.chaosmin.framework.utils.JsonUtil
 import tech.chaosmin.framework.utils.RequestUtil
 import javax.servlet.http.HttpServletRequest
 
@@ -20,9 +22,18 @@ import javax.servlet.http.HttpServletRequest
  * @since 2020/12/10 13:48
  */
 @RestController
-open class OrderShareProvider(
-    private val orderQueryLogic: OrderQueryLogic
-) : OrderShareService {
+open class OrderShareProvider(private val orderQueryLogic: OrderQueryLogic) : OrderShareService {
+    override fun getDraft(orderNo: String): RestResult<PolicyIssueReq> {
+        val draftJson = orderQueryLogic.loadDraft(orderNo)
+        val issueReq = JsonUtil.decode(draftJson, PolicyIssueReq::class.java)!!
+        return RestResultExt.successRestResult(issueReq)
+    }
+
+    override fun saveDraft(orderNo: String, req: PolicyIssueReq): RestResult<String> {
+        orderQueryLogic.saveDraft(orderNo, JsonUtil.encode(req))
+        return RestResultExt.successRestResult()
+    }
+
     override fun selectById(id: Long): RestResult<OrderResp?> {
         val order = orderQueryLogic.get(id)
         return if (order == null) RestResultExt.successRestResult()

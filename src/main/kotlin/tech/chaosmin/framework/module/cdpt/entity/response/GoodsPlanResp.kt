@@ -83,6 +83,9 @@ open class GoodsPlanResp : BaseResp() {
     @ApiModelProperty("计划费率表")
     var rateTable: List<PlanRateTableResp>? = null
 
+    @ApiModelProperty("保险条款下载地址")
+    var clauseUrl: String? = null
+
     @ApiModelProperty("投保提示")
     var insuranceNotice: String? = null
 

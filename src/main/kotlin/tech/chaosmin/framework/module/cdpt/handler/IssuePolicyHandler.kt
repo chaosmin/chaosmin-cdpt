@@ -20,6 +20,7 @@ import tech.chaosmin.framework.module.cdpt.helper.convert.IssuerConvert
 import tech.chaosmin.framework.module.cdpt.helper.convert.PolicyConvert
 import tech.chaosmin.framework.module.cdpt.service.external.impl.DadiChannelRequestService
 import tech.chaosmin.framework.module.cdpt.service.inner.OrderTempService
+import tech.chaosmin.framework.module.cdpt.service.inner.PolicyKhsService
 import tech.chaosmin.framework.utils.JsonUtil
 
 /**
@@ -43,6 +44,7 @@ open class IssuePolicyHandler(
     private val modifyPolicyHolderHandler: ModifyPolicyHolderHandler,
     private val modifyPolicyInsurantHandler: ModifyPolicyInsurantHandler,
     private val orderTempService: OrderTempService,
+    private val policyKhsService: PolicyKhsService,
     private val dadiChannelRequestService: DadiChannelRequestService
 ) : AbstractTemplateOperate<PolicyIssueReq, PolicyResp>() {
     private val logger = LoggerFactory.getLogger(IssuePolicyHandler::class.java)
@@ -131,6 +133,9 @@ open class IssuePolicyHandler(
                 logger.error("Fail To save policy insurant info, please do data patch on this record! # ${JsonUtil.encode(it)}")
             }
         }
+
+        // 关联可回溯文件的订单号及保单ID
+        policyKhsService.linkOrderAndPolicy(arg.orderNo!!, policyEntity.id!!)
 
         // 返回落地的保单数据
         val responseData = PolicyConvert.INSTANCE.convert2Resp(policyEntity)

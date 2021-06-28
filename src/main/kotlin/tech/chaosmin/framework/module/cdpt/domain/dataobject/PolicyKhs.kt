@@ -13,6 +13,9 @@ class PolicyKhs(id: Long? = null) : BaseDO(id, 0) {
     /** 保单ID */
     var policyId: Long? = null
 
+    /** 订单号 */
+    var orderNo: String? = null
+
     /** 可回溯材料类型 */
     var khsType: Int? = null
 

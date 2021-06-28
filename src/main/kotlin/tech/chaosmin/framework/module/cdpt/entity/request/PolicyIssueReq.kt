@@ -64,9 +64,6 @@ class PolicyIssueReq : BaseReq() {
     @ApiModelProperty("支付方式")
     var payMethod: PayMethodEnum? = null
 
-    @ApiModelProperty("可回溯信息文件集合")
-    var khsUrl: List<PolicyKhsReq>? = null
-
     // 授权产品信息 后台扩展补充字段
     var goodsPlan: GoodsPlanEntity? = null
 }

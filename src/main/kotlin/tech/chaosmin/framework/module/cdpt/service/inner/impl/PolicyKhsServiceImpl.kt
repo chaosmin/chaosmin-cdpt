@@ -17,4 +17,9 @@ open class PolicyKhsServiceImpl : ServiceImpl<PolicyKhsDAO, PolicyKhs>(), Policy
         val wa = Wrappers.query<PolicyKhs>().eq("policy_id", policyId)
         return baseMapper.selectList(wa)
     }
+
+    override fun listByOrderNo(orderNo: String): List<PolicyKhs> {
+        val wa = Wrappers.query<PolicyKhs>().eq("order_no", orderNo)
+        return baseMapper.selectList(wa)
+    }
 }

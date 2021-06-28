@@ -66,7 +66,7 @@ class PolicyQueryLogic(
      */
     fun queryKhs(id: Long): PolicyKhsEntity {
         val policy = this.page(PageQuery.eqQuery("policy.id", id)).records.firstOrNull() ?: return PolicyKhsEntity()
-        val list = policyKhsService.listByPolicyId(id)
+        val list = policyKhsService.listByOrderNo(policy.orderNo!!)
         val policyKhsEntity = PolicyKhsEntity().apply {
             this.leavePageTime = DateUtil.formatDateTime(policy.createTime)
             this.orderNo = policy.orderNo

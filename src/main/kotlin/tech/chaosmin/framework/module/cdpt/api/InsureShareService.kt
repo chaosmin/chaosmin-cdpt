@@ -1,12 +1,10 @@
 package tech.chaosmin.framework.module.cdpt.api
 
 import io.swagger.annotations.Api
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.*
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
+import tech.chaosmin.framework.module.cdpt.entity.request.PolicyKhsReq
 import tech.chaosmin.framework.module.cdpt.entity.response.PolicyResp
 
 /**
@@ -21,4 +19,7 @@ interface InsureShareService {
 
     @PostMapping
     fun insurance(@RequestBody req: PolicyIssueReq): RestResult<PolicyResp>
+
+    @PostMapping("/{orderNo}/khs")
+    fun saveKhsImg(@PathVariable("orderNo") orderNo: String, @RequestBody req: PolicyKhsReq): RestResult<String>
 }

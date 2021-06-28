@@ -42,7 +42,6 @@ open class IssuePolicyHandler(
     private val modifyPolicyHandler: ModifyPolicyHandler,
     private val modifyPolicyHolderHandler: ModifyPolicyHolderHandler,
     private val modifyPolicyInsurantHandler: ModifyPolicyInsurantHandler,
-    private val modifyPolicyKhsHandler: ModifyPolicyKhsHandler,
     private val orderTempService: OrderTempService,
     private val dadiChannelRequestService: DadiChannelRequestService
 ) : AbstractTemplateOperate<PolicyIssueReq, PolicyResp>() {
@@ -130,16 +129,6 @@ open class IssuePolicyHandler(
             val (_, _, _, _, success) = modifyPolicyInsurantHandler.operate(it)
             if (!success) {
                 logger.error("Fail To save policy insurant info, please do data patch on this record! # ${JsonUtil.encode(it)}")
-            }
-        }
-
-        // 2021-06-08 18:57:06 处理可回溯信息
-        policyEntity.khsList?.forEach {
-            it.save()
-            it.policyId = policyEntity.id
-            val (_, _, _, _, success) = modifyPolicyKhsHandler.operate(it)
-            if (!success) {
-                logger.error("Fail To save policy khs info, please do data patch on this record! # ${JsonUtil.encode(it)}")
             }
         }
 

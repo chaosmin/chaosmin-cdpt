@@ -9,4 +9,5 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.PolicyKhs
  */
 interface PolicyKhsService : IService<PolicyKhs> {
     fun listByPolicyId(policyId: Long): List<PolicyKhs>
+    fun listByOrderNo(orderNo: String): List<PolicyKhs>
 }

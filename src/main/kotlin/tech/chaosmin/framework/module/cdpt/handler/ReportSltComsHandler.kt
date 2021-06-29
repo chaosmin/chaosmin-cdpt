@@ -9,8 +9,8 @@ import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.Policy
 import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyStatusEnum
-import tech.chaosmin.framework.module.cdpt.entity.SettlementComsEntity
-import tech.chaosmin.framework.module.cdpt.entity.SettlementComsReportEntity
+import tech.chaosmin.framework.module.cdpt.entity.report.SltComsEntity
+import tech.chaosmin.framework.module.cdpt.entity.report.SltComsReportEntity
 import tech.chaosmin.framework.module.cdpt.service.inner.GoodsPlanService
 import tech.chaosmin.framework.module.cdpt.service.inner.PolicyService
 
@@ -19,11 +19,11 @@ import tech.chaosmin.framework.module.cdpt.service.inner.PolicyService
  * @since 2021/6/29 15:50
  */
 @Component
-class ReportSettlementComsHandler(
+class ReportSltComsHandler(
     private val policyService: PolicyService,
     private val goodsPlanService: GoodsPlanService
-) : AbstractTemplateOperate<SettlementComsReportEntity, SettlementComsReportEntity>() {
-    override fun validation(arg: SettlementComsReportEntity, result: RestResult<SettlementComsReportEntity>) {
+) : AbstractTemplateOperate<SltComsReportEntity, SltComsReportEntity>() {
+    override fun validation(arg: SltComsReportEntity, result: RestResult<SltComsReportEntity>) {
         if (arg.statisticsStartTime == null || arg.statisticsEndTime == null) {
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "statisticsTime")
         }
@@ -32,7 +32,7 @@ class ReportSettlementComsHandler(
         }
     }
 
-    override fun processor(arg: SettlementComsReportEntity, result: RestResult<SettlementComsReportEntity>): RestResult<SettlementComsReportEntity> {
+    override fun processor(arg: SltComsReportEntity, result: RestResult<SltComsReportEntity>): RestResult<SltComsReportEntity> {
         val statisticsStartTime = DateUtil.format(arg.statisticsStartTime, "yyyyMMdd").toLong()
         val statisticsEndTime = DateUtil.format(arg.statisticsEndTime, "yyyyMMdd").toLong()
         arg.apply {
@@ -48,7 +48,7 @@ class ReportSettlementComsHandler(
         if (policyList.isNotEmpty()) {
             arg.detail = policyList.groupBy { it.goodsPlanId }.map { (goodsPlanId, list) ->
                 val goodsPlan = goodsPlanService.getById(goodsPlanId)
-                SettlementComsEntity().apply {
+                SltComsEntity().apply {
                     this.goodsPlanId = goodsPlanId
                     this.statisticsStartTime = statisticsStartTime
                     this.statisticsEndTime = statisticsEndTime

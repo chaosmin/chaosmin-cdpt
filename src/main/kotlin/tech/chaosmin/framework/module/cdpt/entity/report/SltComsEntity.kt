@@ -1,10 +1,10 @@
-package tech.chaosmin.framework.module.cdpt.entity
+package tech.chaosmin.framework.module.cdpt.entity.report
 
 /**
  * @author Romani min
  * @since 2021/6/29 15:51
  */
-class SettlementComsEntity {
+class SltComsEntity {
     // 统计开始日期
     var statisticsStartTime: Long? = null
 

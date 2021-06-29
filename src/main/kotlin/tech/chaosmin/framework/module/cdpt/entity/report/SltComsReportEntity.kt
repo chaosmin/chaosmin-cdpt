@@ -1,4 +1,4 @@
-package tech.chaosmin.framework.module.cdpt.entity
+package tech.chaosmin.framework.module.cdpt.entity.report
 
 import java.util.*
 
@@ -8,7 +8,7 @@ import java.util.*
  * @author Romani min
  * @since 2021/6/29 15:52
  */
-class SettlementComsReportEntity {
+class SltComsReportEntity {
     // 统计开始日期
     var statisticsStartTime: Date? = null
 
@@ -25,5 +25,5 @@ class SettlementComsReportEntity {
     var totalSettlementPrice: Double? = null
 
     // 报表明细
-    var detail: List<SettlementComsEntity>? = null
+    var detail: List<SltComsEntity>? = null
 }

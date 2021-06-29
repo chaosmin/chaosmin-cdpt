@@ -1,7 +1,7 @@
-package tech.chaosmin.framework.module.cdpt.service.inner
+package tech.chaosmin.framework.module.mgmt.service.inner
 
 import com.baomidou.mybatisplus.extension.service.IService
-import tech.chaosmin.framework.module.cdpt.domain.dataobject.ResData
+import tech.chaosmin.framework.module.mgmt.domain.dataobject.ResData
 
 /**
  * @author Romani min

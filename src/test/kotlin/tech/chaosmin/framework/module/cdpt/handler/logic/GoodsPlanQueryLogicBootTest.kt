@@ -1,6 +1,5 @@
 package tech.chaosmin.framework.module.cdpt.handler.logic
 
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import tech.chaosmin.framework.BaseTestMain
 import javax.annotation.Resource
@@ -16,7 +15,5 @@ class GoodsPlanQueryLogicBootTest : BaseTestMain() {
 
     @Test
     fun getGoodsCategories() {
-        val goodsCategories = goodsPlanQueryLogic.getGoodsCategories(22L)
-        assertThat(goodsCategories).isNotNull.isNotEmpty
     }
 }

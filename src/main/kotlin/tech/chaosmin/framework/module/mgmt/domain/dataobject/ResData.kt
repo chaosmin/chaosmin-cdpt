@@ -1,4 +1,4 @@
-package tech.chaosmin.framework.module.cdpt.domain.dataobject
+package tech.chaosmin.framework.module.mgmt.domain.dataobject
 
 import tech.chaosmin.framework.base.BaseDO
 

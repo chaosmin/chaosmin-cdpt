@@ -28,9 +28,6 @@ internal class IssuePolicyHandlerBootTest : BaseTestMain() {
         policyIssueReq.unitPremium = 75.0
         policyIssueReq.totalPremium = 75.0
         policyIssueReq.actualPremium = 75.0
-        policyIssueReq.productCode = "EGC"
-        policyIssueReq.productPlanId = 1L
-        policyIssueReq.productPlanCode = "EGC2150028"
         policyIssueReq.policyHolderName = "堡垒科技"
         policyIssueReq.policyHolderCerti = "340501198008040073"
         policyIssueReq.insuredList = Collections.singletonList(PolicyInsuredReq().apply {

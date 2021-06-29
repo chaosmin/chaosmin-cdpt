@@ -63,7 +63,6 @@ open class WebSecurityConfig(
             .addFilter(JWTAuthorizationFilter(authenticationManager()))
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            // .and().formLogin().loginPage("/#/login?redirect=%2Fdashboard")
             .and().logout().permitAll().logoutSuccessHandler { _, _, authentication ->
                 logger.info("User[${SecurityUtil.getUsername(authentication)}] logout, close session.")
                 SecurityUtil.clean()

@@ -19,9 +19,6 @@ open class WebMvcConfig(
         registry.addInterceptor(authInterceptor)
             .addPathPatterns("/**")
             .excludePathPatterns(*list)
-        // registry.addInterceptor(limitInterceptor)
-        //     .addPathPatterns("/${version}/api/**")
-        //     .excludePathPatterns("/swagger**/**", "/webjars/**", "/v3/**", "/doc.html")
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {

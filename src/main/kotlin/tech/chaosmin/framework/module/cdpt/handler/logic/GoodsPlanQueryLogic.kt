@@ -61,7 +61,7 @@ class GoodsPlanQueryLogic(
         val cacheNameSpace = "goods-plan:$userId"
         var currentPage = 0L
         val ew = cond.wrapper.eq("user_id", userId)
-        do {
+        // do {
             val page = goodsPlanService.page(Page(currentPage, 1000), ew)
             currentPage += 1
             val records = page.records.filterNotNull().mapNotNull { GoodsPlanMapper.INSTANCE.convert2Entity(it) }
@@ -69,11 +69,12 @@ class GoodsPlanQueryLogic(
                 // 扩展属性
                 it.liabilities = PlanLiabilityMapper.INSTANCE.convert2Entity(planLiabilityService.listByPlanId(it.productPlanId!!))
                 it.rateTable = PlanRateTableMapper.INSTANCE.convert2Entity(planRateTableService.listByPlanId(it.productPlanId!!))
+                it.insuranceNotice = productExternalService.getByProductId(it.productId!!).insuranceNotice
                 it.productExternal = productExternalService.getByProductId(it.productId!!).externalText
                 stringRedisTemplate.opsForSet().add(cacheNameSpace, JsonUtil.encode(it))
             }
             goodsPlanList.addAll(records)
-        } while (page.records.isNotEmpty() && page.pages <= currentPage)
+        // } while (page.records.isNotEmpty() && page.pages <= currentPage)
         return stringRedisTemplate.opsForSet().members(cacheNameSpace)?.mapNotNull {
             JsonUtil.decode(it, GoodsPlanEntity::class.java)
         } ?: emptyList()

@@ -3,7 +3,7 @@ package tech.chaosmin.framework.module.cdpt.service.inner.impl
 import com.baomidou.mybatisplus.core.toolkit.Wrappers
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.stereotype.Service
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import tech.chaosmin.framework.module.cdpt.domain.dao.GoodsPlanDAO
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.GoodsPlan
 import tech.chaosmin.framework.module.cdpt.service.inner.GoodsPlanService
@@ -17,7 +17,7 @@ open class GoodsPlanServiceImpl : ServiceImpl<GoodsPlanDAO, GoodsPlan>(), GoodsP
     override fun getByUser(userId: Long): List<GoodsPlan> {
         val ew = Wrappers.query<GoodsPlan>()
             .eq("user_id", userId)
-            .eq("status", BasicStatusEnum.ENABLED.getCode())
+            .eq("status", StatusEnum.ENABLED.getCode())
         return baseMapper.selectList(ew)
     }
 
@@ -25,7 +25,7 @@ open class GoodsPlanServiceImpl : ServiceImpl<GoodsPlanDAO, GoodsPlan>(), GoodsP
         val ew = Wrappers.query<GoodsPlan>()
             .eq("user_id", userId)
             .eq("product_plan_id", planId)
-            .eq("status", BasicStatusEnum.ENABLED.getCode())
+            .eq("status", StatusEnum.ENABLED.getCode())
         return baseMapper.selectList(ew).firstOrNull()
     }
 
@@ -33,7 +33,7 @@ open class GoodsPlanServiceImpl : ServiceImpl<GoodsPlanDAO, GoodsPlan>(), GoodsP
         val ew = Wrappers.query<GoodsPlan>()
             .select("distinct product_id")
             .eq("user_id", userId)
-            .eq("status", BasicStatusEnum.ENABLED.getCode())
+            .eq("status", StatusEnum.ENABLED.getCode())
         return baseMapper.selectList(ew).mapNotNull { it.productId }
     }
 }

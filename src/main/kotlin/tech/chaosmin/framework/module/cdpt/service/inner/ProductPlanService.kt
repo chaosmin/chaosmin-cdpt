@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper
 import com.baomidou.mybatisplus.core.metadata.IPage
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.IService
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ProductPlan
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductPlanExt
 
@@ -17,5 +17,5 @@ interface ProductPlanService : IService<ProductPlan> {
 
     fun listEqProductId(productId: Long): List<ProductPlan>
 
-    fun switchPlansTo(productId: Long, status: BasicStatusEnum)
+    fun switchPlansTo(productId: Long, status: StatusEnum)
 }

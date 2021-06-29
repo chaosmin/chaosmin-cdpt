@@ -1,8 +1,8 @@
 package tech.chaosmin.framework.module.cdpt.entity
 
 import tech.chaosmin.framework.base.BaseEntity
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
 import tech.chaosmin.framework.base.enums.ModifyTypeEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import tech.chaosmin.framework.definition.SystemConst.DEFAULT_CURRENCY
 
 /**
@@ -25,7 +25,7 @@ class ProductEntity(id: Long? = null) : BaseEntity(id) {
     var waitingDays: String? = null
     var productDesc: String? = null
     var productRatio: String? = null
-    var status: BasicStatusEnum? = null
+    var status: StatusEnum? = null
     var clauseUrl: String? = null
 
     var plans = mutableListOf<ProductPlanEntity>()
@@ -38,7 +38,7 @@ class ProductEntity(id: Long? = null) : BaseEntity(id) {
     fun addPlan(code: String, name: String, ratio: String?) {
         this.plans.add(ProductPlanEntity().apply {
             this.modifyType = ModifyTypeEnum.SAVE
-            this.status = BasicStatusEnum.ENABLED
+            this.status = StatusEnum.ENABLED
             this.planCode = code
             this.planName = name
             this.currency = DEFAULT_CURRENCY

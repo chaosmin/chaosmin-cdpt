@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.BaseQueryLogic
 import tech.chaosmin.framework.base.PageQuery
+import tech.chaosmin.framework.base.enums.PolicyKhsEnum
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyExt
-import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyKhsEnum
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
 import tech.chaosmin.framework.module.cdpt.entity.PolicyKhsEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyHolderMapper

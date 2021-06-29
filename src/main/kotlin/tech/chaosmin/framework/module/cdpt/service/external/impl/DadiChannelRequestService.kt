@@ -4,8 +4,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service
 import sun.misc.BASE64Encoder
+import tech.chaosmin.framework.base.enums.PolicyProcessEnum
 import tech.chaosmin.framework.configuration.channel.DadiInsurerProperties
-import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyProcessEnum
 import tech.chaosmin.framework.module.cdpt.entity.channel.BaseChannelReq
 import tech.chaosmin.framework.module.cdpt.service.external.ChannelRequestService
 import tech.chaosmin.framework.module.mgmt.service.ChannelHttpRequestService

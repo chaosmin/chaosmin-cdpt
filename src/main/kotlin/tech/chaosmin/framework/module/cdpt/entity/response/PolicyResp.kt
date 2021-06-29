@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseResp
-import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyStatusEnum
+import tech.chaosmin.framework.base.enums.PolicyStatusEnum
 import java.util.*
 
 /**

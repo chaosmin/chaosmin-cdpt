@@ -1,7 +1,7 @@
 package tech.chaosmin.framework.module.cdpt.entity
 
 import tech.chaosmin.framework.base.BaseEntity
-import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyStatusEnum
+import tech.chaosmin.framework.base.enums.PolicyStatusEnum
 import java.util.*
 
 /**

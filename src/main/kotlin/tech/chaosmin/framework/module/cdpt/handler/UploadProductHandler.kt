@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tech.chaosmin.framework.base.AbstractTemplateOperate
 import tech.chaosmin.framework.base.RestResult
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.base.enums.ModifyTypeEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import tech.chaosmin.framework.definition.SystemConst.DEFAULT_COMMISSION_RATIO
 import tech.chaosmin.framework.definition.SystemConst.INSURED_NOTICE
 import tech.chaosmin.framework.definition.SystemConst.LIABILITY_ZH
@@ -57,7 +57,7 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
     @Transactional(rollbackFor = [FrameworkException::class, Exception::class])
     override fun processor(arg: UploadFileReq, result: RestResult<ProductEntity>): RestResult<ProductEntity> {
         val product = ProductEntity().apply {
-            this.status = BasicStatusEnum.ENABLED
+            this.status = StatusEnum.ENABLED
             this.modifyType = ModifyTypeEnum.SAVE
         }
         arg.file!!.inputStream.use { `in` ->

@@ -2,10 +2,10 @@ package tech.chaosmin.framework.module.cdpt.service.external
 
 import cn.hutool.http.Method
 import org.slf4j.LoggerFactory
-import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyProcessEnum
+import tech.chaosmin.framework.base.enums.HttpMethodEnum
+import tech.chaosmin.framework.base.enums.PolicyProcessEnum
 import tech.chaosmin.framework.module.cdpt.entity.channel.BaseChannelReq
 import tech.chaosmin.framework.module.mgmt.domain.dataobject.ChannelHttpRequest
-import tech.chaosmin.framework.module.mgmt.domain.enums.HttpMethodEnum
 import tech.chaosmin.framework.module.mgmt.service.ChannelHttpRequestService
 import tech.chaosmin.framework.utils.HttpUtil
 import tech.chaosmin.framework.utils.JsonUtil

@@ -3,7 +3,7 @@ package tech.chaosmin.framework.module.cdpt.entity.response
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseResp
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 
 /**
  * @author Romani min
@@ -42,5 +42,5 @@ class ProductPlanResp : BaseResp() {
     var iComsRatio: Double? = null
 
     @ApiModelProperty("状态")
-    var status: BasicStatusEnum? = null
+    var status: StatusEnum? = null
 }

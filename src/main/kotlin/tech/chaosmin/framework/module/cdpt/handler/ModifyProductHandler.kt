@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tech.chaosmin.framework.base.AbstractTemplateOperate
 import tech.chaosmin.framework.base.RestResult
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.base.enums.ModifyTypeEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.Product
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ProductExternal
@@ -71,8 +71,8 @@ open class ModifyProductHandler(
     private fun updateProduct(product: Product, categoryId: Long?, ex: ProductExternal) {
         productService.updateById(product)
         val productId = product.id!!
-        if (product.status != null && EnumClient.getEnum(BasicStatusEnum::class.java, product.status!!) != null) {
-            productPlanService.switchPlansTo(productId, EnumClient.getEnum(BasicStatusEnum::class.java, product.status!!)!!)
+        if (product.status != null && EnumClient.getEnum(StatusEnum::class.java, product.status!!) != null) {
+            productPlanService.switchPlansTo(productId, EnumClient.getEnum(StatusEnum::class.java, product.status!!)!!)
         }
         productExternalService.updateByProductId(productId, ex)
         if (categoryId != null) {

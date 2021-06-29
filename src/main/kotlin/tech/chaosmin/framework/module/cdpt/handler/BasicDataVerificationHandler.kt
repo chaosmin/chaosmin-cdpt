@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.AbstractTemplateOperate
 import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.base.RestResult
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
 import tech.chaosmin.framework.module.cdpt.handler.logic.GoodsPlanQueryLogic
@@ -66,7 +66,7 @@ open class BasicDataVerificationHandler(
         val goodsPlanId = arg.goodsPlanId!!
         val goodsPlanEntity = goodsPlanQueryLogic.get(goodsPlanId)
         // 产品无效, 返回校验失败
-        if (goodsPlanEntity == null || BasicStatusEnum.DISABLED == goodsPlanEntity.status) {
+        if (goodsPlanEntity == null || StatusEnum.DISABLED == goodsPlanEntity.status) {
             logger.error("Goods plan[$goodsPlanId] has been invalided.")
             throw FrameworkException(ErrorCodeEnum.RESOURCE_INVALID.code, "产品授权")
         }

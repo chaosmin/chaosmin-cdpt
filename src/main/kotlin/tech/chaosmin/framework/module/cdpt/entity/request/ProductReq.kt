@@ -3,7 +3,7 @@ package tech.chaosmin.framework.module.cdpt.entity.request
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseReq
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 
 /**
  * @author Romani min
@@ -36,7 +36,7 @@ class ProductReq : BaseReq() {
     var waitingDays: Int? = null
 
     @ApiModelProperty("产品状态")
-    var status: BasicStatusEnum? = null
+    var status: StatusEnum? = null
 
     @ApiModelProperty("产品特约&须知")
     var externalText: String? = null

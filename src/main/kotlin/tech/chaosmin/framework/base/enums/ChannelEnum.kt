@@ -4,13 +4,12 @@ import com.baomidou.mybatisplus.annotation.EnumValue
 import tech.chaosmin.framework.base.KeyValueEnum
 
 /**
- * 性别, 已接入res_data
+ * @author Romani min
+ * @since 2021/6/11 10:47
  */
-enum class GenderEnum(@EnumValue private val code: Int, private val desc: String) : KeyValueEnum {
-    UNKNOWN(0, "未知的性别"),
-    MALE(1, "男性"),
-    FEMALE(2, "女性"),
-    NOT_STATED(3, "未说明");
+enum class ChannelEnum(@EnumValue private val code: Int, private val desc: String) : KeyValueEnum {
+    YONG_CHENG(1, "有诚保险"),
+    DADI(2, "大地保险");
 
     override fun getCode(): Int = this.code
     override fun getDesc(): String = this.desc

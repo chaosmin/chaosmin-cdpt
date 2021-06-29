@@ -5,10 +5,10 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
+import tech.chaosmin.framework.base.enums.UserStatusEnum
 import tech.chaosmin.framework.exception.PermissionException
 import tech.chaosmin.framework.module.mgmt.domain.auth.GrantedAuthorityImpl
 import tech.chaosmin.framework.module.mgmt.domain.auth.JwtUserDetails
-import tech.chaosmin.framework.module.mgmt.domain.enums.UserStatusEnum
 import tech.chaosmin.framework.module.mgmt.service.UserService
 
 @Service

@@ -1,4 +1,4 @@
-package tech.chaosmin.framework.module.mgmt.domain.enums
+package tech.chaosmin.framework.base.enums
 
 import com.baomidou.mybatisplus.annotation.EnumValue
 import tech.chaosmin.framework.base.KeyValueEnum

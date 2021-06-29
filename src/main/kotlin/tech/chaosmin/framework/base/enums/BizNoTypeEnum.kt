@@ -1,6 +1,8 @@
 package tech.chaosmin.framework.base.enums
 
 /**
+ * 业务唯一标识码生成规则 <p>
+ *
  * @author Romani min
  * @since 2021/6/3 15:03
  */

@@ -3,7 +3,7 @@ package tech.chaosmin.framework.module.cdpt.entity.request
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseReq
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import java.util.*
 
 /**
@@ -13,7 +13,7 @@ import java.util.*
 @ApiModel("个人产品计划接口请求参数")
 class GoodsPlanReq : BaseReq() {
     @ApiModelProperty("状态")
-    var status: BasicStatusEnum? = null
+    var status: StatusEnum? = null
 
     @ApiModelProperty("售卖时间段")
     var saleDateScope: List<Date>? = null

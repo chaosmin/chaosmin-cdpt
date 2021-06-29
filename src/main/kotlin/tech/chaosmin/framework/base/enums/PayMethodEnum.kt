@@ -1,4 +1,4 @@
-package tech.chaosmin.framework.module.cdpt.domain.enums
+package tech.chaosmin.framework.base.enums
 
 /**
  * @author Romani min

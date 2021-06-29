@@ -1,7 +1,7 @@
 package tech.chaosmin.framework.module.cdpt.entity
 
 import tech.chaosmin.framework.base.BaseEntity
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import java.util.*
 
 /**
@@ -52,10 +52,10 @@ class GoodsPlanEntity(id: Long? = null) : BaseEntity(id) {
     var primaryCoverage: String? = null
 
     // 授权状态
-    var status: BasicStatusEnum? = null
+    var status: StatusEnum? = null
 
     // 是否可售
-    var forSale: BasicStatusEnum? = null
+    var forSale: StatusEnum? = null
 
     // 可售开始时间
     var saleStartTime: Date? = null

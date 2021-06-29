@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tech.chaosmin.framework.base.AbstractTemplateOperate
 import tech.chaosmin.framework.base.RestResult
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.base.enums.ModifyTypeEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.mgmt.domain.dataobject.LetterHead
 import tech.chaosmin.framework.module.mgmt.entity.DepartmentEntity
@@ -42,7 +42,7 @@ open class ModifyDepartmentHandler(
                             this.departmentId = department.id
                             this.title = it.title
                             this.certiNo = it.certiNo
-                            this.status = BasicStatusEnum.ENABLED.getCode()
+                            this.status = StatusEnum.ENABLED.getCode()
                         }
                     })
                 }

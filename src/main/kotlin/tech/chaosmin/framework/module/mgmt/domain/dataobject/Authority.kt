@@ -4,7 +4,7 @@ import cn.hutool.core.util.EnumUtil
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.security.core.GrantedAuthority
 import tech.chaosmin.framework.base.BaseDO
-import tech.chaosmin.framework.module.mgmt.domain.enums.HttpMethodEnum
+import tech.chaosmin.framework.base.enums.HttpMethodEnum
 
 class Authority(id: Long? = null) : BaseDO(id, 0), GrantedAuthority {
     // 父权限ID

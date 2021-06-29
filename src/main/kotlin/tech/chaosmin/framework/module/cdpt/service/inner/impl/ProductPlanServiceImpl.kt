@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.stereotype.Service
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import tech.chaosmin.framework.module.cdpt.domain.dao.ProductPlanDAO
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ProductPlan
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductPlanExt
@@ -27,8 +27,8 @@ open class ProductPlanServiceImpl : ServiceImpl<ProductPlanDAO, ProductPlan>(), 
         return baseMapper.selectList(wa)
     }
 
-    override fun switchPlansTo(productId: Long, status: BasicStatusEnum) {
-        val statusEq = if (status == BasicStatusEnum.ENABLED) BasicStatusEnum.DISABLED.getCode() else BasicStatusEnum.ENABLED.getCode()
+    override fun switchPlansTo(productId: Long, status: StatusEnum) {
+        val statusEq = if (status == StatusEnum.ENABLED) StatusEnum.DISABLED.getCode() else StatusEnum.ENABLED.getCode()
         val wa = Wrappers.query<ProductPlan>().eq("product_id", productId).eq("status", statusEq)
         val productPlan = ProductPlan()
         productPlan.status = status.getCode()

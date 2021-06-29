@@ -14,7 +14,6 @@ import java.util.*
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class ChannelOpInfo {
-    // TODO 渠道代码
     var channelCode: String = "E00149-002"
 
     // 渠道名称

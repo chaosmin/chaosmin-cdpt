@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.RestResultExt
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import tech.chaosmin.framework.module.cdpt.api.GoodsPlanShareService
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.GoodsPlan
 import tech.chaosmin.framework.module.cdpt.entity.GoodsPlanEntity
@@ -29,7 +29,7 @@ open class GoodsPlanShareProvider(
 ) : GoodsPlanShareService {
     override fun user(id: Long, request: HttpServletRequest): RestResult<List<GoodsPlanResp>> {
         val queryCondition = RequestUtil.getQueryCondition<GoodsPlan>(request)
-        queryCondition.wrapper.eq("goods_plan.status", BasicStatusEnum.ENABLED.getCode())
+        queryCondition.wrapper.eq("goods_plan.status", StatusEnum.ENABLED.getCode())
         val list = goodsPlanQueryLogic.searchGoodsPlan(id, queryCondition)
         return RestResultExt.successRestResult(GoodsPlanConvert.INSTANCE.convert2Resp(list).filterNotNull())
     }
@@ -46,7 +46,7 @@ open class GoodsPlanShareProvider(
 
     override fun page(request: HttpServletRequest): RestResult<IPage<GoodsPlanResp?>> {
         val queryCondition = RequestUtil.getQueryCondition<GoodsPlan>(request)
-        queryCondition.wrapper.eq("goods_plan.status", BasicStatusEnum.ENABLED.getCode())
+        queryCondition.wrapper.eq("goods_plan.status", StatusEnum.ENABLED.getCode())
         if (!SecurityUtil.getUserDetails().isAdmin) {
             queryCondition.wrapper.eq("authorizer_id", SecurityUtil.getUserId())
         }

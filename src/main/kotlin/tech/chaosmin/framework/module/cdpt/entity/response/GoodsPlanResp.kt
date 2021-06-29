@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseResp
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import java.util.*
 
 /**
@@ -56,10 +56,10 @@ open class GoodsPlanResp : BaseResp() {
     var primaryCoverage: String? = null
 
     @ApiModelProperty("商品状态")
-    var status: BasicStatusEnum? = null
+    var status: StatusEnum? = null
 
     @ApiModelProperty("是否可售")
-    var forSale: BasicStatusEnum? = null
+    var forSale: StatusEnum? = null
 
     @ApiModelProperty("售卖时间段")
     var saleDateScope: List<Date>? = null

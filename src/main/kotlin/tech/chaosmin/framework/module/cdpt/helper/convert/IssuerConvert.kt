@@ -40,7 +40,7 @@ interface IssuerConvert {
         value = [
             Mapping(target = "name", source = "policyHolderName"),
             Mapping(target = "certiNo", source = "policyHolderCerti"),
-            Mapping(target = "partyType", expression = "java(tech.chaosmin.framework.module.cdpt.domain.enums.CustomerTypeEnum.COMPANY)"),
+            Mapping(target = "partyType", expression = "java(tech.chaosmin.framework.base.enums.CustomerTypeEnum.COMPANY)"),
             Mapping(target = "mainInsuredRelation", expression = "java(1)")
         ]
     )
@@ -50,7 +50,7 @@ interface IssuerConvert {
         value = [
             Mapping(target = "birthday", source = "dateOfBirth"),
             Mapping(target = "phoneNo", source = "mobile"),
-            Mapping(target = "partyType", expression = "java(tech.chaosmin.framework.module.cdpt.domain.enums.CustomerTypeEnum.PERSON)")
+            Mapping(target = "partyType", expression = "java(tech.chaosmin.framework.base.enums.CustomerTypeEnum.PERSON)")
         ]
     )
     fun convert2PolicyInsurantEntity(arg: PolicyInsuredReq): PolicyInsurantEntity

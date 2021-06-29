@@ -1,10 +1,10 @@
 package tech.chaosmin.framework.module.cdpt.entity
 
 import tech.chaosmin.framework.base.BaseEntity
-import tech.chaosmin.framework.base.enums.BasicStatusEnum
 import tech.chaosmin.framework.base.enums.ModifyTypeEnum
+import tech.chaosmin.framework.base.enums.RateTableTypeEnum
+import tech.chaosmin.framework.base.enums.StatusEnum
 import tech.chaosmin.framework.definition.SystemConst.DEFAULT_CURRENCY
-import tech.chaosmin.framework.module.cdpt.domain.enums.RateTableTypeEnum
 
 /**
  * @author Romani min
@@ -43,7 +43,7 @@ class ProductPlanEntity(id: Long? = null) : BaseEntity(id) {
     var iComsRatio: Double? = null
 
     // 产品计划状态
-    var status: BasicStatusEnum? = null
+    var status: StatusEnum? = null
 
     // 计划责任
     var liabilities = mutableListOf<PlanLiabilityEntity>()

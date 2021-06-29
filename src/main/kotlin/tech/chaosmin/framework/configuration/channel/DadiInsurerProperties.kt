@@ -13,4 +13,8 @@ class DadiInsurerProperties : InsurerProperties() {
     companion object {
         const val DADI_CONFIGURATION_PREFIX = "channel.dadi"
     }
+
+    var businessAttribute: String = ""
+    var channelCode: String = ""
+    var channelComCode: String = ""
 }

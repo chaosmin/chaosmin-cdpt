@@ -1,7 +1,7 @@
 package tech.chaosmin.framework.module.mgmt.entity
 
 import tech.chaosmin.framework.base.BaseEntity
-import tech.chaosmin.framework.module.mgmt.domain.enums.HttpMethodEnum
+import tech.chaosmin.framework.base.enums.HttpMethodEnum
 
 /**
  * @author Romani min

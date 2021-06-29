@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.util.DateUtil
 import org.junit.jupiter.api.Test
 import tech.chaosmin.framework.BaseTestMain
-import tech.chaosmin.framework.module.cdpt.domain.enums.PolicyProcessEnum
+import tech.chaosmin.framework.base.enums.PolicyProcessEnum
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner.*
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.DDReq
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.DDRequestHead

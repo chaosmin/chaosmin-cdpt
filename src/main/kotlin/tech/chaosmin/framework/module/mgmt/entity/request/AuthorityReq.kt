@@ -3,7 +3,7 @@ package tech.chaosmin.framework.module.mgmt.entity.request
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseReq
-import tech.chaosmin.framework.module.mgmt.domain.enums.HttpMethodEnum
+import tech.chaosmin.framework.base.enums.HttpMethodEnum
 
 @ApiModel("权限接口请求参数")
 class AuthorityReq : BaseReq() {

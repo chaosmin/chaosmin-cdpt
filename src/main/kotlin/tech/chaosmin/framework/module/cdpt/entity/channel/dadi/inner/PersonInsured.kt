@@ -37,7 +37,7 @@ class PersonInsured {
     var age: Long? = null
 
     // 出生日期
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     var dateOfBirth: Date? = null
 
     // 证件类型

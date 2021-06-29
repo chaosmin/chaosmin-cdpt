@@ -7,12 +7,12 @@ import tech.chaosmin.framework.base.KeyValueEnum
  * 证件类型码表, 接入res_data
  */
 enum class CertiTypeEnum(@EnumValue private val code: Int, private val desc: String) : KeyValueEnum {
-    RESIDENT_IDENTITY_CARD(1, "居民身份证"),
-    TEMPORARY_RESIDENT_IDENTITY_CARD(2, "临时居民身份证"),
+    RESIDENT_IDENTITY_CARD(1, "身份证"),
+    TEMPORARY_RESIDENT_IDENTITY_CARD(2, "临时身份证"),
     HOUSEHOLD_REGISTER(3, "户口簿"),
     OFFICER_ID(4, "军官证"),
     STUDENT_CARD(5, "学生证"),
-    DRIVING_LICENSE(6, "机动车驾驶证"),
+    DRIVING_LICENSE(6, "驾驶证"),
     PASSPORT(7, "护照"),
     FOREIGNER_TRAVEL_PERMIT(8, "外国人旅行证"),
     MAINLAND_TRAVEL_PERMIT_FOR_TAIWAN_RESIDENTS(9, "台湾居民来往大陆通行证"),

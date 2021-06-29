@@ -22,10 +22,10 @@ class Installment {
     var installmentAmount: BigDecimal? = null
 
     // 应收日期
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     var dueDate: Date? = null
 
     // installmentDate
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     var installmentDate: Date? = null
 }

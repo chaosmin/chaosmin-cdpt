@@ -41,7 +41,7 @@ class ChannelOpInfo {
     var channelAreaCode: String? = null
 
     // 渠道交易日期
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     var trxDate: Date? = null
 
     // 渠道关联单号

@@ -1,6 +1,8 @@
 package tech.chaosmin.framework.module.cdpt.helper.convert
 
 import cn.hutool.core.date.DateUtil
+import cn.hutool.extra.spring.SpringUtil
+import tech.chaosmin.framework.base.enums.CertiTypeEnum
 import tech.chaosmin.framework.base.enums.GenderEnum
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner.*
@@ -9,6 +11,7 @@ import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.DDRequest
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.obj.DDCPReq
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.obj.DDCReq
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.obj.DDUReq
+import tech.chaosmin.framework.module.mgmt.service.inner.ResDataService
 import java.util.*
 
 /**
@@ -17,12 +20,13 @@ import java.util.*
  */
 object ChannelRequestConvert {
     fun convert2DDCReq(policy: PolicyEntity): DDReq<DDCReq> {
+        val resData = SpringUtil.getBean(ResDataService::class.java)
         val request = DDReq<DDCReq>()
         request.requestHead = DDRequestHead(policy.orderNo!!)
         request.requestBody = DDCReq().apply {
             this.businessAttribute = "E00149"
             this.businessType = "1"
-            this.policyNature = if ((policy.insuredList?.size ?: 0) < 3) "01" else "02"
+            this.policyNature = if ((policy.insuredList?.size ?: 0) == 1) "01" else "02"
             this.effectiveDate = policy.effectiveTime
             this.expiryDate = policy.expiryTime
             this.productCode = policy.goodsPlan?.productCode
@@ -53,9 +57,9 @@ object ChannelRequestConvert {
                             this.customerRoleCode = "2"
                             this.idNo = i.certiNo
                             this.dateOfBirth = i.birthday
-                            this.idType = i.certiType?.getCode().toString()
+                            this.idType = resData.getValue("dadi", CertiTypeEnum::class.simpleName!!, i.certiType?.getCode().toString())
                             this.indiMobile = i.phoneNo
-                            this.indiGenderCode = if (GenderEnum.MALE == i.gender!!) "1" else "2"
+                            this.indiGenderCode = resData.getValue("dadi", GenderEnum::class.simpleName!!, i.gender?.getCode().toString())
                             this.polHolderInsuredRelaCode = "80"
                         }
                     }

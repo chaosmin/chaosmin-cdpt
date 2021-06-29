@@ -42,7 +42,7 @@ class PolicyCustomer {
     var indiGenderCode: String? = null
 
     // 出生日期
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     var indiDateOfBirth: Date? = null
 
     // 证件类型

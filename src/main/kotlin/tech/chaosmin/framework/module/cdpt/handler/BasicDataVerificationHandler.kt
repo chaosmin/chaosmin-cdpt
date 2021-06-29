@@ -45,7 +45,7 @@ open class BasicDataVerificationHandler(
 
     override fun processor(arg: PolicyIssueReq, result: RestResult<PolicyIssueReq>): RestResult<PolicyIssueReq> {
         // step 1
-        orderNoIdempotenceCheck(arg)
+        // orderNoIdempotenceCheck(arg)
         // step 2
         productValidityCheck(arg)
         // step 3
@@ -100,21 +100,21 @@ open class BasicDataVerificationHandler(
         }
         // backend 单位保费
         val premium = hitRateRecord.premium!!
-        if (premium != arg.unitPremium) {
-            logger.warn("The unit of premium on the front[${arg.unitPremium}] and back[$premium] does not match!")
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "单位保费")
-        }
+        // if (premium != arg.unitPremium) {
+        //     logger.warn("The unit of premium on the front[${arg.unitPremium}] and back[$premium] does not match!")
+        //     throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "单位保费")
+        // }
         // 重新计算总保费
+        arg.unitPremium = premium
         arg.totalPremium = premium * (arg.insuredList?.size ?: 0)
-        if (arg.totalPremium == null || arg.totalPremium == 0.0) {
-            logger.error("Total premium of this order is zero.")
+        if (arg.totalPremium == null || arg.totalPremium!! <= 0.0) {
+            logger.error("Total premium of this order is invalid.")
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "总保费")
         }
         val comsRatio = arg.goodsPlan?.comsRatio ?: 0.0
-        arg.actualPremium = (BigDecimal(100).minus(BigDecimal(comsRatio)))
-            .divide(BigDecimal(100)).multiply(BigDecimal(arg.totalPremium!!)).toDouble()
-        if (arg.actualPremium == null || arg.actualPremium == 0.0) {
-            logger.error("Actual premium of this order is zero.")
+        arg.actualPremium = (BigDecimal(100).minus(BigDecimal(comsRatio))).divide(BigDecimal(100)).multiply(BigDecimal(arg.totalPremium!!)).toDouble()
+        if (arg.actualPremium == null || arg.actualPremium!! <= 0.0) {
+            logger.error("Actual premium of this order is invalid.")
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_INVALID.code, "实收保费")
         }
         logger.info("Order[${arg.orderNo}] => premium: ${arg.unitPremium}, total-premium: ${arg.totalPremium}, actual-premium: ${arg.actualPremium}")

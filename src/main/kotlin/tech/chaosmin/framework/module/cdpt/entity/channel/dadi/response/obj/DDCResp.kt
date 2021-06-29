@@ -55,7 +55,7 @@ class DDCResp {
     var sequenceNumber: Int? = null
 
     // 核保通过时间
-    @JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss", timezone = "GMT+8")
     var underwritingDate: Date? = null
 
     // 归属机构代码
@@ -80,15 +80,15 @@ class DDCResp {
     var repairChannelCode: String? = null
 
     // 起保日期/起始生效日期, 支持时分秒
-    @JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss", timezone = "GMT+8")
     var effectiveDate: Date? = null
 
     // 终保日期/终止失效日期, 支持时分秒
-    @JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss", timezone = "GMT+8")
     var expiryDate: Date? = null
 
     // 投保日期
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     var proposalDate: Date? = null
 
     // 定期结算方式

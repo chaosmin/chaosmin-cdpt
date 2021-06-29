@@ -1,5 +1,6 @@
 package tech.chaosmin.framework.module.cdpt.entity.request
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseReq
@@ -24,6 +25,7 @@ class PolicyInsuredReq : BaseReq() {
     var certiNo: String? = null
 
     @ApiModelProperty("生日")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     var dateOfBirth: Date? = null
 
     @ApiModelProperty("姓名")

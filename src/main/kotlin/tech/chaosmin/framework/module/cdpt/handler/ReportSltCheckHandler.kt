@@ -59,9 +59,7 @@ class ReportSltCheckHandler(
             arg.totalInsuredSize = arg.detail?.sumBy { it.insuredSize ?: 0 }
             arg.totalPremium = arg.detail?.sumByDouble { it.totalPremium ?: 0.0 }
             arg.actualPremium = arg.detail?.sumByDouble { it.actualPremium ?: 0.0 }
-            val groupBy = arg.detail?.groupBy { it.partnerName!! }
-            arg.totalPremiumByPartner = groupBy?.map { (g, l) -> g to l.sumByDouble { it.totalPremium ?: 0.0 } }?.toMap()
-            arg.actualPremiumByPartner = groupBy?.map { (g, l) -> g to l.sumByDouble { it.actualPremium ?: 0.0 } }?.toMap()
+            arg.doPartner()
         }
         return result.success(arg)
     }

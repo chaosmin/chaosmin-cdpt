@@ -1,5 +1,6 @@
 package tech.chaosmin.framework.module.cdpt.entity.report
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import java.util.*
 
 /**
@@ -32,12 +33,15 @@ class SltCheckEntity {
     var actualPremium: Double? = null
 
     // 生效时间
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     var effectiveTime: Date? = null
 
     // 终止时间
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     var expiryTime: Date? = null
 
     // 出单时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     var issueTime: Date? = null
 
     // 团号

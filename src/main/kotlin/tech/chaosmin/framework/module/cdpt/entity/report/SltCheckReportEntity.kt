@@ -23,11 +23,16 @@ class SltCheckReportEntity {
     var actualPremium: Double? = null
 
     // 保险公司纬度标准保费合计
-    var totalPremiumByPartner: Map<String, Double>? = null
-
-    // 保险公司纬度实收保费合计
-    var actualPremiumByPartner: Map<String, Double>? = null
+    var partnerList: List<PartnerPremium>? = null
 
     // 明细
     var detail: List<SltCheckEntity>? = null
+
+    inner class PartnerPremium(var partnerName: String, var totalPremium: Double, var actualPremium: Double)
+
+    fun doPartner() {
+        this.partnerList = this.detail?.groupBy { it.partnerName!! }?.map { (g, l) ->
+            PartnerPremium(g, l.sumByDouble { it.totalPremium ?: 0.0 }, l.sumByDouble { it.actualPremium ?: 0.0 })
+        }
+    }
 }

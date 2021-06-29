@@ -22,6 +22,7 @@ import tech.chaosmin.framework.module.cdpt.service.external.impl.DadiChannelRequ
 import tech.chaosmin.framework.module.cdpt.service.inner.OrderTempService
 import tech.chaosmin.framework.module.cdpt.service.inner.PolicyKhsService
 import tech.chaosmin.framework.utils.JsonUtil
+import tech.chaosmin.framework.utils.SecurityUtil
 
 /**
  * 接口出单逻辑 <p>
@@ -71,6 +72,7 @@ open class IssuePolicyHandler(
         orderTempService.saveOrUpdate(arg.orderNo!!, JsonUtil.encode(arg))
         // TODO 请求保司接口超时兜底处理逻辑开发
         val policyEntity = IssuerConvert.INSTANCE.convert2PolicyEntity(arg)
+        policyEntity.userId = SecurityUtil.getUserId()
         val ddReq = ChannelRequestConvert.convert2DDCReq(policyEntity)
         val ddcRespEntity = dadiChannelRequestService.request(PolicyProcessEnum.PREMIUM_TRIAL, ddReq) {
             JsonUtil.decode(it, DDResp::class.java, DDCResp::class.java)

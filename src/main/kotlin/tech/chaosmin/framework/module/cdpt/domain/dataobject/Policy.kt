@@ -17,6 +17,9 @@ open class Policy(id: Long? = null) : BaseDO(id, 0) {
     /** 保单号 */
     var policyNo: String? = null
 
+    /** 用户ID */
+    var userId: Long? = null
+
     /** 产品授权ID */
     var goodsPlanId: Long? = null
 

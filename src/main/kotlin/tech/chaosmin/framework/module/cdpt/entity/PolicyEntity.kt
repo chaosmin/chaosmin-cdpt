@@ -12,6 +12,7 @@ class PolicyEntity(id: Long? = null) : BaseEntity(id) {
     var orderNo: String? = null
     var proposalNo: String? = null
     var policyNo: String? = null
+    var userId: Long? = null
     var goodsPlanId: Long? = null
     var effectiveTime: Date? = null
     var expiryTime: Date? = null

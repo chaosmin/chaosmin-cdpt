@@ -12,5 +12,6 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyExt
  * @since 2021/1/26 15:31
  */
 interface PolicyService : IService<Policy> {
+    fun listExt(queryWrapper: Wrapper<PolicyExt>): List<PolicyExt>
     fun pageExt(page: Page<PolicyExt>, queryWrapper: Wrapper<PolicyExt>): IPage<PolicyExt>
 }

@@ -7,7 +7,7 @@ import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.module.mgmt.domain.dataobject.ResData
 import tech.chaosmin.framework.module.mgmt.entity.ResDataEntity
 import tech.chaosmin.framework.module.mgmt.helper.mapper.ResDataMapper
-import tech.chaosmin.framework.module.mgmt.service.inner.ResDataService
+import tech.chaosmin.framework.module.mgmt.service.ResDataService
 
 /**
  * @author Romani min

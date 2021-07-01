@@ -13,6 +13,7 @@ import tech.chaosmin.framework.module.mgmt.handler.ModifyUserHandler
 import tech.chaosmin.framework.module.mgmt.handler.logic.UserQueryLogic
 import tech.chaosmin.framework.module.mgmt.helper.convert.UserConvert
 import tech.chaosmin.framework.utils.RequestUtil
+import tech.chaosmin.framework.utils.SecurityUtil
 import javax.servlet.http.HttpServletRequest
 
 @RestController
@@ -20,6 +21,12 @@ open class UserShareProvider(
     private val userQueryLogic: UserQueryLogic,
     private val modifyUserHandler: ModifyUserHandler
 ) : UserShareService {
+    override fun subordinate(id: Long): RestResult<List<UserResp?>> {
+        val loginName = SecurityUtil.getUsername()
+        val subordinate = userQueryLogic.findSubordinate(loginName)
+        return RestResultExt.successRestResult(UserConvert.INSTANCE.convert2Resp(subordinate))
+    }
+
     override fun selectById(id: Long): RestResult<UserResp?> {
         val user = userQueryLogic.get(id)
         return if (user == null) RestResultExt.successRestResult()

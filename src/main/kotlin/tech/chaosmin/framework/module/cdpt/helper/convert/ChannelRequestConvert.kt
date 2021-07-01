@@ -11,7 +11,7 @@ import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.DDRequest
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.obj.DDCPReq
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.obj.DDCReq
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.obj.DDUReq
-import tech.chaosmin.framework.module.mgmt.service.inner.ResDataService
+import tech.chaosmin.framework.module.mgmt.service.ResDataService
 import java.util.*
 
 /**

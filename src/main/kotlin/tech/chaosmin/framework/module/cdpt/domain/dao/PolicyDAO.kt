@@ -14,6 +14,8 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyExt
  * @since 2021/1/26 15:29
  */
 interface PolicyDAO : BaseMapper<Policy> {
+    fun listExt(@Param(Constants.WRAPPER) queryWrapper: Wrapper<PolicyExt>): List<PolicyExt>
+
     fun pageExt(
         page: Page<PolicyExt>,
         @Param(Constants.WRAPPER) queryWrapper: Wrapper<PolicyExt>

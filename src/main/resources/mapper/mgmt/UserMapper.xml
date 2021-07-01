@@ -24,14 +24,28 @@
     <select id="getByIdExt" resultMap="userExt">
         SELECT department.name as department, user.*
         FROM user
-        left join department on department.id = user.department_id and department.status = 1 and department.is_deleted = 0
-        where user.id = #{id} and user.is_deleted = 0
+                 left join department on department.id = user.department_id
+            and department.status = 1
+            and department.is_deleted = 0
+        where user.id = #{id}
+          and user.is_deleted = 0
+    </select>
+
+    <select id="listExt" resultMap="userExt">
+        SELECT department.name as department, user.*
+        FROM user
+                 left join department on department.id = user.department_id
+            and department.status = 1
+            and department.is_deleted = 0
+            ${ew.customSqlSegment}
     </select>
 
     <select id="pageExt" resultMap="userExt">
         SELECT department.name as department, user.*
         FROM user
-        left join department on department.id = user.department_id and department.status = 1 and department.is_deleted = 0
-        ${ew.customSqlSegment}
+                 left join department on department.id = user.department_id
+            and department.status = 1
+            and department.is_deleted = 0
+            ${ew.customSqlSegment}
     </select>
 </mapper> 

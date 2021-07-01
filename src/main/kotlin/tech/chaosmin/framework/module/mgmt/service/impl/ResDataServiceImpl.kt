@@ -1,11 +1,11 @@
-package tech.chaosmin.framework.module.mgmt.service.inner.impl
+package tech.chaosmin.framework.module.mgmt.service.impl
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.stereotype.Service
 import tech.chaosmin.framework.module.mgmt.domain.dao.ResDataDAO
 import tech.chaosmin.framework.module.mgmt.domain.dataobject.ResData
-import tech.chaosmin.framework.module.mgmt.service.inner.ResDataService
+import tech.chaosmin.framework.module.mgmt.service.ResDataService
 
 /**
  * @author Romani min

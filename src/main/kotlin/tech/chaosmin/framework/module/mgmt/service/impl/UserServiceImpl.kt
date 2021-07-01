@@ -22,7 +22,15 @@ open class UserServiceImpl : ServiceImpl<UserDAO, User>(), UserService {
         return userPage.records.firstOrNull()
     }
 
-    override fun getByIdExt(id: Long): UserExt? = baseMapper.getByIdExt(id)
+    override fun getByIdExt(id: Long): UserExt? {
+        return baseMapper.getByIdExt(id)
+    }
 
-    override fun pageExt(page: Page<UserExt>, queryWrapper: Wrapper<UserExt>): IPage<UserExt> = baseMapper.pageExt(page, queryWrapper)
+    override fun listExt(queryWrapper: Wrapper<UserExt>): List<UserExt> {
+        return baseMapper.listExt(queryWrapper)
+    }
+
+    override fun pageExt(page: Page<UserExt>, queryWrapper: Wrapper<UserExt>): IPage<UserExt> {
+        return baseMapper.pageExt(page, queryWrapper)
+    }
 }

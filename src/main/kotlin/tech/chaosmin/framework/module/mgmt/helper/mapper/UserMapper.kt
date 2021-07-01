@@ -22,9 +22,17 @@ interface UserMapper : BaseMapper<UserEntity, User> {
 
     @Mappings(
         value = [
-            Mapping(target = "roleIds", expression = "java(source.getRoles().stream().map(i -> i.getId()).collect(java.util.stream.Collectors.toList()))"),
-            Mapping(target = "role", expression = "java(source.getRoles().stream().map(i -> i.getName()).collect(java.util.stream.Collectors.joining(\",\")))")
+            Mapping(
+                target = "roleIds",
+                expression = "java(source.getRoles().stream().map(i -> i.getId()).collect(java.util.stream.Collectors.toList()))"
+            ),
+            Mapping(
+                target = "role",
+                expression = "java(source.getRoles().stream().map(i -> i.getName()).collect(java.util.stream.Collectors.joining(\",\")))"
+            )
         ]
     )
     fun convertEx2Entity(source: UserExt?): UserEntity?
+
+    fun convertEx2Entity(source: List<UserExt>): List<UserEntity>
 }

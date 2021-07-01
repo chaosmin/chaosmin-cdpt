@@ -12,5 +12,7 @@ interface UserService : IService<User> {
 
     fun getByIdExt(id: Long): UserExt?
 
+    fun listExt(queryWrapper: Wrapper<UserExt>): List<UserExt>
+
     fun pageExt(page: Page<UserExt>, queryWrapper: Wrapper<UserExt>): IPage<UserExt>
 }

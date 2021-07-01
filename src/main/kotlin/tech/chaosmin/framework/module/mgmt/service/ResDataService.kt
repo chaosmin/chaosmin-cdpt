@@ -1,4 +1,4 @@
-package tech.chaosmin.framework.module.mgmt.service.inner
+package tech.chaosmin.framework.module.mgmt.service
 
 import com.baomidou.mybatisplus.extension.service.IService
 import tech.chaosmin.framework.module.mgmt.domain.dataobject.ResData

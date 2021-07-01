@@ -16,6 +16,10 @@ import tech.chaosmin.framework.module.cdpt.service.inner.PolicyService
  */
 @Service
 open class PolicyServiceImpl : ServiceImpl<PolicyDAO, Policy>(), PolicyService {
+    override fun listExt(queryWrapper: Wrapper<PolicyExt>): List<PolicyExt> {
+        return baseMapper.listExt(queryWrapper)
+    }
+
     override fun pageExt(page: Page<PolicyExt>, queryWrapper: Wrapper<PolicyExt>): IPage<PolicyExt> {
         return baseMapper.pageExt(page, queryWrapper)
     }

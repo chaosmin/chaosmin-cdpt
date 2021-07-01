@@ -2,19 +2,23 @@ package tech.chaosmin.framework.module.cdpt.handler.logic
 
 import cn.hutool.core.date.DateUtil
 import com.baomidou.mybatisplus.core.metadata.IPage
+import com.baomidou.mybatisplus.core.toolkit.Wrappers
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.BaseQueryLogic
 import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.base.enums.PolicyKhsEnum
+import tech.chaosmin.framework.base.enums.PolicyStatusEnum
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyExt
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
 import tech.chaosmin.framework.module.cdpt.entity.PolicyKhsEntity
+import tech.chaosmin.framework.module.cdpt.entity.response.DashboardResp
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyHolderMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyInsurantMapper
 import tech.chaosmin.framework.module.cdpt.helper.mapper.PolicyMapper
 import tech.chaosmin.framework.module.cdpt.service.inner.*
-import tech.chaosmin.framework.module.mgmt.handler.SubordinateHandler
+import tech.chaosmin.framework.module.mgmt.handler.logic.UserQueryLogic
 import tech.chaosmin.framework.utils.SecurityUtil
+import java.util.*
 
 /**
  * 保单数据查询逻辑 <p>
@@ -24,13 +28,13 @@ import tech.chaosmin.framework.utils.SecurityUtil
  */
 @Component
 class PolicyQueryLogic(
-    private val subordinateHandler: SubordinateHandler,
     private val policyService: PolicyService,
     private val policyHolderService: PolicyHolderService,
     private val policyInsurantService: PolicyInsurantService,
     private val policyKhsService: PolicyKhsService,
     private val orderTempService: OrderTempService,
-    private val goodsPlanQueryLogic: GoodsPlanQueryLogic
+    private val goodsPlanQueryLogic: GoodsPlanQueryLogic,
+    private val userQueryLogic: UserQueryLogic
 ) : BaseQueryLogic<PolicyEntity, PolicyExt> {
     override fun get(id: Long): PolicyEntity? {
         val policy = policyService.getById(id)
@@ -47,8 +51,8 @@ class PolicyQueryLogic(
     override fun page(cond: PageQuery<PolicyExt>): IPage<PolicyEntity?> {
         var queryWrapper = cond.wrapper
         if (!SecurityUtil.getUserDetails().isAdmin) {
-            val username = SecurityUtil.getUsername()
-            val subordinate = subordinateHandler.findAll(username)
+            val subordinate = userQueryLogic.findSubordinate().mapNotNull { it?.loginName }.toMutableList()
+            subordinate.add(SecurityUtil.getUsername())
             queryWrapper = queryWrapper.`in`("policy.creator", subordinate)
         }
         val page = policyService.pageExt(cond.page, queryWrapper)
@@ -87,4 +91,31 @@ class PolicyQueryLogic(
         }
         return policyKhsEntity
     }
+
+    fun dashboardData(): DashboardResp {
+        val startOfThisWeek = DateUtil.beginOfWeek(Date()).time
+        val ew = Wrappers.query<PolicyExt>().eq("policy.status", PolicyStatusEnum.SUCCESS.getCode())
+        // 全量数据
+        val list = policyService.listExt(ew)
+        val lineData = list.groupBy { DateUtil.beginOfDay(it.createTime).time }.filter { it.key >= startOfThisWeek }
+        return DashboardResp().apply {
+            this.policies.apply {
+                value = list.size.toDouble()
+                actualData = (0..6).mapNotNull { lineData[startOfThisWeek + it * 24 * 60 * 60 * 1000]?.size?.toDouble() ?: 0.0 }
+            }
+            this.insureds.apply {
+                value = list.sumByDouble { it.insuredSize?.toDouble() ?: 0.0 }
+                actualData = (0..6).mapNotNull {
+                    lineData[startOfThisWeek + it * 24 * 60 * 60 * 1000]?.sumByDouble { i -> i.insuredSize?.toDouble() ?: 0.0 } ?: 0.0
+                }
+            }
+            this.premium.apply {
+                value = list.sumByDouble { it.actualPremium ?: 0.0 }
+                actualData =
+                    (0..6).mapNotNull { lineData[startOfThisWeek + it * 24 * 60 * 60 * 1000]?.sumByDouble { i -> i.actualPremium ?: 0.0 } ?: 0.0 }
+            }
+            this.issuers.value = list.distinctBy { it.creator }.size.toDouble()
+        }
+    }
+
 }

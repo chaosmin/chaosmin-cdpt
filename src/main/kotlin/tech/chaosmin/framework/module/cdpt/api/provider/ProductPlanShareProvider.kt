@@ -26,12 +26,10 @@ open class ProductPlanShareProvider(
     private val productPlanQueryLogic: ProductPlanQueryLogic,
     private val modifyProductPlanHandler: ModifyProductPlanHandler
 ) : ProductPlanShareService {
-    override fun contractPage(): RestResult<IPage<ProductPlanResp?>> {
-        val page = if (SecurityUtil.getUserDetails()?.isAdmin == true) {
+    override fun contractPage(id: Long): RestResult<IPage<ProductPlanResp?>> {
+        val page = if (SecurityUtil.getUserDetails().isAdmin) {
             productPlanQueryLogic.page(PageQuery.emptyQuery())
-        } else {
-            productPlanQueryLogic.contract(SecurityUtil.getUserId())
-        }
+        } else productPlanQueryLogic.contract(id)
         return RestResultExt.successRestResult(page.convert(ProductPlanConvert.INSTANCE::convert2Resp))
     }
 

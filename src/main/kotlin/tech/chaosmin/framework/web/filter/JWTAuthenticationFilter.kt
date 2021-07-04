@@ -78,7 +78,7 @@ class JWTAuthenticationFilter(authManager: AuthenticationManager) : UsernamePass
         response: HttpServletResponse,
         failed: AuthenticationException
     ) {
-        HttpUtil.write(response, RestResultExt.badCredentialsRestResult())
+        HttpUtil.write(response, RestResultExt.badCredentialsRestResult("用户名或密码错误!"))
     }
 
     /**

@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.RestResultExt
+import tech.chaosmin.framework.base.enums.UserStatusEnum
 import tech.chaosmin.framework.module.mgmt.api.UserShareService
 import tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.UserExt
 import tech.chaosmin.framework.module.mgmt.entity.UserEntity
+import tech.chaosmin.framework.module.mgmt.entity.request.UserPasswordReq
 import tech.chaosmin.framework.module.mgmt.entity.request.UserReq
 import tech.chaosmin.framework.module.mgmt.entity.response.UserResp
 import tech.chaosmin.framework.module.mgmt.handler.ModifyUserHandler
@@ -25,6 +27,19 @@ open class UserShareProvider(
         val loginName = SecurityUtil.getUsername()
         val subordinate = userQueryLogic.findSubordinate(loginName)
         return RestResultExt.successRestResult(UserConvert.INSTANCE.convert2Resp(subordinate))
+    }
+
+    override fun updatePassword(id: Long, req: UserPasswordReq): RestResult<String> {
+        val user = userQueryLogic.get(id)
+        if (user == null || user.status == UserStatusEnum.INVALID) {
+            return RestResultExt.failureRestResult("指定用户不存在或已注销!")
+        }
+        if (modifyUserHandler.isSamePassword(user, req.password)) {
+            return RestResultExt.failureRestResult("原密码输入错误, 请重新输入!")
+        }
+        user.password = req.newPassword
+        user.update()
+        return RestResultExt.mapper(modifyUserHandler.operate(user))
     }
 
     override fun selectById(id: Long): RestResult<UserResp?> {

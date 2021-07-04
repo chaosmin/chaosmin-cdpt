@@ -7,7 +7,7 @@ import tech.chaosmin.framework.base.RestResultExt
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.api.OrderShareService
-import tech.chaosmin.framework.module.cdpt.domain.dataobject.Order
+import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.OrderExt
 import tech.chaosmin.framework.module.cdpt.entity.request.OrderReq
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
 import tech.chaosmin.framework.module.cdpt.entity.response.OrderResp
@@ -41,7 +41,7 @@ open class OrderShareProvider(private val orderQueryLogic: OrderQueryLogic) : Or
     }
 
     override fun page(request: HttpServletRequest): RestResult<IPage<OrderResp?>> {
-        val queryCondition = RequestUtil.getQueryCondition<Order>(request)
+        val queryCondition = RequestUtil.getQueryCondition<OrderExt>(request)
         val page = orderQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(OrderConvert.INSTANCE::convert2Resp))
     }

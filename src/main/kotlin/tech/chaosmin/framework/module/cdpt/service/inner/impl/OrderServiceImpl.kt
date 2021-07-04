@@ -1,9 +1,13 @@
 package tech.chaosmin.framework.module.cdpt.service.inner.impl
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper
+import com.baomidou.mybatisplus.core.metadata.IPage
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.stereotype.Service
 import tech.chaosmin.framework.module.cdpt.domain.dao.OrderDAO
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.Order
+import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.OrderExt
 import tech.chaosmin.framework.module.cdpt.service.inner.OrderService
 
 /**
@@ -11,4 +15,8 @@ import tech.chaosmin.framework.module.cdpt.service.inner.OrderService
  * @since 2021/1/26 15:31
  */
 @Service
-open class OrderServiceImpl : ServiceImpl<OrderDAO, Order>(), OrderService
+open class OrderServiceImpl : ServiceImpl<OrderDAO, Order>(), OrderService {
+    override fun pageExt(page: Page<OrderExt>, queryWrapper: Wrapper<OrderExt>): IPage<OrderExt> {
+        return baseMapper.pageExt(page, queryWrapper)
+    }
+}

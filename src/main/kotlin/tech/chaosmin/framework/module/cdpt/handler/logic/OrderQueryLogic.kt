@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.BaseQueryLogic
 import tech.chaosmin.framework.base.PageQuery
-import tech.chaosmin.framework.module.cdpt.domain.dataobject.Order
+import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.OrderExt
 import tech.chaosmin.framework.module.cdpt.entity.OrderEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.OrderMapper
 import tech.chaosmin.framework.module.cdpt.service.inner.OrderService
@@ -18,15 +18,15 @@ import tech.chaosmin.framework.module.cdpt.service.inner.OrderTempService
 class OrderQueryLogic(
     private val orderService: OrderService,
     private val orderTempService: OrderTempService
-) : BaseQueryLogic<OrderEntity, Order> {
+) : BaseQueryLogic<OrderEntity, OrderExt> {
 
     override fun get(id: Long): OrderEntity? {
         val order = orderService.getById(id)
         return OrderMapper.INSTANCE.convert2Entity(order)
     }
 
-    override fun page(cond: PageQuery<Order>): IPage<OrderEntity?> {
-        val page = orderService.page(cond.page, cond.wrapper)
+    override fun page(cond: PageQuery<OrderExt>): IPage<OrderEntity?> {
+        val page = orderService.pageExt(cond.page, cond.wrapper)
         return page.convert(OrderMapper.INSTANCE::convert2Entity)
     }
 

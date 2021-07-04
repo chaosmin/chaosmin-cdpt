@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="tech.chaosmin.framework.module.cdpt.domain.dao.OrderDAO">
+    <sql id="extSelectFields">
+        `order`.*, policy.actual_premium, policy.insured_size, policy.effective_time, policy.expiry_time, goods_plan.partner_name,
+        policy.create_time as 'issue_time', policy.creator as 'issuer'
+    </sql>
+
+    <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.OrderExt">
+        SELECT
+        <include refid="extSelectFields"/>
+        FROM `order`
+        left join policy on `order`.order_no = policy.order_no
+        left join goods_plan on policy.goods_plan_id = goods_plan.id
+        ${ew.customSqlSegment}
+    </select>
+</mapper> 

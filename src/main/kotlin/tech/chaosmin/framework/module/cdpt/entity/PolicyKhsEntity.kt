@@ -42,11 +42,17 @@ class PolicyKhsEntity(id: Long? = null) : BaseEntity(id) {
     /** 阅读须知时间 */
     var readTime: String? = null
 
+    /** 阅读条款时间 */
+    var confirmTime: String? = null
+
     /** 确认投保时间 */
     var issueTime: String? = null
 
     /** 阅读须知截图下载地址 */
     var readPicUrl: String? = null
+
+    /** 阅读条款截图下载地址 */
+    var confirmPicUrl: String? = null
 
     /** 确认投保截图下载地址 */
     var issuePicUrl: String? = null

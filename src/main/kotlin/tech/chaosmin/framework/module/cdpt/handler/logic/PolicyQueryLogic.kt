@@ -85,6 +85,10 @@ class PolicyQueryLogic(
             policyKhsEntity.readTime = DateUtil.formatDateTime(this.fileTime)
             policyKhsEntity.readPicUrl = this.resourceUrl
         }
+        list.firstOrNull { PolicyKhsEnum.INSU_CLAUSES.getCode() == it.khsType }?.run {
+            policyKhsEntity.confirmTime = DateUtil.formatDateTime(this.fileTime)
+            policyKhsEntity.confirmPicUrl = this.resourceUrl
+        }
         list.firstOrNull { PolicyKhsEnum.INSU_CONFIRM.getCode() == it.khsType }?.run {
             policyKhsEntity.issueTime = DateUtil.formatDateTime(this.fileTime)
             policyKhsEntity.issuePicUrl = this.resourceUrl

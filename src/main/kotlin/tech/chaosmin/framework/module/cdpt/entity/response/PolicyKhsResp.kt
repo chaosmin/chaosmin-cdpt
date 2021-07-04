@@ -34,11 +34,17 @@ class PolicyKhsResp : BaseResp() {
     @ApiModelProperty("阅读须知时间")
     var readTime: String? = null
 
+    @ApiModelProperty("阅读条款时间")
+    var confirmTime: String? = null
+
     @ApiModelProperty("确认投保时间")
     var issueTime: String? = null
 
     @ApiModelProperty("阅读须知截图下载地址")
     var readPicUrl: String? = null
+
+    @ApiModelProperty("阅读条款截图下载地址")
+    var confirmPicUrl: String? = null
 
     @ApiModelProperty("确认投保截图下载地址")
     var issuePicUrl: String? = null

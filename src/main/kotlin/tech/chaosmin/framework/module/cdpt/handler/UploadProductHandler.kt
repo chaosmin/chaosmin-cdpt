@@ -119,6 +119,7 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
         product.waitingDays = getRowValue(row, 5) ?: "1"
         product.productDesc = getRowValue(row, 6)
         product.productRatio = getRowValue(row, 7)
+        product.clauseUrl = getRowValue(row, 8)
     }
 
     private fun handlePlan(sheet: Sheet, product: ProductEntity) {

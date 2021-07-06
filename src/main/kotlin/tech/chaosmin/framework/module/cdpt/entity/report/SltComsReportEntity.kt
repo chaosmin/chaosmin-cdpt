@@ -18,6 +18,9 @@ class SltComsReportEntity {
     // 用户ID
     var userId: Long? = null
 
+    // 用户姓名
+    var userName: String? = null
+
     // 总计原价
     var totalOriginalPrice: Double? = null
 

@@ -72,15 +72,12 @@ open class ModifyProductPlanHandler(
         return result.success(ProductPlanMapper.INSTANCE.convert2Entity(productPlan))
     }
 
-    private fun createPlan(
-        productPlan: ProductPlan,
-        liabilities: List<PlanLiabilityEntity>,
-        rateTable: List<PlanRateTableEntity>
-    ) {
+    private fun createPlan(productPlan: ProductPlan, liabilities: List<PlanLiabilityEntity>, rateTable: List<PlanRateTableEntity>) {
         if (liabilities.isNotEmpty() && rateTable.isNotEmpty()) {
             // 创建时填充计划的主险保额
             productPlan.primaryCoverage = liabilities.first().amount
             productPlanService.save(productPlan)
+
             planLiabilityService.saveBatch(liabilities.mapIndexedNotNull { index, it ->
                 PlanLiabilityMapper.INSTANCE.convert2DO(it)?.apply {
                     this.productPlanId = productPlan.id

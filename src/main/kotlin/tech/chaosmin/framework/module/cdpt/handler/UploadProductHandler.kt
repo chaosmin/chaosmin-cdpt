@@ -66,13 +66,15 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
 
         val (_, _, data, _, success) = modifyProductHandler.operate(product)
         if (success && data != null) {
+            product.id = data.id
             product.plans.forEach { plan ->
-                plan.productId = data.id
+                plan.productId = product.id
                 if (plan.comsRatio == null) {
                     plan.comsRatio = (product.productRatio ?: DEFAULT_COMMISSION_RATIO).toDouble()
                 }
-                val (_, _, _, _, sus) = modifyProductPlanHandler.operate(plan)
+                val (_, _, pl, _, sus) = modifyProductPlanHandler.operate(plan)
                 if (!sus) throw FrameworkException(ErrorCodeEnum.FAILURE.code)
+                else plan.id = pl?.id
             }
         } else {
             throw FrameworkException(ErrorCodeEnum.FAILURE.code)
@@ -157,11 +159,12 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
         sheet.rowIterator().forEach { row ->
             val startDay = getRowValue(row, 0) ?: paramException("[${row.rowNum}]天数起")
             val endDay = getRowValue(row, 1) ?: paramException("[${row.rowNum}]天数止")
-            (2..row.lastCellNum).forEach {
+            val remark = getRowValue(row, 2) ?: ""
+            (3..row.lastCellNum).forEach {
                 val amount = getRowValue(row, it)
                 if (!amount.isNullOrBlank()) {
                     product.getPlan(plans[it])?.run {
-                        this.addRateTable(startDay.toInt(), endDay.toInt(), amount)
+                        this.addRateTable(startDay.toInt(), endDay.toInt(), amount, remark)
                     }
                 }
             }
@@ -169,21 +172,17 @@ open class UploadProductHandler : AbstractTemplateOperate<UploadFileReq, Product
     }
 
     private fun handleText(sheet: Sheet, product: ProductEntity) {
+        product.externalText = "<span style=\"color: #ff0000;font-size:16px;\"><strong>特别约定</strong></span><br><br>"
         val exText = sheet.mapNotNull { "<span>${getRowValue(it, 0)}</span>" }.joinToString("<br>")
-        if (product.externalText == null) {
-            product.externalText = exText
-        } else {
-            product.externalText += exText
-        }
+            .replace("\n", "<br>")
+        product.externalText += exText
     }
 
     private fun handleInsuredNotice(sheet: Sheet, product: ProductEntity) {
+        product.insuranceNotice = ""
         val exText = sheet.mapNotNull { "<span>${getRowValue(it, 0)}</span>" }.joinToString("<br>")
-        if (product.insuranceNotice == null) {
-            product.insuranceNotice = exText
-        } else {
-            product.insuranceNotice += exText
-        }
+            .replace("\n", "<br>")
+        product.insuranceNotice += exText
     }
 
     private fun getHeaderAndRemoveRow(sheet: Sheet, header: Int, remove: Int): Map<Int, String> {

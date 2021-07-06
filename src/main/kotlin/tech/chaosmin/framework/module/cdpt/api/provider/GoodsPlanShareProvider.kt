@@ -31,7 +31,7 @@ open class GoodsPlanShareProvider(
         val queryCondition = RequestUtil.getQueryCondition<GoodsPlan>(request)
         queryCondition.wrapper.eq("goods_plan.status", StatusEnum.ENABLED.getCode())
         val list = goodsPlanQueryLogic.searchGoodsPlan(id, queryCondition)
-        return RestResultExt.successRestResult(GoodsPlanConvert.INSTANCE.convert2Resp(list).filterNotNull())
+        return RestResultExt.successRestResult(GoodsPlanConvert.INSTANCE.convert2Resp(list).filterNotNull().sortedBy { it.productPlanCode })
     }
 
     override fun userCategories(id: Long): RestResult<List<GoodsCategoryResp>> {

@@ -16,7 +16,6 @@ import tech.chaosmin.framework.module.cdpt.service.inner.GoodsPlanService
 import tech.chaosmin.framework.module.cdpt.service.inner.PlanLiabilityService
 import tech.chaosmin.framework.module.cdpt.service.inner.PlanRateTableService
 import tech.chaosmin.framework.module.cdpt.service.inner.ProductExternalService
-import tech.chaosmin.framework.utils.JsonUtil
 
 /**
  * 可售保险产品数据查询逻辑 <p>
@@ -57,26 +56,27 @@ class GoodsPlanQueryLogic(
     }
 
     fun searchGoodsPlan(userId: Long, cond: PageQuery<GoodsPlan>): List<GoodsPlanEntity> {
-        val goodsPlanList = mutableListOf<GoodsPlanEntity?>()
-        val cacheNameSpace = "goods-plan:$userId"
+        val goodsPlanList = mutableListOf<GoodsPlanEntity>()
+        // val cacheNameSpace = "goods-plan:$userId"
         var currentPage = 0L
         val ew = cond.wrapper.eq("user_id", userId)
         // do {
-            val page = goodsPlanService.page(Page(currentPage, 1000), ew)
-            currentPage += 1
-            val records = page.records.filterNotNull().mapNotNull { GoodsPlanMapper.INSTANCE.convert2Entity(it) }
-            records.forEach {
-                // 扩展属性
-                it.liabilities = PlanLiabilityMapper.INSTANCE.convert2Entity(planLiabilityService.listByPlanId(it.productPlanId!!))
-                it.rateTable = PlanRateTableMapper.INSTANCE.convert2Entity(planRateTableService.listByPlanId(it.productPlanId!!))
-                it.insuranceNotice = productExternalService.getByProductId(it.productId!!).insuranceNotice
-                it.productExternal = productExternalService.getByProductId(it.productId!!).externalText
-                stringRedisTemplate.opsForSet().add(cacheNameSpace, JsonUtil.encode(it))
-            }
-            goodsPlanList.addAll(records)
+        val page = goodsPlanService.page(Page(currentPage, 1000), ew)
+        currentPage += 1
+        val records = page.records.filterNotNull().mapNotNull { GoodsPlanMapper.INSTANCE.convert2Entity(it) }
+        records.forEach {
+            // 扩展属性
+            it.liabilities = PlanLiabilityMapper.INSTANCE.convert2Entity(planLiabilityService.listByPlanId(it.productPlanId!!))
+            it.rateTable = PlanRateTableMapper.INSTANCE.convert2Entity(planRateTableService.listByPlanId(it.productPlanId!!))
+            it.insuranceNotice = productExternalService.getByProductId(it.productId!!).insuranceNotice
+            it.productExternal = productExternalService.getByProductId(it.productId!!).externalText
+            // stringRedisTemplate.opsForSet().add(cacheNameSpace, JsonUtil.encode(it))
+        }
+        goodsPlanList.addAll(records)
         // } while (page.records.isNotEmpty() && page.pages <= currentPage)
-        return stringRedisTemplate.opsForSet().members(cacheNameSpace)?.mapNotNull {
-            JsonUtil.decode(it, GoodsPlanEntity::class.java)
-        } ?: emptyList()
+        // return stringRedisTemplate.opsForSet().members(cacheNameSpace)?.mapNotNull {
+        //     JsonUtil.decode(it, GoodsPlanEntity::class.java)
+        // } ?: emptyList()
+        return goodsPlanList
     }
 }

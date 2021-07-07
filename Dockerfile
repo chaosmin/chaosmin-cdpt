@@ -11,7 +11,7 @@
 #RUN         ./gradlew clean
 #RUN         ./gradlew bootJar --build-cache -x test
 
-FROM        openjdk:8u222-jre-slim
+FROM        openjdk:8u222-jre
 
 ARG         PROJECT_NAME=chaosmin-cdpt
 ARG         PROJECT_VERSION=0.0.1.SNAPSHOT

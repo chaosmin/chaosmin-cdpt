@@ -1,7 +1,6 @@
 package tech.chaosmin.framework.base
 
 import org.slf4j.LoggerFactory
-import org.springframework.util.StopWatch
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.utils.JsonUtil
@@ -33,28 +32,21 @@ abstract class AbstractTemplateOperate<P, R>(private val errorCode: String = Err
 
     override fun operate(arg: P): RestResult<R> {
         var res: RestResult<R> = RestResultExt.successRestResult()
-        val stopWatch = StopWatch(this.javaClass.simpleName)
         try {
             // 验证
-            stopWatch.start("validation")
             validation(arg, res)
-            stopWatch.stop()
             if (!res.success) {
                 return res
             }
 
             // 业务处理
-            stopWatch.start("processor")
             res = processor(arg, res)
-            stopWatch.stop()
             if (!res.success) {
                 return res
             }
 
             // 执行后的操作
-            stopWatch.start("result")
             result(arg, res)
-            stopWatch.stop()
 
         } catch (e: FrameworkException) {
             exceptionDetail(arg, res, e)
@@ -63,10 +55,7 @@ abstract class AbstractTemplateOperate<P, R>(private val errorCode: String = Err
         } catch (e: Exception) {
             exceptionDetail(arg, res, e)
             logger.error("process {} exception, init params:{}", this.javaClass.simpleName, JsonUtil.encode(arg), e)
-        } finally {
-            logger.info(stopWatch.toString())
         }
-
         return res
     }
 }

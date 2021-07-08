@@ -24,6 +24,7 @@ import tech.chaosmin.framework.module.cdpt.service.inner.PolicyKhsService
 import tech.chaosmin.framework.utils.JsonUtil
 import tech.chaosmin.framework.utils.SecurityUtil
 import java.util.*
+import java.util.concurrent.Executor
 
 /**
  * 接口出单逻辑 <p>
@@ -47,7 +48,8 @@ open class IssuePolicyHandler(
     private val modifyPolicyInsurantHandler: ModifyPolicyInsurantHandler,
     private val orderTempService: OrderTempService,
     private val policyKhsService: PolicyKhsService,
-    private val dadiChannelRequestService: DadiChannelRequestService
+    private val dadiChannelRequestService: DadiChannelRequestService,
+    private val taskExecutor: Executor
 ) : AbstractTemplateOperate<PolicyIssueReq, PolicyResp>() {
     private val logger = LoggerFactory.getLogger(IssuePolicyHandler::class.java)
 
@@ -70,20 +72,19 @@ open class IssuePolicyHandler(
         if (!validateResult.success) return result.mapper(validateResult)
 
         // step 2.1 创建保司下单请求报文
-        // TODO 异步处理
-        orderTempService.saveOrUpdate(arg.orderNo!!, JsonUtil.encode(arg))
-
-        // TODO 请求保司接口超时兜底处理逻辑开发
-        val policyEntity = IssuerConvert.INSTANCE.convert2PolicyEntity(arg)
-        policyEntity.userId = SecurityUtil.getUserId()
-
         val orderEntity = IssuerConvert.INSTANCE.convert2OrderEntity(arg)
-        orderEntity.status = OrderStatusEnum.INIT
-        orderEntity.save()
-        modifyOrderHandler.operate(orderEntity)
+
+        taskExecutor.execute {
+            orderTempService.saveOrUpdate(arg.orderNo!!, JsonUtil.encode(arg))
+            orderEntity.status = OrderStatusEnum.INIT
+            orderEntity.save()
+            modifyOrderHandler.operate(orderEntity)
+        }
 
         return try {
-            orderEntity.status = OrderStatusEnum.SUCCESS
+            val policyEntity = IssuerConvert.INSTANCE.convert2PolicyEntity(arg)
+            policyEntity.userId = SecurityUtil.getUserId()
+            // orderEntity.status = OrderStatusEnum.SUCCESS
             // 2021-06-29 23:29:03 当被保人数为2人时, 拆分被保人列表, 分为两个个单进行处理
             if (policyEntity.insuredList?.size == 2) {
                 // 重新设置被保人数
@@ -100,8 +101,7 @@ open class IssuePolicyHandler(
                     issuePolicy(policyEntity)
                 }
             } else issuePolicy(policyEntity)
-            // 关联可回溯文件的订单号及保单ID
-            policyKhsService.linkOrderAndPolicy(arg.orderNo!!, policyEntity.id!!)
+            orderEntity.status = OrderStatusEnum.SUCCESS
             result.success()
         } catch (e: FrameworkException) {
             orderEntity.status = OrderStatusEnum.FAILED
@@ -131,45 +131,48 @@ open class IssuePolicyHandler(
             throw FrameworkException(ErrorCodeEnum.BUSINESS_ERROR.code, dduRespEntity.responseHead?.resultMessage ?: "请求第三方核保接口异常")
         }
 
-        // 以下流程修改为异步执行, 提供整体系统的响应速度
-
-        // 保存保单信息
-        policyEntity.run {
-            // 清除ID确保每次都会新建保单信息
-            this.id = null
-            this.orderNo = this.orderNo?.substringBefore("-")
-            this.status = PolicyStatusEnum.SUCCESS
-            this.policyNo = (dduRespEntity?.responseBody as DDUResp).policyNo
-            this.ePolicyUrl = (dduRespEntity.responseBody as DDUResp).ePolicyURL
-            this.save()
-            val (_, _, _, _, success) = modifyPolicyHandler.operate(this)
-            if (!success) {
-                logger.error("Fail To save policy info, please do data patch on this record! # ${JsonUtil.encode(this)}")
+        taskExecutor.execute {
+            // 保存保单信息
+            policyEntity.run {
+                // 清除ID确保每次都会新建保单信息
+                this.id = null
+                this.orderNo = this.orderNo?.substringBefore("-")
+                this.status = PolicyStatusEnum.SUCCESS
+                this.policyNo = (dduRespEntity?.responseBody as DDUResp).policyNo
+                this.ePolicyUrl = (dduRespEntity.responseBody as DDUResp).ePolicyURL
+                this.save()
+                val (_, _, _, _, success) = modifyPolicyHandler.operate(this)
+                if (!success) {
+                    logger.error("Fail To save policy info, please do data patch on this record! # ${JsonUtil.encode(this)}")
+                }
             }
-        }
 
-        // 处理投保人数据
-        policyEntity.holder?.run {
-            // 清除ID确保每次都会新建保单信息
-            this.id = null
-            this.save()
-            this.policyId = policyEntity.id
-            val (_, _, _, _, success) = modifyPolicyHolderHandler.operate(this)
-            if (!success) {
-                logger.error("Fail To save policy holder info, please do data patch on this record! # ${JsonUtil.encode(this)}")
+            // 处理投保人数据
+            policyEntity.holder?.run {
+                // 清除ID确保每次都会新建保单信息
+                this.id = null
+                this.save()
+                this.policyId = policyEntity.id
+                val (_, _, _, _, success) = modifyPolicyHolderHandler.operate(this)
+                if (!success) {
+                    logger.error("Fail To save policy holder info, please do data patch on this record! # ${JsonUtil.encode(this)}")
+                }
             }
-        }
 
-        // 处理被保人数据
-        policyEntity.insuredList?.forEach {
-            // 清除ID确保每次都会新建保单信息
-            it.id = null
-            it.save()
-            it.policyId = policyEntity.id
-            val (_, _, _, _, success) = modifyPolicyInsurantHandler.operate(it)
-            if (!success) {
-                logger.error("Fail To save policy insurant info, please do data patch on this record! # ${JsonUtil.encode(it)}")
+            // 处理被保人数据
+            policyEntity.insuredList?.forEach {
+                // 清除ID确保每次都会新建保单信息
+                it.id = null
+                it.save()
+                it.policyId = policyEntity.id
+                val (_, _, _, _, success) = modifyPolicyInsurantHandler.operate(it)
+                if (!success) {
+                    logger.error("Fail To save policy insurant info, please do data patch on this record! # ${JsonUtil.encode(it)}")
+                }
             }
+
+            // 关联可回溯信息
+            policyKhsService.linkOrderAndPolicy(policyEntity.orderNo!!, policyEntity.id!!)
         }
     }
 }

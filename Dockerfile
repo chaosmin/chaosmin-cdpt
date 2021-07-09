@@ -24,7 +24,7 @@ COPY        build/libs/${PROJECT_NAME}-${PROJECT_VERSION}.jar .
 RUN         ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 RUN         echo 'Asia/Shanghai' >/etc/timezone
 
-RUN         echo "java -server -Xms518m -Xmx1024m -jar /root/${PROJECT_NAME}-${PROJECT_VERSION}.jar -Dspring.security.strategy=MODE_INHERITABLETHREADLOCAL" > ./run.sh
+RUN         echo "java -server -Xms518m -Xmx1024m -jar /root/${PROJECT_NAME}-${PROJECT_VERSION}.jar" > ./run.sh
 RUN         chmod +x ./run.sh
 
 CMD         "./run.sh"

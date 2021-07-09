@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.module.cdpt.handler
 
 import org.slf4j.LoggerFactory
+import org.springframework.security.concurrent.DelegatingSecurityContextRunnable
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.AbstractTemplateOperate
 import tech.chaosmin.framework.base.RestResult
@@ -24,7 +25,6 @@ import tech.chaosmin.framework.module.cdpt.service.inner.PolicyKhsService
 import tech.chaosmin.framework.utils.JsonUtil
 import tech.chaosmin.framework.utils.SecurityUtil
 import java.util.*
-import java.util.concurrent.Executor
 
 /**
  * 接口出单逻辑 <p>
@@ -48,8 +48,7 @@ open class IssuePolicyHandler(
     private val modifyPolicyInsurantHandler: ModifyPolicyInsurantHandler,
     private val orderTempService: OrderTempService,
     private val policyKhsService: PolicyKhsService,
-    private val dadiChannelRequestService: DadiChannelRequestService,
-    private val taskExecutor: Executor
+    private val dadiChannelRequestService: DadiChannelRequestService
 ) : AbstractTemplateOperate<PolicyIssueReq, PolicyResp>() {
     private val logger = LoggerFactory.getLogger(IssuePolicyHandler::class.java)
 
@@ -74,12 +73,12 @@ open class IssuePolicyHandler(
         // step 2.1 创建保司下单请求报文
         val orderEntity = IssuerConvert.INSTANCE.convert2OrderEntity(arg)
 
-        taskExecutor.execute {
+        Thread(DelegatingSecurityContextRunnable(fun() {
             orderTempService.saveOrUpdate(arg.orderNo!!, JsonUtil.encode(arg))
             orderEntity.status = OrderStatusEnum.INIT
             orderEntity.save()
             modifyOrderHandler.operate(orderEntity)
-        }
+        })).start()
 
         return try {
             val policyEntity = IssuerConvert.INSTANCE.convert2PolicyEntity(arg)
@@ -131,7 +130,7 @@ open class IssuePolicyHandler(
             throw FrameworkException(ErrorCodeEnum.BUSINESS_ERROR.code, dduRespEntity.responseHead?.resultMessage ?: "请求第三方核保接口异常")
         }
 
-        taskExecutor.execute {
+        Thread(DelegatingSecurityContextRunnable(fun() {
             // 保存保单信息
             policyEntity.run {
                 // 清除ID确保每次都会新建保单信息
@@ -173,6 +172,6 @@ open class IssuePolicyHandler(
 
             // 关联可回溯信息
             policyKhsService.linkOrderAndPolicy(policyEntity.orderNo!!, policyEntity.id!!)
-        }
+        })).start()
     }
 }

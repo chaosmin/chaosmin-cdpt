@@ -10,8 +10,9 @@
     </sql>
 
     <select id="getByIdExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductExt">
-        SELECT <include refid="selectExt" />
-        FROM product
+        select
+        <include refid="selectExt"/>
+        from product
         left join partner on partner.id = product.partner_id
         left join product_category_relation on product_category_relation.product_id = product.id
         left join product_category on product_category.id = product_category_relation.product_category_id
@@ -19,8 +20,9 @@
     </select>
 
     <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductExt">
-        SELECT <include refid="selectExt" />
-        FROM product
+        select
+        <include refid="selectExt"/>
+        from product
         left join partner on partner.id = product.partner_id
         left join product_category_relation on product_category_relation.product_id = product.id
         left join product_category on product_category.id = product_category_relation.product_category_id

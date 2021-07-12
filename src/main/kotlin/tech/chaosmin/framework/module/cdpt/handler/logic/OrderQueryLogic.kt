@@ -9,6 +9,8 @@ import tech.chaosmin.framework.module.cdpt.entity.OrderEntity
 import tech.chaosmin.framework.module.cdpt.helper.mapper.OrderMapper
 import tech.chaosmin.framework.module.cdpt.service.inner.OrderService
 import tech.chaosmin.framework.module.cdpt.service.inner.OrderTempService
+import tech.chaosmin.framework.module.mgmt.handler.logic.UserQueryLogic
+import tech.chaosmin.framework.utils.SecurityUtil
 
 /**
  * @author Romani min
@@ -17,7 +19,8 @@ import tech.chaosmin.framework.module.cdpt.service.inner.OrderTempService
 @Component
 class OrderQueryLogic(
     private val orderService: OrderService,
-    private val orderTempService: OrderTempService
+    private val orderTempService: OrderTempService,
+    private val userQueryLogic: UserQueryLogic
 ) : BaseQueryLogic<OrderEntity, OrderExt> {
 
     override fun get(id: Long): OrderEntity? {
@@ -26,7 +29,13 @@ class OrderQueryLogic(
     }
 
     override fun page(cond: PageQuery<OrderExt>): IPage<OrderEntity> {
-        val page = orderService.pageExt(cond.page, cond.wrapper)
+        var queryWrapper = cond.wrapper
+        if (!SecurityUtil.getUserDetails().isAdmin) {
+            val subordinate = userQueryLogic.findSubordinate().mapNotNull { it.loginName }.toMutableList()
+            subordinate.add(SecurityUtil.getUsername())
+            queryWrapper = queryWrapper.`in`("policy.creator", subordinate)
+        }
+        val page = orderService.pageExt(cond.page, queryWrapper)
         return page.convert(OrderMapper.INSTANCE::convert2Entity)
     }
 

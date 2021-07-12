@@ -14,7 +14,7 @@ import tech.chaosmin.framework.module.cdpt.service.inner.PlanLiabilityService
  */
 @Service
 open class PlanLiabilityServiceImpl : ServiceImpl<PlanLiabilityDAO, PlanLiability>(), PlanLiabilityService {
-    @Cacheable(value = ["product-plan-liability"], key = "#productPlanId", unless = "#result == null")
+    @Cacheable(value = ["product-plans"], key = "#productPlanId + ':liability'", unless = "#result == null")
     override fun listByPlanId(productPlanId: Long): List<PlanLiability> {
         val ew = Wrappers.query<PlanLiability>().eq("product_plan_id", productPlanId)
             .orderBy(true, true, "sort")

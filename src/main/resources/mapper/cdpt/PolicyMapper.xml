@@ -6,18 +6,18 @@
     </sql>
 
     <select id="listExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyExt">
-        SELECT
+        select
         <include refid="extSelectFields"/>
-        FROM policy
+        from policy
         left join policy_holder on policy.id = policy_holder.policy_id
         left join goods_plan on policy.goods_plan_id = goods_plan.id
         ${ew.customSqlSegment}
     </select>
 
     <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyExt">
-        SELECT
+        select
         <include refid="extSelectFields"/>
-        FROM policy
+        from policy
         left join policy_holder on policy.id = policy_holder.policy_id
         left join goods_plan on policy.goods_plan_id = goods_plan.id
         ${ew.customSqlSegment}

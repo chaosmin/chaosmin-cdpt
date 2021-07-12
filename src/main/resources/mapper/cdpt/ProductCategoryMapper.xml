@@ -3,7 +3,7 @@
 <mapper namespace="tech.chaosmin.framework.module.cdpt.domain.dao.ProductCategoryDAO">
     <select id="getByProductIds" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ProductCategory">
         select product_category.*
-        FROM product_category
+        from product_category
         left join product_category_relation pcr on product_category.id = pcr.product_category_id
         where product_category.is_deleted = 0 and pcr.product_id in
         <foreach collection="productIds" index="index" item="productId" open="(" close=")" separator=",">

@@ -14,7 +14,7 @@ import tech.chaosmin.framework.module.cdpt.service.inner.PlanRateTableService
  */
 @Service
 open class PlanRateTableServiceImpl : ServiceImpl<PlanRateTableDAO, PlanRateTable>(), PlanRateTableService {
-    @Cacheable(value = ["product-plan-rate-table"], key = "#productPlanId", unless = "#result == null")
+    @Cacheable(value = ["product-plans"], key = "#productPlanId + ':rate-table'", unless = "#result == null")
     override fun listByPlanId(productPlanId: Long): List<PlanRateTable> {
         val ew = Wrappers.query<PlanRateTable>().eq("product_plan_id", productPlanId)
             .orderBy(true, true, "sort")

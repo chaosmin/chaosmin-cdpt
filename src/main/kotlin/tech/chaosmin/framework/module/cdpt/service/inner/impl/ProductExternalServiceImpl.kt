@@ -15,13 +15,13 @@ import tech.chaosmin.framework.module.cdpt.service.inner.ProductExternalService
  */
 @Service
 open class ProductExternalServiceImpl : ServiceImpl<ProductExternalDAO, ProductExternal>(), ProductExternalService {
-    @Cacheable(value = ["product-external"], key = "#productId")
+    @Cacheable(value = ["products"], key = "#productId + ':external'")
     override fun getByProductId(productId: Long): ProductExternal {
         val wa = QueryWrapper<ProductExternal>().eq("product_id", productId)
         return baseMapper.selectOne(wa)
     }
 
-    @CachePut(value = ["product-external"], key = "#productId")
+    @CachePut(value = ["products"], key = "#productId + ':external'")
     override fun updateByProductId(productId: Long, ex: ProductExternal): ProductExternal {
         val wa = QueryWrapper<ProductExternal>().eq("product_id", productId)
         baseMapper.update(ex, wa)

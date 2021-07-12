@@ -17,12 +17,14 @@
     </resultMap>
 
     <select id="pageExt" resultMap="productPlanExt">
-        SELECT partner.partner_name,
-               product.product_code, product.product_name, product.waiting_days,
+        select partner.partner_name,
+               product.product_code,
+               product.product_name,
+               product.waiting_days,
                product_plan.*
-        FROM product_plan
-        left join product on product.id = product_plan.product_id
-        left join partner on partner.id = product.partner_id
-        ${ew.customSqlSegment}
+        from product_plan
+                 left join product on product.id = product_plan.product_id
+                 left join partner on partner.id = product.partner_id
+            ${ew.customSqlSegment}
     </select>
 </mapper> 

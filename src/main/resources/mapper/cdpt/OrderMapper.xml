@@ -7,9 +7,9 @@
     </sql>
 
     <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.OrderExt">
-        SELECT
+        select
         <include refid="extSelectFields"/>
-        FROM `order`
+        from `order`
         left join policy on `order`.order_no = policy.order_no
         left join goods_plan on policy.goods_plan_id = goods_plan.id
         ${ew.customSqlSegment}

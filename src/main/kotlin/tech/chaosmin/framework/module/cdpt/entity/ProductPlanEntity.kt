@@ -7,49 +7,26 @@ import tech.chaosmin.framework.base.enums.StatusEnum
 import tech.chaosmin.framework.definition.SystemConst.DEFAULT_CURRENCY
 
 /**
+ * 保险产品计划信息实体对象 <p>
  * @author Romani min
  * @since 2020/12/23 21:35
  */
-class ProductPlanEntity(id: Long? = null) : BaseEntity(id) {
-    // 保险公司
-    var partnerName: String? = null
-
-    // 产品ID
-    var productId: Long? = null
-
-    // 产品编号
-    var productCode: String? = null
-
-    // 产品名称
-    var productName: String? = null
-
-    // 计划信息
-    var planCode: String? = null
-
-    // 计划名称
-    var planName: String? = null
-
-    // 主险保额
-    var primaryCoverage: String? = null
-
-    // 币种
+class ProductPlanEntity(id: Long? = null) : BaseEntity<ProductPlanEntity>(id) {
+    var comsRatio: Double? = null
     var currency: String? = null
 
-    // 佣金比例
-    var comsRatio: Double? = null
-
-    // 设置佣金比例
     // TODO 这个是前端用来调整的佣金比例, 如何优化前端不让后端返回这个值
     var iComsRatio: Double? = null
-
-    // 产品计划状态
-    var status: StatusEnum? = null
-
-    // 计划责任
     var liabilities = mutableListOf<PlanLiabilityEntity>()
-
-    // 计划费率表
+    var partnerName: String? = null
+    var planCode: String? = null
+    var planName: String? = null
+    var primaryCoverage: String? = null
+    var productCode: String? = null
+    var productId: Long? = null
+    var productName: String? = null
     var rateTable = mutableListOf<PlanRateTableEntity>()
+    var status: StatusEnum? = null
 
     fun addLiability(category: String, liability: String, amount: String) {
         synchronized(this) {

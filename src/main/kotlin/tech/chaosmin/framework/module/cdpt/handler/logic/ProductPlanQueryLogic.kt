@@ -26,12 +26,12 @@ class ProductPlanQueryLogic(
         return ProductPlanMapper.INSTANCE.convert2Entity(productPlan)
     }
 
-    override fun page(cond: PageQuery<ProductPlanExt>): IPage<ProductPlanEntity?> {
+    override fun page(cond: PageQuery<ProductPlanExt>): IPage<ProductPlanEntity> {
         val page = productPlanService.pageExt(cond.page, cond.wrapper)
         return page.convert(ProductPlanMapper.INSTANCE::convert2Entity)
     }
 
-    fun contract(userId: Long): IPage<ProductPlanEntity?> {
+    fun contract(userId: Long): IPage<ProductPlanEntity> {
         val contactPlans = goodsPlanService.getByUser(userId)
         if (contactPlans.isEmpty()) {
             return Page<ProductPlanEntity>()

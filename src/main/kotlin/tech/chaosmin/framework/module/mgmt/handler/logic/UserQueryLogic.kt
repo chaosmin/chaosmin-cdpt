@@ -21,25 +21,25 @@ class UserQueryLogic(private val userService: UserService) : BaseQueryLogic<User
 
     override fun get(id: Long): UserEntity? {
         val user = userService.getByIdExt(id)
-        return UserMapper.INSTANCE.convertEx2Entity(user)
+        return UserMapper.INSTANCE.convert2Entity(user)
     }
 
-    override fun page(cond: PageQuery<UserExt>): IPage<UserEntity?> {
+    override fun page(cond: PageQuery<UserExt>): IPage<UserEntity> {
         var queryWrapper = cond.wrapper
         if (!SecurityUtil.getUserDetails().isAdmin) {
             // 非管理员补充过滤自身创建的账户
             queryWrapper = queryWrapper.eq("user.creator", SecurityUtil.getUsername())
         }
         val page = userService.pageExt(cond.page, queryWrapper)
-        return page.convert(UserMapper.INSTANCE::convertEx2Entity)
+        return page.convert(UserMapper.INSTANCE::convert2Entity)
     }
 
-    fun findSubordinate(username: String? = null): List<UserEntity?> {
+    fun findSubordinate(username: String? = null): List<UserEntity> {
         val creator = username ?: SecurityUtil.getUsername()
         val ew = Wrappers.query<UserExt>().eq("user.creator", creator)
         return userService.listExt(ew).flatMap { sub ->
             if (sub.roles?.any { "officer" == it.code } == true) {
-                Collections.singleton(UserMapper.INSTANCE.convertEx2Entity(sub))
+                Collections.singleton(UserMapper.INSTANCE.convert2Entity(sub)!!)
             } else findSubordinate(sub.loginName)
         }
     }

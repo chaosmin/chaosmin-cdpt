@@ -35,22 +35,24 @@ open class ProductShareProvider(
 ) : ProductShareService {
     private val logger = LoggerFactory.getLogger(ProductShareService::class.java)
 
-    override fun selectById(id: Long): RestResult<ProductResp?> {
+    override fun selectById(id: Long): RestResult<ProductResp> {
         val product = productQueryLogic.get(id)
         return if (product == null) RestResultExt.successRestResult()
         else RestResultExt.successRestResult(ProductConvert.INSTANCE.convert2Resp(product))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<ProductResp?>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<ProductResp>> {
         val queryCondition = RequestUtil.getQueryCondition<ProductExt>(request)
         val page = productQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(ProductConvert.INSTANCE::convert2Resp))
     }
 
     override fun save(req: ProductReq): RestResult<ProductResp> {
-        val product = ProductConvert.INSTANCE.convert2Entity(req)
-        product.save()
-        return RestResultExt.execute(modifyProductHandler, product, ProductConvert::class.java)
+        val product = ProductConvert.INSTANCE.convert2Entity(req).save()
+        val result = modifyProductHandler.operate(product)
+        return RestResultExt.mapper<ProductResp>(result).convert {
+            ProductConvert.INSTANCE.convert2Resp(result.data ?: ProductEntity())
+        }
     }
 
     override fun upload(req: UploadFileReq): RestResult<ProductResp> {
@@ -59,27 +61,30 @@ open class ProductShareProvider(
         val result = uploadProductHandler.operate(req)
         return if (result.success && result.data != null) {
             val goodsPlan = GoodsPlanEntity().apply {
-                this.save()
                 this.userIds = Collections.singletonList(SecurityUtil.getUserId())
                 this.plans = result.data?.plans?.associate { it.id!! to it.comsRatio!! }
             }
             logger.info("Assign product plan: ${goodsPlan.plans} to ${goodsPlan.userId}")
-            modifyGoodsPlanHandler.operate(goodsPlan)
-            RestResultExt.successRestResult(ProductConvert.INSTANCE.convert2Resp(result.data)!!)
+            modifyGoodsPlanHandler.operate(goodsPlan.save())
+            RestResultExt.successRestResult(ProductConvert.INSTANCE.convert2Resp(result.data!!))
         } else {
             RestResultExt.mapper(result)
         }
     }
 
     override fun update(id: Long, req: ProductReq): RestResult<ProductResp> {
-        val product = ProductConvert.INSTANCE.convert2Entity(req)
-        product.update(id)
-        return RestResultExt.execute(modifyProductHandler, product, ProductConvert::class.java)
+        val product = ProductConvert.INSTANCE.convert2Entity(req).update(id)
+        val result = modifyProductHandler.operate(product)
+        return RestResultExt.mapper<ProductResp>(result).convert {
+            ProductConvert.INSTANCE.convert2Resp(result.data ?: ProductEntity())
+        }
     }
 
     override fun delete(id: Long): RestResult<ProductResp> {
-        val product = ProductEntity(id)
-        product.remove()
-        return RestResultExt.execute(modifyProductHandler, product, ProductConvert::class.java)
+        val product = ProductEntity(id).remove()
+        val result = modifyProductHandler.operate(product)
+        return RestResultExt.mapper<ProductResp>(result).convert {
+            ProductConvert.INSTANCE.convert2Resp(result.data ?: ProductEntity())
+        }
     }
 }

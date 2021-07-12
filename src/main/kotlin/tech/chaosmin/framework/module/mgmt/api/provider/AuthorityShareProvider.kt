@@ -21,7 +21,7 @@ open class AuthorityShareProvider(
     private val authorityQueryLogic: AuthorityQueryLogic,
     private val modifyAuthorityHandler: ModifyAuthorityHandler
 ) : AuthorityShareService {
-    override fun selectById(id: Long): RestResult<AuthorityResp?> {
+    override fun selectById(id: Long): RestResult<AuthorityResp> {
         val authority = authorityQueryLogic.get(id)
         return if (authority == null) RestResultExt.successRestResult()
         else RestResultExt.successRestResult(AuthorityConvert.INSTANCE.convert2Resp(authority))
@@ -31,27 +31,33 @@ open class AuthorityShareProvider(
         return RestResultExt.successRestResult(authorityQueryLogic.tree())
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<AuthorityResp?>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<AuthorityResp>> {
         val queryCondition = RequestUtil.getQueryCondition<Authority>(request)
         val page = authorityQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(AuthorityConvert.INSTANCE::convert2Resp))
     }
 
     override fun save(req: AuthorityReq): RestResult<AuthorityResp> {
-        val authority = AuthorityConvert.INSTANCE.convert2Entity(req)
-        authority.save()
-        return RestResultExt.execute(modifyAuthorityHandler, authority, AuthorityConvert::class.java)
+        val authority = AuthorityConvert.INSTANCE.convert2Entity(req).save()
+        val result = modifyAuthorityHandler.operate(authority)
+        return RestResultExt.mapper<AuthorityResp>(result).convert {
+            AuthorityConvert.INSTANCE.convert2Resp(result.data ?: AuthorityEntity())
+        }
     }
 
     override fun update(id: Long, req: AuthorityReq): RestResult<AuthorityResp> {
-        val authority = AuthorityConvert.INSTANCE.convert2Entity(req)
-        authority.update(id)
-        return RestResultExt.execute(modifyAuthorityHandler, authority, AuthorityConvert::class.java)
+        val authority = AuthorityConvert.INSTANCE.convert2Entity(req).update(id)
+        val result = modifyAuthorityHandler.operate(authority)
+        return RestResultExt.mapper<AuthorityResp>(result).convert {
+            AuthorityConvert.INSTANCE.convert2Resp(result.data ?: AuthorityEntity())
+        }
     }
 
     override fun delete(id: Long): RestResult<AuthorityResp> {
-        val authority = AuthorityEntity(id)
-        authority.remove()
-        return RestResultExt.execute(modifyAuthorityHandler, authority, AuthorityConvert::class.java)
+        val authority = AuthorityEntity(id).remove()
+        val result = modifyAuthorityHandler.operate(authority)
+        return RestResultExt.mapper<AuthorityResp>(result).convert {
+            AuthorityConvert.INSTANCE.convert2Resp(result.data ?: AuthorityEntity())
+        }
     }
 }

@@ -25,7 +25,7 @@ class OrderQueryLogic(
         return OrderMapper.INSTANCE.convert2Entity(order)
     }
 
-    override fun page(cond: PageQuery<OrderExt>): IPage<OrderEntity?> {
+    override fun page(cond: PageQuery<OrderExt>): IPage<OrderEntity> {
         val page = orderService.pageExt(cond.page, cond.wrapper)
         return page.convert(OrderMapper.INSTANCE::convert2Entity)
     }

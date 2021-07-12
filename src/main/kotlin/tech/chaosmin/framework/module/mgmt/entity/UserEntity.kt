@@ -4,20 +4,20 @@ import tech.chaosmin.framework.base.BaseEntity
 import tech.chaosmin.framework.base.enums.UserStatusEnum
 
 /**
+ * 用户信息实体对象 <p>
  * @author Romani min
  * @since 2020/12/23 15:15
  */
-class UserEntity(id: Long? = null) : BaseEntity(id) {
+class UserEntity(id: Long? = null) : BaseEntity<UserEntity>(id) {
+    var address: String? = null
+    var department: String? = null
     var departmentId: Long? = null
-    var username: String? = null
+    var email: String? = null
     var loginName: String? = null
     var password: String? = null
-    var status: UserStatusEnum? = null
     var phone: String? = null
-    var email: String? = null
-    var address: String? = null
-    var roleIds: List<Long>? = null
-
-    var department: String? = null
     var role: String? = null
+    var roleIds: List<Long>? = null
+    var status: UserStatusEnum? = null
+    var username: String? = null
 }

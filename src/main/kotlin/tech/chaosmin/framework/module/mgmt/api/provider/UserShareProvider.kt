@@ -38,37 +38,42 @@ open class UserShareProvider(
             return RestResultExt.failureRestResult("原密码输入错误, 请重新输入!")
         }
         user.password = req.newPassword
-        user.update()
-        return RestResultExt.mapper(modifyUserHandler.operate(user))
+        return RestResultExt.mapper(modifyUserHandler.operate(user.update()))
     }
 
-    override fun selectById(id: Long): RestResult<UserResp?> {
+    override fun selectById(id: Long): RestResult<UserResp> {
         val user = userQueryLogic.get(id)
         return if (user == null) RestResultExt.successRestResult()
         else RestResultExt.successRestResult(UserConvert.INSTANCE.convert2Resp(user))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<UserResp?>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<UserResp>> {
         val queryCondition = RequestUtil.getQueryCondition<UserExt>(request)
         val page = userQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(UserConvert.INSTANCE::convert2Resp))
     }
 
     override fun save(req: UserReq): RestResult<UserResp> {
-        val user = UserConvert.INSTANCE.convert2Entity(req)
-        user.save()
-        return RestResultExt.execute(modifyUserHandler, user, UserConvert::class.java)
+        val user = UserConvert.INSTANCE.convert2Entity(req).save()
+        val result = modifyUserHandler.operate(user)
+        return RestResultExt.mapper<UserResp>(result).convert {
+            UserConvert.INSTANCE.convert2Resp(result.data ?: UserEntity())
+        }
     }
 
     override fun update(id: Long, req: UserReq): RestResult<UserResp> {
-        val user = UserConvert.INSTANCE.convert2Entity(req)
-        user.update(id)
-        return RestResultExt.execute(modifyUserHandler, user, UserConvert::class.java)
+        val user = UserConvert.INSTANCE.convert2Entity(req).update(id)
+        val result = modifyUserHandler.operate(user)
+        return RestResultExt.mapper<UserResp>(result).convert {
+            UserConvert.INSTANCE.convert2Resp(result.data ?: UserEntity())
+        }
     }
 
     override fun delete(id: Long): RestResult<UserResp> {
-        val user = UserEntity(id)
-        user.remove()
-        return RestResultExt.execute(modifyUserHandler, user, UserConvert::class.java)
+        val user = UserEntity(id).remove()
+        val result = modifyUserHandler.operate(user)
+        return RestResultExt.mapper<UserResp>(result).convert {
+            UserConvert.INSTANCE.convert2Resp(result.data ?: UserEntity())
+        }
     }
 }

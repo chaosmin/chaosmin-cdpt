@@ -34,13 +34,13 @@ open class OrderShareProvider(private val orderQueryLogic: OrderQueryLogic) : Or
         return RestResultExt.successRestResult()
     }
 
-    override fun selectById(id: Long): RestResult<OrderResp?> {
+    override fun selectById(id: Long): RestResult<OrderResp> {
         val order = orderQueryLogic.get(id)
         return if (order == null) RestResultExt.successRestResult()
         else RestResultExt.successRestResult(OrderConvert.INSTANCE.convert2Resp(order))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<OrderResp?>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<OrderResp>> {
         val queryCondition = RequestUtil.getQueryCondition<OrderExt>(request)
         val page = orderQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(OrderConvert.INSTANCE::convert2Resp))

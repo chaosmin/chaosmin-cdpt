@@ -21,7 +21,7 @@ class PartnerQueryLogic(private val partnerService: PartnerService) : BaseQueryL
         return PartnerMapper.INSTANCE.convert2Entity(partner)
     }
 
-    override fun page(cond: PageQuery<Partner>): IPage<PartnerEntity?> {
+    override fun page(cond: PageQuery<Partner>): IPage<PartnerEntity> {
         val page = partnerService.page(cond.page, cond.wrapper)
         return page.convert(PartnerMapper.INSTANCE::convert2Entity)
     }

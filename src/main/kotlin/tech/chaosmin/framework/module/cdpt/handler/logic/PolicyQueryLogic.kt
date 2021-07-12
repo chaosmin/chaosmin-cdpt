@@ -48,10 +48,10 @@ class PolicyQueryLogic(
         }
     }
 
-    override fun page(cond: PageQuery<PolicyExt>): IPage<PolicyEntity?> {
+    override fun page(cond: PageQuery<PolicyExt>): IPage<PolicyEntity> {
         var queryWrapper = cond.wrapper
         if (!SecurityUtil.getUserDetails().isAdmin) {
-            val subordinate = userQueryLogic.findSubordinate().mapNotNull { it?.loginName }.toMutableList()
+            val subordinate = userQueryLogic.findSubordinate().mapNotNull { it.loginName }.toMutableList()
             subordinate.add(SecurityUtil.getUsername())
             queryWrapper = queryWrapper.`in`("policy.creator", subordinate)
         }

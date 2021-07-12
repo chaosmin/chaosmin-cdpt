@@ -2,7 +2,6 @@ package tech.chaosmin.framework.module.cdpt.handler.logic
 
 import com.baomidou.mybatisplus.core.metadata.IPage
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
-import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.BaseQueryLogic
 import tech.chaosmin.framework.base.PageQuery
@@ -25,7 +24,6 @@ import tech.chaosmin.framework.module.cdpt.service.inner.ProductExternalService
  */
 @Component
 class GoodsPlanQueryLogic(
-    private val stringRedisTemplate: StringRedisTemplate,
     private val goodsPlanService: GoodsPlanService,
     private val planLiabilityService: PlanLiabilityService,
     private val planRateTableService: PlanRateTableService,
@@ -41,7 +39,7 @@ class GoodsPlanQueryLogic(
         }
     }
 
-    override fun page(cond: PageQuery<GoodsPlan>): IPage<GoodsPlanEntity?> {
+    override fun page(cond: PageQuery<GoodsPlan>): IPage<GoodsPlanEntity> {
         val page = goodsPlanService.page(cond.page, cond.wrapper)
         return page.convert(GoodsPlanMapper.INSTANCE::convert2Entity)
     }

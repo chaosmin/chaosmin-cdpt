@@ -22,7 +22,7 @@ class DepartmentQueryLogic(private val departmentService: DepartmentService) : B
         return DepartmentMapper.INSTANCE.convert2Entity(department)
     }
 
-    override fun page(cond: PageQuery<DepartmentExt>): IPage<DepartmentEntity?> {
+    override fun page(cond: PageQuery<DepartmentExt>): IPage<DepartmentEntity> {
         var queryWrapper = cond.wrapper
         if (!SecurityUtil.getUserDetails().isAdmin) {
             queryWrapper = queryWrapper.eq("id", SecurityUtil.getUserDetails().departmentId)

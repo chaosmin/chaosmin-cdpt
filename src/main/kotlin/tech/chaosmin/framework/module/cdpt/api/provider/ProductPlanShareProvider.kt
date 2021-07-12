@@ -33,33 +33,39 @@ open class ProductPlanShareProvider(
         return RestResultExt.successRestResult(page.convert(ProductPlanConvert.INSTANCE::convert2Resp))
     }
 
-    override fun selectById(id: Long): RestResult<ProductPlanResp?> {
+    override fun selectById(id: Long): RestResult<ProductPlanResp> {
         val productPlan = productPlanQueryLogic.get(id)
         return if (productPlan == null) RestResultExt.successRestResult()
         else RestResultExt.successRestResult(ProductPlanConvert.INSTANCE.convert2Resp(productPlan))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<ProductPlanResp?>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<ProductPlanResp>> {
         val queryCondition = RequestUtil.getQueryCondition<ProductPlanExt>(request)
         val page = productPlanQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(ProductPlanConvert.INSTANCE::convert2Resp))
     }
 
     override fun save(req: ProductPlanReq): RestResult<ProductPlanResp> {
-        val productPlan = ProductPlanConvert.INSTANCE.convert2Entity(req)
-        productPlan.save()
-        return RestResultExt.execute(modifyProductPlanHandler, productPlan, ProductPlanConvert::class.java)
+        val productPlan = ProductPlanConvert.INSTANCE.convert2Entity(req).save()
+        val result = modifyProductPlanHandler.operate(productPlan)
+        return RestResultExt.mapper<ProductPlanResp>(result).convert {
+            ProductPlanConvert.INSTANCE.convert2Resp(result.data ?: ProductPlanEntity())
+        }
     }
 
     override fun update(id: Long, req: ProductPlanReq): RestResult<ProductPlanResp> {
-        val productPlan = ProductPlanConvert.INSTANCE.convert2Entity(req)
-        productPlan.update(id)
-        return RestResultExt.execute(modifyProductPlanHandler, productPlan, ProductPlanConvert::class.java)
+        val productPlan = ProductPlanConvert.INSTANCE.convert2Entity(req).update(id)
+        val result = modifyProductPlanHandler.operate(productPlan)
+        return RestResultExt.mapper<ProductPlanResp>(result).convert {
+            ProductPlanConvert.INSTANCE.convert2Resp(result.data ?: ProductPlanEntity())
+        }
     }
 
     override fun delete(id: Long): RestResult<ProductPlanResp> {
-        val productPlan = ProductPlanEntity(id)
-        productPlan.remove()
-        return RestResultExt.execute(modifyProductPlanHandler, productPlan, ProductPlanConvert::class.java)
+        val productPlan = ProductPlanEntity(id).remove()
+        val result = modifyProductPlanHandler.operate(productPlan)
+        return RestResultExt.mapper<ProductPlanResp>(result).convert {
+            ProductPlanConvert.INSTANCE.convert2Resp(result.data ?: ProductPlanEntity())
+        }
     }
 }

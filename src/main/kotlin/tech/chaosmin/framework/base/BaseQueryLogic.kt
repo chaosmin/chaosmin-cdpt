@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage
  * @author Romani min
  * @since 2020/12/23 17:05
  */
-interface BaseQueryLogic<E : BaseEntity, D : BaseDO> {
+interface BaseQueryLogic<E : BaseEntity<E>, D : BaseDO> {
     /**
      * 根据ID查询
      * @param id 查询实体的主键ID
@@ -24,5 +24,5 @@ interface BaseQueryLogic<E : BaseEntity, D : BaseDO> {
      * @param cond 基于底层实体变量封装的查询条件[PageQuery]
      * @return 基于中间态返回的分页查询结果,未查询到时返回空页
      */
-    fun page(cond: PageQuery<D>): IPage<E?>
+    fun page(cond: PageQuery<D>): IPage<E>
 }

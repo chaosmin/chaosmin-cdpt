@@ -3,16 +3,12 @@ package tech.chaosmin.framework.module.mgmt.entity
 import tech.chaosmin.framework.base.BaseEntity
 
 /**
+ * 码表信息实体对象 <p>
  * @author Romani min
  * @since 2021/6/29 11:07
  */
-class ResDataEntity(id: Long? = null) : BaseEntity(id) {
-    // 类型
+class ResDataEntity(id: Long? = null) : BaseEntity<ResDataEntity>(id) {
     var itemKey: String? = null
-
-    // 代码
     var itemCode: String? = null
-
-    // 名称
     var itemName: String? = null
 }

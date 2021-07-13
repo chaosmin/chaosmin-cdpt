@@ -12,5 +12,6 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.OrderExt
  * @since 2021/1/26 15:31
  */
 interface OrderService : IService<Order> {
+    fun findByOrderNo(orderNo: String): Order
     fun pageExt(page: Page<OrderExt>, queryWrapper: Wrapper<OrderExt>): IPage<OrderExt>
 }

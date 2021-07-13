@@ -42,8 +42,4 @@ class OrderQueryLogic(
     fun loadDraft(orderNo: String): String {
         return orderTempService.listByOrderNo(orderNo).firstOrNull()?.param ?: "{}"
     }
-
-    fun saveDraft(orderNo: String, param: String) {
-        orderTempService.saveOrUpdate(orderNo, param)
-    }
 }

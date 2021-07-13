@@ -44,8 +44,9 @@ open class BaseEntity<T : BaseEntity<T>>(var id: Long? = null) {
         return this as T
     }
 
-    fun remove(): T {
+    fun remove(id: Long? = this.id): T {
         this.modifyType = ModifyTypeEnum.REMOVE
+        this.id = id
         return this as T
     }
 }

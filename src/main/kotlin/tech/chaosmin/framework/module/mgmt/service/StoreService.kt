@@ -6,7 +6,7 @@ import tech.chaosmin.framework.module.mgmt.domain.auth.Rule
 interface StoreService {
     fun fetchRuleWithComposeModes(authentication: Authentication): Rule
 
-    fun store(username: String, authorities: Rule)
+    fun store(cacheName: String, authorities: Rule)
 
-    fun clear(username: String)
+    fun clear(cacheName: String)
 }

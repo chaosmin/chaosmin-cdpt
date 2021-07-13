@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
+import tech.chaosmin.framework.definition.SystemConst.APPLICATION_NAME
 import tech.chaosmin.framework.definition.SystemConst.DEFAULT_CACHE_EXPIRE_TIME
 import tech.chaosmin.framework.definition.SystemConst.HTTP_METHOD
 import tech.chaosmin.framework.definition.SystemConst.REQUEST_URL
@@ -11,16 +12,19 @@ import tech.chaosmin.framework.module.mgmt.domain.auth.Rule
 import tech.chaosmin.framework.module.mgmt.service.StoreService
 import tech.chaosmin.framework.utils.SecurityUtil
 import java.util.concurrent.TimeUnit
-
+import javax.annotation.Resource
 
 @Service
-class StoreServiceImpl(private val authoritiesCacheTemplate: RedisTemplate<String, Rule>) : StoreService {
+class StoreServiceImpl : StoreService {
+    @Resource
+    lateinit var redisTemplate: RedisTemplate<String, Rule>
 
     override fun fetchRuleWithComposeModes(authentication: Authentication): Rule {
         val username = SecurityUtil.getUsername(authentication)
-        val cache = authoritiesCacheTemplate.opsForValue().get(username)
-        if (cache != null) {
-            return cache
+        val cacheName = "$APPLICATION_NAME:users:$username:role-rule"
+        if (redisTemplate.hasKey(cacheName)) {
+            val cache = redisTemplate.opsForValue().get(cacheName)
+            if (cache != null) return cache
         }
         synchronized(this) {
             val expr = JsonNodeFactory.instance.objectNode()
@@ -33,16 +37,16 @@ class StoreServiceImpl(private val authoritiesCacheTemplate: RedisTemplate<Strin
                     point.forEach { this.add(it.second) }
                 }
             }
-            return Rule(0, expr).also { store(username, it) }
+            return Rule(0, expr).also { store(cacheName, it) }
         }
     }
 
-    override fun store(username: String, authorities: Rule) {
-        this.clear(username)
-        authoritiesCacheTemplate.opsForValue().set(username, authorities, DEFAULT_CACHE_EXPIRE_TIME, TimeUnit.SECONDS)
+    override fun store(cacheName: String, authorities: Rule) {
+        this.clear(cacheName)
+        redisTemplate.opsForValue().set(cacheName, authorities, DEFAULT_CACHE_EXPIRE_TIME, TimeUnit.SECONDS)
     }
 
-    override fun clear(username: String) {
-        authoritiesCacheTemplate.delete(username)
+    override fun clear(cacheName: String) {
+        redisTemplate.delete(cacheName)
     }
 }

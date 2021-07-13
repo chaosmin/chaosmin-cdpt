@@ -32,10 +32,7 @@ open class InsureShareProvider(
     }
 
     override fun saveKhsImg(orderNo: String, req: PolicyKhsReq): RestResult<String> {
-        val khsEntity = PolicyKhsConvert.INSTANCE.convert2Entity(req).apply {
-            this.orderNo = orderNo
-            this.save()
-        }
-        return RestResultExt.mapper(modifyPolicyKhsHandler.operate(khsEntity))
+        val khsEntity = PolicyKhsConvert.INSTANCE.convert2Entity(req).apply { this.orderNo = orderNo }
+        return RestResultExt.mapper(modifyPolicyKhsHandler.operate(khsEntity.save()))
     }
 }

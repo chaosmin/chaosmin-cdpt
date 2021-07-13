@@ -32,7 +32,7 @@ class RoleQueryLogic(
         return RoleMapper.INSTANCE.convert2Entity(role)
     }
 
-    override fun page(cond: PageQuery<Role>): IPage<RoleEntity?> {
+    override fun page(cond: PageQuery<Role>): IPage<RoleEntity> {
         var queryWrapper = cond.wrapper
         if (!SecurityUtil.getUserDetails().isAdmin) {
             val roles = SecurityUtil.getUserDetails().roles

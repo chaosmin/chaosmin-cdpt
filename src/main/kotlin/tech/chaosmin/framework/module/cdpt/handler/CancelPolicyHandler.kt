@@ -40,8 +40,7 @@ open class CancelPolicyHandler(
             val ddcpRespEntity = JsonUtil.decode(it, DDResp::class.java, DDCPResp::class.java)
             if (ddcpRespEntity?.responseBody is DDCPResp && "0" == ddcpRespEntity.responseHead?.resultCode) {
                 policy.status = PolicyStatusEnum.REFUND
-                policy.update()
-                modifyPolicyHandler.operate(policy)
+                modifyPolicyHandler.operate(policy.update())
             } else result = RestResultExt.failureRestResult(msg = ddcpRespEntity?.responseHead?.appMessage ?: "", data = policy)
         }
         return result

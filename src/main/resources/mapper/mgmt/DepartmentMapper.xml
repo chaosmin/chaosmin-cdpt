@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="tech.chaosmin.framework.module.mgmt.domain.dao.DepartmentDAO">
     <select id="pageExt" resultType="tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.DepartmentExt">
-        SELECT d.*, (select count(*) from user u where u.is_deleted = 0 and u.department_id = d.id) as number_of_user
-        FROM department d
-        ${ew.customSqlSegment}
+        select d.*, (select count(*) from user u where u.is_deleted = 0 and u.department_id = d.id) as number_of_user
+        from department d
+            ${ew.customSqlSegment}
     </select>
 </mapper> 

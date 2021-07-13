@@ -4,7 +4,6 @@ import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Mappings
 import org.mapstruct.factory.Mappers
-import tech.chaosmin.framework.base.BaseMapper
 import tech.chaosmin.framework.base.KeyValueEnumMapper
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.GoodsPlan
 import tech.chaosmin.framework.module.cdpt.entity.GoodsPlanEntity
@@ -17,13 +16,17 @@ import tech.chaosmin.framework.module.mgmt.entity.UserEntity
  * @since 2020/12/23 16:13
  */
 @Mapper(uses = [KeyValueEnumMapper::class])
-interface GoodsPlanMapper : BaseMapper<GoodsPlanEntity, GoodsPlan> {
+interface GoodsPlanMapper {
     companion object {
         val INSTANCE: GoodsPlanMapper = Mappers.getMapper(GoodsPlanMapper::class.java)
     }
 
-    @Mapping(target = "saleDateScope", expression = "java(java.util.Arrays.asList(source.getSaleStartTime(),source.getSaleEndTime()))")
-    override fun convert2Entity(source: GoodsPlan?): GoodsPlanEntity?
+    fun convert2DO(source: GoodsPlanEntity?): GoodsPlan?
+
+    @Mapping(target = "modifyType", ignore = true)
+    fun convert2Entity(source: GoodsPlan?): GoodsPlanEntity?
+
+    fun convert2Entity(source: List<GoodsPlan>?): List<GoodsPlanEntity>?
 
     @Mappings(
         value = [

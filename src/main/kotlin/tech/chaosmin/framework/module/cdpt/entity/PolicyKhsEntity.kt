@@ -8,7 +8,7 @@ import java.util.*
  * @author Romani min
  * @since 2021/6/7 10:49
  */
-class PolicyKhsEntity(id: Long? = null) : BaseEntity(id) {
+class PolicyKhsEntity(id: Long? = null) : BaseEntity<PolicyKhsEntity>(id) {
     /** 保单ID */
     var policyId: Long? = null
 

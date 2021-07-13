@@ -16,4 +16,7 @@ class Partner(id: Long? = null) : BaseDO(id, 0) {
 
     // 保司公钥
     var publicKey: String? = null
+
+    // 保司私钥
+    var securityKey: String? = null
 }

@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil
 import cn.hutool.extra.spring.SpringUtil
 import org.springframework.data.redis.core.StringRedisTemplate
 import tech.chaosmin.framework.base.enums.BizNoTypeEnum
+import tech.chaosmin.framework.definition.SystemConst.APPLICATION_NAME
 import java.util.*
 
 /**
@@ -11,8 +12,10 @@ import java.util.*
  * @since 2021/1/27 10:27
  */
 object BizNoUtil {
-    private const val BIZ_NO_NAMESPACE = "SYS:BIZ-NO"
+    private const val BIZ_NO_NAMESPACE = "$APPLICATION_NAME:system:biz-no-sequence"
     private var redisHelper: StringRedisTemplate? = null
+
+    // 每次重启服务更新序列号
     private var seq = 0L
 
     init {

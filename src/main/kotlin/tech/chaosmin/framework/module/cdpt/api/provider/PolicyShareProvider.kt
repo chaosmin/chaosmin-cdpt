@@ -37,16 +37,16 @@ open class PolicyShareProvider(
     override fun getKhsList(id: Long): RestResult<PolicyKhsResp> {
         val policyKhsList = policyQueryLogic.queryKhs(id)
         val khsResp = PolicyKhsConvert.INSTANCE.convert2Resp(policyKhsList)
-        return RestResultExt.successRestResult(khsResp ?: PolicyKhsResp())
+        return RestResultExt.successRestResult(khsResp)
     }
 
-    override fun selectById(id: Long): RestResult<PolicyResp?> {
+    override fun selectById(id: Long): RestResult<PolicyResp> {
         val policy = policyQueryLogic.get(id)
         return if (policy == null) RestResultExt.successRestResult()
         else RestResultExt.successRestResult(PolicyConvert.INSTANCE.convert2Resp(policy))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<PolicyResp?>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<PolicyResp>> {
         val queryCondition = RequestUtil.getQueryCondition<PolicyExt>(request)
         val page = policyQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(PolicyConvert.INSTANCE::convert2Resp))

@@ -20,7 +20,7 @@ class ResDataQueryLogic(private val resDataService: ResDataService) : BaseQueryL
         return ResDataMapper.INSTANCE.convert2Entity(resData)
     }
 
-    override fun page(cond: PageQuery<ResData>): IPage<ResDataEntity?> {
+    override fun page(cond: PageQuery<ResData>): IPage<ResDataEntity> {
         val page = resDataService.page(cond.page, cond.wrapper)
         return page.convert(ResDataMapper.INSTANCE::convert2Entity)
     }

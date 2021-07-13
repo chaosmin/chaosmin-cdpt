@@ -27,33 +27,40 @@ open class PlanRateTableShareProvider(
     private val planRateTableService: PlanRateTableService,
     private val modifyPlanRateTableHandler: ModifyPlanRateTableHandler
 ) : PlanRateTableShareService {
-    override fun selectById(id: Long): RestResult<PlanRateTableResp?> {
+    override fun selectById(id: Long): RestResult<PlanRateTableResp> {
         throw FrameworkException(ErrorCodeEnum.NOT_SUPPORTED_FUNCTION.code)
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<PlanRateTableResp?>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<PlanRateTableResp>> {
         val queryCondition = RequestUtil.getQueryCondition<PlanRateTable>(request)
         val page = planRateTableService.page(queryCondition.page, queryCondition.wrapper)
         return RestResultExt.successRestResult(
-            page.convert(PlanRateTableMapper.INSTANCE::convert2Entity).convert(PlanRateTableConvert.INSTANCE::convert2Resp)
-        )
+            page.convert(PlanRateTableMapper.INSTANCE::convert2Entity).convert {
+                PlanRateTableConvert.INSTANCE.convert2Resp(it!!)
+            })
     }
 
     override fun save(req: PlanRateTableReq): RestResult<PlanRateTableResp> {
-        val planRateTable = PlanRateTableConvert.INSTANCE.convert2Entity(req)
-        planRateTable.save()
-        return RestResultExt.execute(modifyPlanRateTableHandler, planRateTable, PlanRateTableConvert::class.java)
+        val planRateTable = PlanRateTableConvert.INSTANCE.convert2Entity(req).save()
+        val result = modifyPlanRateTableHandler.operate(planRateTable)
+        return RestResultExt.mapper<PlanRateTableResp>(result).convert {
+            PlanRateTableConvert.INSTANCE.convert2Resp(result.data ?: PlanRateTableEntity())
+        }
     }
 
     override fun update(id: Long, req: PlanRateTableReq): RestResult<PlanRateTableResp> {
-        val planRateTable = PlanRateTableConvert.INSTANCE.convert2Entity(req)
-        planRateTable.update(id)
-        return RestResultExt.execute(modifyPlanRateTableHandler, planRateTable, PlanRateTableConvert::class.java)
+        val planRateTable = PlanRateTableConvert.INSTANCE.convert2Entity(req).update(id)
+        val result = modifyPlanRateTableHandler.operate(planRateTable)
+        return RestResultExt.mapper<PlanRateTableResp>(result).convert {
+            PlanRateTableConvert.INSTANCE.convert2Resp(result.data ?: PlanRateTableEntity())
+        }
     }
 
     override fun delete(id: Long): RestResult<PlanRateTableResp> {
-        val planRateTable = PlanRateTableEntity(id)
-        planRateTable.remove()
-        return RestResultExt.execute(modifyPlanRateTableHandler, planRateTable, PlanRateTableConvert::class.java)
+        val planRateTable = PlanRateTableEntity(id).remove()
+        val result = modifyPlanRateTableHandler.operate(planRateTable)
+        return RestResultExt.mapper<PlanRateTableResp>(result).convert {
+            PlanRateTableConvert.INSTANCE.convert2Resp(result.data ?: PlanRateTableEntity())
+        }
     }
 }

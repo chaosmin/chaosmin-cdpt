@@ -24,33 +24,39 @@ open class DepartmentShareProvider(
     private val departmentQueryLogic: DepartmentQueryLogic,
     private val modifyDepartmentHandler: ModifyDepartmentHandler
 ) : DepartmentShareService {
-    override fun selectById(id: Long): RestResult<DepartmentResp?> {
+    override fun selectById(id: Long): RestResult<DepartmentResp> {
         val department = departmentQueryLogic.get(id)
         return if (department == null) RestResultExt.successRestResult()
         else RestResultExt.successRestResult(DepartmentConvert.INSTANCE.convert2Resp(department))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<DepartmentResp?>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<DepartmentResp>> {
         val queryCondition = RequestUtil.getQueryCondition<DepartmentExt>(request)
         val page = departmentQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(DepartmentConvert.INSTANCE::convert2Resp))
     }
 
     override fun save(req: DepartmentReq): RestResult<DepartmentResp> {
-        val department = DepartmentConvert.INSTANCE.convert2Entity(req)
-        department.save()
-        return RestResultExt.execute(modifyDepartmentHandler, department, DepartmentConvert::class.java)
+        val department = DepartmentConvert.INSTANCE.convert2Entity(req).save()
+        val result = modifyDepartmentHandler.operate(department)
+        return RestResultExt.mapper<DepartmentResp>(result).convert {
+            DepartmentConvert.INSTANCE.convert2Resp(result.data ?: DepartmentEntity())
+        }
     }
 
     override fun update(id: Long, req: DepartmentReq): RestResult<DepartmentResp> {
-        val department = DepartmentConvert.INSTANCE.convert2Entity(req)
-        department.update(id)
-        return RestResultExt.execute(modifyDepartmentHandler, department, DepartmentConvert::class.java)
+        val department = DepartmentConvert.INSTANCE.convert2Entity(req).update(id)
+        val result = modifyDepartmentHandler.operate(department)
+        return RestResultExt.mapper<DepartmentResp>(result).convert {
+            DepartmentConvert.INSTANCE.convert2Resp(result.data ?: DepartmentEntity())
+        }
     }
 
     override fun delete(id: Long): RestResult<DepartmentResp> {
-        val department = DepartmentEntity(id)
-        department.remove()
-        return RestResultExt.execute(modifyDepartmentHandler, department, DepartmentConvert::class.java)
+        val department = DepartmentEntity(id).remove()
+        val result = modifyDepartmentHandler.operate(department)
+        return RestResultExt.mapper<DepartmentResp>(result).convert {
+            DepartmentConvert.INSTANCE.convert2Resp(result.data ?: DepartmentEntity())
+        }
     }
 }

@@ -31,20 +31,20 @@ open class GoodsPlanShareProvider(
         val queryCondition = RequestUtil.getQueryCondition<GoodsPlan>(request)
         queryCondition.wrapper.eq("goods_plan.status", StatusEnum.ENABLED.getCode())
         val list = goodsPlanQueryLogic.searchGoodsPlan(id, queryCondition)
-        return RestResultExt.successRestResult(GoodsPlanConvert.INSTANCE.convert2Resp(list).filterNotNull())
+        return RestResultExt.successRestResult(GoodsPlanConvert.INSTANCE.convert2Resp(list))
     }
 
     override fun userCategories(id: Long): RestResult<List<GoodsCategoryResp>> {
         return RestResultExt.successRestResult(goodsPlanQueryLogic.searchCategories(id))
     }
 
-    override fun selectById(id: Long): RestResult<GoodsPlanResp?> {
+    override fun selectById(id: Long): RestResult<GoodsPlanResp> {
         val goodsPlan = goodsPlanQueryLogic.get(id)
         return if (goodsPlan == null) RestResultExt.successRestResult()
         else RestResultExt.successRestResult(GoodsPlanConvert.INSTANCE.convert2Resp(goodsPlan))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<GoodsPlanResp?>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<GoodsPlanResp>> {
         val queryCondition = RequestUtil.getQueryCondition<GoodsPlan>(request)
         queryCondition.wrapper.eq("goods_plan.status", StatusEnum.ENABLED.getCode())
         if (!SecurityUtil.getUserDetails().isAdmin) {
@@ -55,20 +55,26 @@ open class GoodsPlanShareProvider(
     }
 
     override fun save(req: GoodsPlanReq): RestResult<GoodsPlanResp> {
-        val goodsPlan = GoodsPlanConvert.INSTANCE.convert2Entity(req)
-        goodsPlan.save()
-        return RestResultExt.execute(modifyGoodsPlanHandler, goodsPlan, GoodsPlanConvert::class.java)
+        val goodsPlan = GoodsPlanConvert.INSTANCE.convert2Entity(req).save()
+        val result = modifyGoodsPlanHandler.operate(goodsPlan)
+        return RestResultExt.mapper<GoodsPlanResp>(result).convert {
+            GoodsPlanConvert.INSTANCE.convert2Resp(result.data ?: GoodsPlanEntity())
+        }
     }
 
     override fun update(id: Long, req: GoodsPlanReq): RestResult<GoodsPlanResp> {
-        val goodsPlan = GoodsPlanConvert.INSTANCE.convert2Entity(req)
-        goodsPlan.update(id)
-        return RestResultExt.execute(modifyGoodsPlanHandler, goodsPlan, GoodsPlanConvert::class.java)
+        val goodsPlan = GoodsPlanConvert.INSTANCE.convert2Entity(req).update(id)
+        val result = modifyGoodsPlanHandler.operate(goodsPlan)
+        return RestResultExt.mapper<GoodsPlanResp>(result).convert {
+            GoodsPlanConvert.INSTANCE.convert2Resp(result.data ?: GoodsPlanEntity())
+        }
     }
 
     override fun delete(id: Long): RestResult<GoodsPlanResp> {
-        val goodsPlan = GoodsPlanEntity(id)
-        goodsPlan.remove()
-        return RestResultExt.execute(modifyGoodsPlanHandler, goodsPlan, GoodsPlanConvert::class.java)
+        val goodsPlan = GoodsPlanEntity(id).remove()
+        val result = modifyGoodsPlanHandler.operate(goodsPlan)
+        return RestResultExt.mapper<GoodsPlanResp>(result).convert {
+            GoodsPlanConvert.INSTANCE.convert2Resp(result.data ?: GoodsPlanEntity())
+        }
     }
 }

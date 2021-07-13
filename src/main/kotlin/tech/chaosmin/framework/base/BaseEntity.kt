@@ -9,7 +9,8 @@ import java.util.*
  * @author Romani min
  * @since 2020/12/23 15:50
  */
-open class BaseEntity(var id: Long? = null) {
+@Suppress("UNCHECKED_CAST")
+open class BaseEntity<T : BaseEntity<T>>(var id: Long? = null) {
     // 操作类型 SAVE,UPDATE,REMOVE
     var modifyType: ModifyTypeEnum? = null
 
@@ -32,16 +33,20 @@ open class BaseEntity(var id: Long? = null) {
     var deleted: Int? = null
 
     // TODO 如何优化以下三个方法, 简化代码写法
-    fun save() {
+    fun save(): T {
         this.modifyType = ModifyTypeEnum.SAVE
+        return this as T
     }
 
-    fun update(id: Long? = this.id) {
+    fun update(id: Long? = this.id): T {
         this.modifyType = ModifyTypeEnum.UPDATE
         this.id = id
+        return this as T
     }
 
-    fun remove() {
+    fun remove(id: Long? = this.id): T {
         this.modifyType = ModifyTypeEnum.REMOVE
+        this.id = id
+        return this as T
     }
 }

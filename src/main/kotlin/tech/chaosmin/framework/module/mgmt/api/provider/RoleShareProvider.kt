@@ -25,33 +25,39 @@ open class RoleShareProvider(
         return RestResultExt.successRestResult(responseData)
     }
 
-    override fun selectById(id: Long): RestResult<RoleResp?> {
+    override fun selectById(id: Long): RestResult<RoleResp> {
         val role = roleQueryLogic.get(id)
         return if (role == null) RestResultExt.successRestResult()
         else RestResultExt.successRestResult(RoleConvert.INSTANCE.convert2Resp(role))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<RoleResp?>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<RoleResp>> {
         val queryCondition = RequestUtil.getQueryCondition<Role>(request)
         val page = roleQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(RoleConvert.INSTANCE::convert2Resp))
     }
 
     override fun save(req: RoleReq): RestResult<RoleResp> {
-        val role = RoleConvert.INSTANCE.convert2Entity(req)
-        role.save()
-        return RestResultExt.execute(modifyRoleHandler, role, RoleConvert::class.java)
+        val role = RoleConvert.INSTANCE.convert2Entity(req).save()
+        val result = modifyRoleHandler.operate(role)
+        return RestResultExt.mapper<RoleResp>(result).convert {
+            RoleConvert.INSTANCE.convert2Resp(result.data ?: RoleEntity())
+        }
     }
 
     override fun update(id: Long, req: RoleReq): RestResult<RoleResp> {
-        val role = RoleConvert.INSTANCE.convert2Entity(req)
-        role.update(id)
-        return RestResultExt.execute(modifyRoleHandler, role, RoleConvert::class.java)
+        val role = RoleConvert.INSTANCE.convert2Entity(req).update(id)
+        val result = modifyRoleHandler.operate(role)
+        return RestResultExt.mapper<RoleResp>(result).convert {
+            RoleConvert.INSTANCE.convert2Resp(result.data ?: RoleEntity())
+        }
     }
 
     override fun delete(id: Long): RestResult<RoleResp> {
-        val role = RoleEntity(id)
-        role.remove()
-        return RestResultExt.execute(modifyRoleHandler, role, RoleConvert::class.java)
+        val role = RoleEntity(id).remove()
+        val result = modifyRoleHandler.operate(role)
+        return RestResultExt.mapper<RoleResp>(result).convert {
+            RoleConvert.INSTANCE.convert2Resp(result.data ?: RoleEntity())
+        }
     }
 }

@@ -24,33 +24,39 @@ open class PartnerShareProvider(
     private val partnerQueryLogic: PartnerQueryLogic,
     private val modifyPartnerHandler: ModifyPartnerHandler
 ) : PartnerShareService {
-    override fun selectById(id: Long): RestResult<PartnerResp?> {
+    override fun selectById(id: Long): RestResult<PartnerResp> {
         val partner = partnerQueryLogic.get(id)
         return if (partner == null) RestResultExt.successRestResult()
         else RestResultExt.successRestResult(PartnerConvert.INSTANCE.convert2Resp(partner))
     }
 
-    override fun page(request: HttpServletRequest): RestResult<IPage<PartnerResp?>> {
+    override fun page(request: HttpServletRequest): RestResult<IPage<PartnerResp>> {
         val queryCondition = RequestUtil.getQueryCondition<Partner>(request)
         val page = partnerQueryLogic.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(PartnerConvert.INSTANCE::convert2Resp))
     }
 
     override fun save(req: PartnerReq): RestResult<PartnerResp> {
-        val partner = PartnerConvert.INSTANCE.convert2Entity(req)
-        partner.save()
-        return RestResultExt.execute(modifyPartnerHandler, partner, PartnerConvert::class.java)
+        val partner = PartnerConvert.INSTANCE.convert2Entity(req).save()
+        val result = modifyPartnerHandler.operate(partner)
+        return RestResultExt.mapper<PartnerResp>(result).convert {
+            PartnerConvert.INSTANCE.convert2Resp(result.data ?: PartnerEntity())
+        }
     }
 
     override fun update(id: Long, req: PartnerReq): RestResult<PartnerResp> {
-        val partner = PartnerConvert.INSTANCE.convert2Entity(req)
-        partner.update(id)
-        return RestResultExt.execute(modifyPartnerHandler, partner, PartnerConvert::class.java)
+        val partner = PartnerConvert.INSTANCE.convert2Entity(req).update(id)
+        val result = modifyPartnerHandler.operate(partner)
+        return RestResultExt.mapper<PartnerResp>(result).convert {
+            PartnerConvert.INSTANCE.convert2Resp(result.data ?: PartnerEntity())
+        }
     }
 
     override fun delete(id: Long): RestResult<PartnerResp> {
-        val partner = PartnerEntity(id)
-        partner.remove()
-        return RestResultExt.execute(modifyPartnerHandler, partner, PartnerConvert::class.java)
+        val partner = PartnerEntity(id).remove()
+        val result = modifyPartnerHandler.operate(partner)
+        return RestResultExt.mapper<PartnerResp>(result).convert {
+            PartnerConvert.INSTANCE.convert2Resp(result.data ?: PartnerEntity())
+        }
     }
 }

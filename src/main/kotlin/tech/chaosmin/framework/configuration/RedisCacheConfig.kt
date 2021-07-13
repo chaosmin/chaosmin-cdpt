@@ -20,10 +20,9 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext
 import org.springframework.data.redis.serializer.RedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
-import tech.chaosmin.framework.definition.ApplicationParam
+import tech.chaosmin.framework.definition.SystemConst.APPLICATION_NAME
 import tech.chaosmin.framework.definition.SystemConst.DEFAULT_CACHE_EXPIRE_TIME
 import tech.chaosmin.framework.definition.SystemConst.INIT_SUCCESSFULLY
-import tech.chaosmin.framework.module.mgmt.domain.auth.Rule
 import java.time.Duration
 
 /**
@@ -32,14 +31,14 @@ import java.time.Duration
  */
 @Configuration
 @EnableCaching
-open class RedisCacheConfig(private val applicationParam: ApplicationParam) : CachingConfigurerSupport() {
+open class RedisCacheConfig : CachingConfigurerSupport() {
     private val logger = LoggerFactory.getLogger(RedisCacheConfig::class.java)
 
     @Bean
     open fun cacheManager(factory: RedisConnectionFactory): CacheManager {
         val redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
             .entryTtl(Duration.ofSeconds(DEFAULT_CACHE_EXPIRE_TIME))
-            .computePrefixWith { cacheName: String -> "${applicationParam.name}:$cacheName:" }
+            .computePrefixWith { cacheName: String -> "${APPLICATION_NAME}:$cacheName:" }
             .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(getKeySerializer()))
             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(getValueSerializer()))
             .disableCachingNullValues()
@@ -49,8 +48,8 @@ open class RedisCacheConfig(private val applicationParam: ApplicationParam) : Ca
     }
 
     @Bean
-    open fun authoritiesCacheTemplate(redisConnectionFactory: RedisConnectionFactory): RedisTemplate<String, Rule> {
-        val redisTemplate = RedisTemplate<String, Rule>()
+    open fun redisTemplate(redisConnectionFactory: RedisConnectionFactory): RedisTemplate<String, Any> {
+        val redisTemplate = RedisTemplate<String, Any>()
         redisTemplate.connectionFactory = redisConnectionFactory
         redisTemplate.keySerializer = getKeySerializer()
         redisTemplate.valueSerializer = getValueSerializer()

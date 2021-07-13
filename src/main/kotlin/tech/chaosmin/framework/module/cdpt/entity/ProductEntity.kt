@@ -6,34 +6,30 @@ import tech.chaosmin.framework.base.enums.StatusEnum
 import tech.chaosmin.framework.definition.SystemConst.DEFAULT_CURRENCY
 
 /**
+ * 保险产品信息实体对象 <p>
  * @author Romani min
  * @since 2020/12/23 21:35
  */
-class ProductEntity(id: Long? = null) : BaseEntity(id) {
-    var partnerId: Long? = null
-    var partnerCode: String? = null
-    var partnerName: String? = null
-
-    var productCategoryId: Long? = null
+class ProductEntity(id: Long? = null) : BaseEntity<ProductEntity>(id) {
     var categoryName: String? = null
     var categorySubName: String? = null
-
-    var productCode: String? = null
-    var productName: String? = null
-    var productSubName: String? = null
-    var partnerProductNo: String? = null
-    var waitingDays: String? = null
-    var productDesc: String? = null
-    var productRatio: String? = null
-    var status: StatusEnum? = null
     var clauseUrl: String? = null
-
-    var plans = mutableListOf<ProductPlanEntity>()
-
-    var insuranceNotice: String? = null
     var externalText: String? = null
-
+    var insuranceNotice: String? = null
     var numberOfPlan: Int? = null
+    var partnerCode: String? = null
+    var partnerId: Long? = null
+    var partnerName: String? = null
+    var partnerProductNo: String? = null
+    var plans = mutableListOf<ProductPlanEntity>()
+    var productCategoryId: Long? = null
+    var productCode: String? = null
+    var productDesc: String? = null
+    var productName: String? = null
+    var productRatio: String? = null
+    var productSubName: String? = null
+    var status: StatusEnum? = null
+    var waitingDays: String? = null
 
     fun addPlan(code: String, name: String, ratio: String?) {
         this.plans.add(ProductPlanEntity().apply {

@@ -73,11 +73,11 @@ open class IssuePolicyHandler(
         // step 2.1 创建保司下单请求报文
         val orderEntity = IssuerConvert.INSTANCE.convert2OrderEntity(arg)
 
+        // 异步保存订单信息，此处留空【投保单号】, 等保司投保完成后回写数据
         Thread(DelegatingSecurityContextRunnable(fun() {
             orderTempService.saveOrUpdate(arg.orderNo!!, JsonUtil.encode(arg))
             orderEntity.status = OrderStatusEnum.INIT
-            orderEntity.save()
-            modifyOrderHandler.operate(orderEntity)
+            modifyOrderHandler.operate(orderEntity.save())
         })).start()
 
         return try {
@@ -106,8 +106,7 @@ open class IssuePolicyHandler(
             orderEntity.status = OrderStatusEnum.FAILED
             RestResultExt.failureRestResult(msg = e.message)
         } finally {
-            orderEntity.update()
-            modifyOrderHandler.operate(orderEntity)
+            modifyOrderHandler.operate(orderEntity.update())
         }
     }
 

@@ -10,6 +10,7 @@
         <include refid="extSelectFields"/>
         from policy
         left join policy_holder on policy.id = policy_holder.policy_id
+        left join policy_insurant on policy.id = policy_insurant.policy_id
         left join goods_plan on policy.goods_plan_id = goods_plan.id
         ${ew.customSqlSegment}
     </select>
@@ -19,6 +20,7 @@
         <include refid="extSelectFields"/>
         from policy
         left join policy_holder on policy.id = policy_holder.policy_id
+        left join policy_insurant on policy.id = policy_insurant.policy_id
         left join goods_plan on policy.goods_plan_id = goods_plan.id
         ${ew.customSqlSegment}
     </select>

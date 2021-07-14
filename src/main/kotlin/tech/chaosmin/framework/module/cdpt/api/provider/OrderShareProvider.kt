@@ -36,7 +36,7 @@ open class OrderShareProvider(
 
     override fun saveDraft(orderNo: String, req: PolicyIssueReq): RestResult<String> {
         // 创建草稿箱
-        val result = modifyOrderHandler.saveDraft(orderNo, JsonUtil.encode(req))
+        modifyOrderHandler.saveDraft(orderNo, JsonUtil.encode(req))
         return RestResultExt.successRestResult()
     }
 

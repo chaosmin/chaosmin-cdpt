@@ -15,11 +15,7 @@ import tech.chaosmin.framework.utils.SecurityUtil
 open class AuthShareProvider : AuthShareService {
     override fun getUserInfo(): RestResult<UserDetailResp> {
         val userDetails = SecurityUtil.getUserDetails()
-        return if (userDetails != null) {
-            RestResultExt.successRestResult(userDetails)
-        } else {
-            RestResultExt.failureRestResult()
-        }
+        return RestResultExt.successRestResult(userDetails)
     }
 
     override fun logout(): RestResult<Void> {

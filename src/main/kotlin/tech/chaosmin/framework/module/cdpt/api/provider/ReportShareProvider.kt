@@ -11,6 +11,7 @@ import tech.chaosmin.framework.module.cdpt.entity.report.SltComsReportEntity
 import tech.chaosmin.framework.module.cdpt.handler.ReportSltCheckHandler
 import tech.chaosmin.framework.module.cdpt.handler.ReportSltComsHandler
 import tech.chaosmin.framework.utils.NumberUtil
+import java.net.URLEncoder
 import javax.servlet.http.HttpServletResponse
 
 /**
@@ -52,8 +53,12 @@ class ReportShareProvider(
             }
             writer.writeRow(listOf("合计", "", data?.totalOriginalPrice, "", "", "", "", data?.totalSettlementPrice))
             writer.autoSizeColumnAll()
-            response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-            response.addHeader("Content-Disposition", """attachment; filename=${data?.userName}个人计算佣金表.xlsx""")
+            val fileName = URLEncoder.encode("${data?.userName}个人佣金结算表.xls", "utf-8")
+            response.characterEncoding = "UTF-8"
+            response.contentType = "application/vnd.ms-excel;charset=utf-8"
+            response.setHeader("Content-Disposition", fileName)
+            response.setHeader("filename", fileName)
+            response.setHeader("Access-Control-Expose-Headers", "filename")
             response.outputStream.use { out ->
                 writer.flush(out)
                 out.flush()
@@ -131,8 +136,11 @@ class ReportShareProvider(
             writer.merge(6, "开户银行：中国建设银行北京分行兴融支行", false)
             writer.merge(6, "银行账号：11050167500000000875", false)
             writer.autoSizeColumnAll()
-            response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-            response.addHeader("Content-Disposition", """attachment; filename=结算清单-出单日${startTimeStr}至${endTimeStr}.xlsx""")
+            val fileName = URLEncoder.encode("结算清单-出单日${startTimeStr}至${endTimeStr}.xls", "utf-8")
+            response.contentType = "application/vnd.ms-excel;charset=utf-8"
+            response.setHeader("Content-Disposition", fileName)
+            response.setHeader("filename", fileName)
+            response.setHeader("Access-Control-Expose-Headers", "filename")
             response.outputStream.use { out ->
                 writer.flush(out)
                 out.flush()

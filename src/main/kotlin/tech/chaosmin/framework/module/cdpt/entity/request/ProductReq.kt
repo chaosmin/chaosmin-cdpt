@@ -38,6 +38,9 @@ class ProductReq : BaseReq() {
     @ApiModelProperty("产品状态")
     var status: StatusEnum? = null
 
+    @ApiModelProperty("投保提示")
+    var insuranceNotice: String? = null
+
     @ApiModelProperty("产品特约&须知")
     var externalText: String? = null
 }

@@ -50,6 +50,9 @@ class ProductResp : BaseResp() {
     @ApiModelProperty("包含计划数")
     var numberOfPlan: Int? = null
 
+    @ApiModelProperty("投保提示")
+    var insuranceNotice: String? = null
+
     @ApiModelProperty("投保须知")
     var externalText: String? = null
 }

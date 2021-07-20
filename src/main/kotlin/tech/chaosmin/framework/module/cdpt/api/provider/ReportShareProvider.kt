@@ -52,8 +52,8 @@ class ReportShareProvider(
             }
             writer.writeRow(listOf("合计", "", data?.totalOriginalPrice, "", "", "", "", data?.totalSettlementPrice))
             writer.autoSizeColumnAll()
-            response.contentType = "application/vnd.ms-excel;charset=utf-8"
-            response.addHeader("Content-Disposition", """attachment; filename=${data?.userName}个人计算佣金表.xls""")
+            response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+            response.addHeader("Content-Disposition", """attachment; filename=${data?.userName}个人计算佣金表.xlsx""")
             response.outputStream.use { out ->
                 writer.flush(out)
                 out.flush()
@@ -131,8 +131,8 @@ class ReportShareProvider(
             writer.merge(6, "开户银行：中国建设银行北京分行兴融支行", false)
             writer.merge(6, "银行账号：11050167500000000875", false)
             writer.autoSizeColumnAll()
-            response.contentType = "application/vnd.ms-excel;charset=utf-8"
-            response.addHeader("Content-Disposition", """attachment; filename=结算清单-出单日${startTimeStr}至${endTimeStr}.xls""")
+            response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+            response.addHeader("Content-Disposition", """attachment; filename=结算清单-出单日${startTimeStr}至${endTimeStr}.xlsx""")
             response.outputStream.use { out ->
                 writer.flush(out)
                 out.flush()

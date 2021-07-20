@@ -122,11 +122,11 @@ tasks {
     }
 }
 
-tasks.create<Exec>("imageBuild") {
+tasks.register<Exec>("imageBuild") {
     dependsOn("bootJar")
     println("准备创建Docker镜像...")
-    commandLine("docker", "login")
     commandLine("docker", "build", "-t", "chaosmin/chaosmin-cdpt:latest", ".")
+    commandLine("docker", "rmi", """$(docker images | grep "none" | awk '{print $3}')""")
     println("Docker镜像创建成功!")
     println("准备推送Docker镜像...")
     commandLine("docker", "push", "chaosmin/chaosmin-cdpt:latest")

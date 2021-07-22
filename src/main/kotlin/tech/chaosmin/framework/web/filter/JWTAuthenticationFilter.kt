@@ -5,16 +5,14 @@ import org.springframework.security.authentication.event.InteractiveAuthenticati
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.RestResultExt
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.definition.SystemConst.DEFAULT_CHARSET_NAME
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.mgmt.domain.auth.JwtAuthenticationToken
 import tech.chaosmin.framework.module.mgmt.domain.auth.LoginParameter
-import tech.chaosmin.framework.utils.HttpUtil
-import tech.chaosmin.framework.utils.JsonUtil
-import tech.chaosmin.framework.utils.JwtTokenUtil
-import tech.chaosmin.framework.utils.SecurityUtil
+import tech.chaosmin.framework.utils.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.charset.Charset
@@ -41,7 +39,8 @@ class JWTAuthenticationFilter(authManager: AuthenticationManager) : UsernamePass
         // 读取方式不能读取到如 application/json 等 post 请求数据，需要把
         // 用户名密码的读取逻辑修改为到流中读取request.getInputStream()
         val loginParameter = JsonUtil.decode(getBody(request), LoginParameter::class.java)
-        val authRequest = JwtAuthenticationToken(loginParameter?.loginName, loginParameter?.password)
+            ?: throw FrameworkException(ErrorCodeEnum.PARAM_LACK_DATA.code)
+        val authRequest = JwtAuthenticationToken(loginParameter.loginName, AESUtil.decryptStr(loginParameter.password))
         return authenticationManager.authenticate(authRequest)
     }
 
@@ -73,12 +72,8 @@ class JWTAuthenticationFilter(authManager: AuthenticationManager) : UsernamePass
         HttpUtil.write(response, RestResultExt.successRestResult(authentication))
     }
 
-    override fun unsuccessfulAuthentication(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        failed: AuthenticationException
-    ) {
-        HttpUtil.write(response, RestResultExt.badCredentialsRestResult("用户名或密码错误!"))
+    override fun unsuccessfulAuthentication(request: HttpServletRequest, response: HttpServletResponse, failed: AuthenticationException) {
+        HttpUtil.write(response, RestResult<String>(ErrorCodeEnum.AUTHENTICATION_FAILED.code))
     }
 
     /**

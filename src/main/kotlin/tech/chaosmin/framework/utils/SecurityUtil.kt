@@ -3,8 +3,9 @@ package tech.chaosmin.framework.utils
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
+import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.definition.SystemConst
-import tech.chaosmin.framework.exception.AuthenticationException
+import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.mgmt.domain.auth.JwtUserDetails
 import tech.chaosmin.framework.module.mgmt.entity.response.UserDetailResp
 
@@ -45,7 +46,7 @@ object SecurityUtil {
                 return UserDetailResp(principal)
             }
         }
-        throw AuthenticationException.MISSED_TOKEN
+        throw FrameworkException(ErrorCodeEnum.USER_NOT_FOUND.code)
     }
 
     fun setAuthentication(authentication: Authentication) {

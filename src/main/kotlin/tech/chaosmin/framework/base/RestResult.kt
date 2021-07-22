@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.base
 
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
+import tech.chaosmin.framework.exception.FrameworkException
 import java.io.Serializable
 
 data class RestResult<T>(
@@ -47,6 +48,6 @@ object RestResultExt {
     fun <T> failureRestResult() = RestResult<T>(ErrorCodeEnum.FAILURE.code, OPT_FAILED)
     fun <T> failureRestResult(msg: String?) = RestResult<T>(ErrorCodeEnum.FAILURE.code, msg)
     fun <T> failureRestResult(msg: String, data: T) = RestResult(ErrorCodeEnum.FAILURE.code, msg, data)
-    fun noPermissionRestResult(msg: String = UNAUTHORIZED_OPERATION) = RestResult<Void>(ErrorCodeEnum.NO_PERMISSION.code, msg)
-    fun badCredentialsRestResult(msg: String = BAD_CREDENTIALS) = RestResult<Void>(ErrorCodeEnum.AUTHENTICATION_FAILED.code, msg)
+
+    fun failureRestResult(e: FrameworkException) = RestResult<String>(e.errCode ?: ErrorCodeEnum.FAILURE.code, e.getMsg())
 }

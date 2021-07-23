@@ -18,4 +18,7 @@ class PartnerReq : BaseReq() {
 
     @ApiModelProperty("保司公钥")
     var publicKey: String? = null
+
+    @ApiModelProperty("保司私钥")
+    var securityKey: String? = null
 }

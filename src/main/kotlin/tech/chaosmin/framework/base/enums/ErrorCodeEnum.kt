@@ -6,6 +6,7 @@ enum class ErrorCodeEnum(val code: String, val msg: String) {
     NO_TOKEN("TOKEN_00000", "未获取到Token"),
     TOKEN_INVALID("TOKEN_00001", "Token不合法"),
     TOKEN_EXPIRED("TOKEN_00002", "Token已过期"),
+
     NO_PERMISSION("PERMISSION_00001", "权限不足"),
 
     REQUEST_LIMITED("API_00001", "服务器请求达到上限"),
@@ -17,6 +18,7 @@ enum class ErrorCodeEnum(val code: String, val msg: String) {
     FAILURE("SYS_00001", "请求失败"),
     NOT_SUPPORTED_FUNCTION("SYS_00002", "不支持的请求方式"),
     NOT_SUPPORTED_PARAM_TYPE("SYS_00003", "不支持的参数类型"),
+
     USER_NOT_FOUND("SYS_10001", "未找到指定用户"),
     AUTHENTICATION_FAILED("SYS_10002", "登录失败"),
 

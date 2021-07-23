@@ -3,20 +3,17 @@ package tech.chaosmin.framework.utils
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
-import tech.chaosmin.framework.exception.AuthenticationException
+import tech.chaosmin.framework.base.enums.ErrorCodeEnum
+import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.mgmt.domain.auth.GrantedAuthorityImpl
 import tech.chaosmin.framework.module.mgmt.domain.auth.JwtAuthenticationToken
 import tech.chaosmin.framework.module.mgmt.domain.auth.JwtUserDetails
 import java.io.Serializable
 import java.util.*
 
-
 object JwtTokenUtil : Serializable {
-    private val logger = LoggerFactory.getLogger(JwtTokenUtil::class.java)
-
     const val TOKEN_HEADER = "Authorization"
     const val TOKEN_PREFIX = "Bearer "
 
@@ -44,44 +41,13 @@ object JwtTokenUtil : Serializable {
     fun generateToken(authentication: Authentication, isRememberMe: Boolean = false): String? {
         val claims: MutableMap<String, Any?> = HashMap(8)
         val userDetails = SecurityUtil.getUserDetails(authentication)
-        claims[USERID] = userDetails?.userId
-        claims[USERNAME] = userDetails?.userName
-        claims[DEPARTMENT] = userDetails?.departmentId
-        claims[ROLES] = userDetails?.roles
+        claims[USERID] = userDetails.userId
+        claims[USERNAME] = userDetails.userName
+        claims[DEPARTMENT] = userDetails.departmentId
+        claims[ROLES] = userDetails.roles
         claims[AUTHORITIES] = authentication.authorities
         claims[CREATED] = Date()
-        return generateToken(userDetails?.userName, claims, isRememberMe)
-    }
-
-    /**
-     * 刷新令牌
-     *
-     * @param token 令牌
-     * @return
-     */
-    fun refreshToken(token: String): String? {
-        return try {
-            val claims = getClaimsFromToken(token)
-            if (claims != null) {
-                val username = claims.subject
-                claims[CREATED] = Date()
-                generateToken(username, claims, false)
-            } else null
-        } catch (e: java.lang.Exception) {
-            null
-        }
-    }
-
-    /**
-     * 验证令牌
-     *
-     * @param token 令牌
-     * @param username 用户名
-     * @return
-     */
-    private fun validateToken(token: String, username: String?): Boolean {
-        val userName = getUsernameFromToken(token)
-        return userName == username && !isTokenExpired(token)
+        return generateToken(userDetails.userName, claims, isRememberMe)
     }
 
     /**
@@ -95,16 +61,18 @@ object JwtTokenUtil : Serializable {
         // 获取请求携带的令牌
         getToken(tokenHeader)?.run {
             // 请求令牌不能为空
+            val claims = getClaimsFromToken(this) ?: return null
+            // 上下文中Authentication为空
             if (SecurityUtil.getAuthentication() == null) {
-                // 上下文中Authentication为空
-                val claims = getClaimsFromToken(this) ?: return null
-                val userId = claims[USERID]?.toString() ?.toLong()
+                val userId = claims[USERID]?.toString()?.toLong()
                 val username = claims[USERNAME]?.toString() ?: return null
                 val department = claims[DEPARTMENT]?.toString()?.toLong()
                 @Suppress("UNCHECKED_CAST") val roles = claims[ROLES] as List<String>
-                if (isTokenExpired(this)) {
-                    return null
+
+                if (isTokenExpired(claims)) {
+                    throw FrameworkException(ErrorCodeEnum.TOKEN_EXPIRED.code)
                 }
+                // 设置新的Authentication
                 authentication = JwtAuthenticationToken(
                     JwtUserDetails(userId!!, username, "", department, roles),
                     authorities = generateAuthorities(claims[AUTHORITIES]),
@@ -112,10 +80,13 @@ object JwtTokenUtil : Serializable {
                 )
                 SecurityUtil.setAuthentication(authentication!!)
             } else {
-                if (validateToken(this, SecurityUtil.getUsername())) {
+                // 判断用户名是否匹配
+                if (SecurityUtil.getUsername() == claims[USERNAME]?.toString()) {
                     // 如果上下文中Authentication非空，且请求令牌合法，直接返回当前登录认证信息
+                    refreshToken(claims)
                     authentication = SecurityUtil.getAuthentication()
-                }
+                } else throw FrameworkException(ErrorCodeEnum.TOKEN_INVALID.code)
+
             }
         }
         return authentication
@@ -158,37 +129,13 @@ object JwtTokenUtil : Serializable {
     }
 
     /**
-     * 从令牌中获取用户名
-     *
-     * @param token 令牌
-     * @return 用户名
-     */
-    private fun getUsernameFromToken(token: String): String? {
-        return try {
-            getClaimsFromToken(token)?.get(USERNAME)?.toString()
-        } catch (e: Exception) {
-            throw AuthenticationException.INVALID_TOKEN
-        }
-    }
-
-    /**
      * 判断令牌是否过期
      *
-     * @param token 令牌
+     * @param claims JWT 内的用户信息
      * @return 是否过期
      */
-    private fun isTokenExpired(token: String): Boolean {
-        return try {
-            val claims = getClaimsFromToken(token)
-            if (claims != null) {
-                val expiration = claims.expiration
-                expiration.before(Date())
-            } else false
-        } catch (e: Exception) {
-            throw AuthenticationException.EXPIRED_TOKEN
-        }.also {
-            if (it) logger.warn("$token has been expired")
-        }
+    private fun isTokenExpired(claims: Claims): Boolean {
+        return claims.expiration.before(Date())
     }
 
     /**
@@ -201,7 +148,7 @@ object JwtTokenUtil : Serializable {
         return try {
             Jwts.parser().setSigningKey(APP_SECRET_KEY).parseClaimsJws(token).body
         } catch (e: Exception) {
-            throw AuthenticationException.INVALID_TOKEN
+            throw FrameworkException(ErrorCodeEnum.TOKEN_INVALID.code)
         }
     }
 
@@ -221,4 +168,21 @@ object JwtTokenUtil : Serializable {
         }
         return token
     }
+
+    /**
+     * 刷新令牌
+     *
+     * @param claims JWT 用户信息
+     * @return
+     */
+    private fun refreshToken(claims: Claims): String? {
+        return try {
+            val username = claims[USERNAME]?.toString() ?: return null
+            claims[CREATED] = Date()
+            generateToken(username, claims, false)
+        } catch (e: Exception) {
+            throw FrameworkException(e)
+        }
+    }
+
 }

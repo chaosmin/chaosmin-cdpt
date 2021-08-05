@@ -32,12 +32,6 @@ class UserReq : BaseReq() {
     @ApiModelProperty("联系地址")
     var address: String? = null
 
-    @ApiModelProperty("投保机构名称")
-    var departmentName: String? = null
-
-    @ApiModelProperty("投保机构证件号")
-    var departmentCerti: String? = null
-
     @ApiModelProperty("支付方式")
     var payType: PayTypeEnum? = null
 

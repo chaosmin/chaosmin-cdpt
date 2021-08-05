@@ -27,12 +27,6 @@ open class User(id: Long? = null) : BaseDO(id, 0) {
     // 联系地址
     var address: String? = null
 
-    // 投保机构名称
-    var departmentName: String? = null
-
-    // 投保机构证件号
-    var departmentCerti: String? = null
-
     // 支付方式
     var payType: Int? = null
 }

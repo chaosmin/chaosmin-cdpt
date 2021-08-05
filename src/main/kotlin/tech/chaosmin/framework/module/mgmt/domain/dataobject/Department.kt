@@ -11,4 +11,7 @@ open class Department(id: Long? = null) : BaseDO(id, 0) {
 
     // 部门状态
     var status: Int? = null
+
+    // 支付方式
+    var payType: Int? = null
 }

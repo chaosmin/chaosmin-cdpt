@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="tech.chaosmin.framework.module.mgmt.domain.dao.LetterHeadDAO">
+    <select id="fetchHeadByDepartmentId" resultType="tech.chaosmin.framework.module.mgmt.domain.dataobject.LetterHead">
+        select *
+        from letter_head
+        where is_deleted = 0
+          and department_id = #{id}
+    </select>
+
+    <delete id="realDeleteByIds">
+        delete from letter_head where id in
+        <foreach collection='ids' item='id' separator=',' open='(' close=')'>#{id}</foreach>
+    </delete>
+
+    <delete id="realDeleteByDepartmentId">
+        delete
+        from letter_head
+        where letter_head.department_id = #{id}
+    </delete>
+</mapper> 

@@ -11,4 +11,12 @@ import tech.chaosmin.framework.module.mgmt.service.LetterHeadService
  * @since 2020/12/9 13:51
  */
 @Service
-open class LetterHeadServiceImpl : ServiceImpl<LetterHeadDAO, LetterHead>(), LetterHeadService
+open class LetterHeadServiceImpl : ServiceImpl<LetterHeadDAO, LetterHead>(), LetterHeadService {
+    override fun realDeleteByIds(ids: List<Long>) {
+        baseMapper.realDeleteByIds(ids)
+    }
+
+    override fun realDeleteByDepartmentId(departmentId: Long) {
+        baseMapper.realDeleteByDepartmentId(departmentId)
+    }
+}

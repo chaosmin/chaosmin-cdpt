@@ -1,18 +1,10 @@
 package tech.chaosmin.framework.module.cdpt.entity.report
 
-import java.util.*
-
 /**
  * @author Romani min
  * @since 2021/6/29 16:55
  */
-class SltCheckReportEntity {
-    // 统计开始日期
-    var statisticsStartTime: Date? = null
-
-    // 统计结束日期
-    var statisticsEndTime: Date? = null
-
+class SltCheckReportEntity : ReportEntity() {
     // 总计被保人数
     var totalInsuredSize: Int? = null
 

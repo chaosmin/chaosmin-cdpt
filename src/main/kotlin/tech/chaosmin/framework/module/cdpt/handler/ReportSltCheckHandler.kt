@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.AbstractTemplateOperate
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
+import tech.chaosmin.framework.base.enums.PayTypeEnum
 import tech.chaosmin.framework.base.enums.PolicyStatusEnum
 import tech.chaosmin.framework.base.enums.TimeTypeEnum
 import tech.chaosmin.framework.exception.FrameworkException
@@ -34,6 +35,7 @@ class ReportSltCheckHandler(
 
     override fun processor(arg: SltCheckReportEntity, result: RestResult<SltCheckReportEntity>): RestResult<SltCheckReportEntity> {
         var ew = Wrappers.query<Policy>().eq("status", PolicyStatusEnum.SUCCESS.getCode())
+            .eq("pay_type", PayTypeEnum.OFFLINE.getCode())
         if (arg.userId != null) ew = ew.eq("user_id", arg.userId)
         when (arg.timeType) {
             TimeTypeEnum.EFFECTIVE_TIME -> ew = ew.between("effective_time", arg.startTime, arg.endTime)

@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.module.mgmt.entity
 
 import tech.chaosmin.framework.base.BaseEntity
+import tech.chaosmin.framework.base.enums.PayTypeEnum
 import tech.chaosmin.framework.base.enums.UserStatusEnum
 
 /**
@@ -20,4 +21,7 @@ class UserEntity(id: Long? = null) : BaseEntity<UserEntity>(id) {
     var roleIds: List<Long>? = null
     var status: UserStatusEnum? = null
     var username: String? = null
+    var departmentName: String? = null
+    var departmentCerti: String? = null
+    var payType: PayTypeEnum? = null
 }

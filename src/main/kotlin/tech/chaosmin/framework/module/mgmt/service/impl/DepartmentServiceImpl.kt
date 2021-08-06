@@ -16,6 +16,10 @@ import tech.chaosmin.framework.module.mgmt.service.DepartmentService
  */
 @Service
 open class DepartmentServiceImpl : ServiceImpl<DepartmentDAO, Department>(), DepartmentService {
+    override fun getByIdExt(id: Long): DepartmentExt {
+        return baseMapper.getByIdExt(id)
+    }
+
     override fun pageExt(page: Page<DepartmentExt>, queryWrapper: Wrapper<DepartmentExt>): IPage<DepartmentExt> {
         return baseMapper.pageExt(page, queryWrapper)
     }

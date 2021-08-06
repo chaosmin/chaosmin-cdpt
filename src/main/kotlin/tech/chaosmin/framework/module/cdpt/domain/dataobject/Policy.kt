@@ -58,4 +58,7 @@ open class Policy(id: Long? = null) : BaseDO(id, 0) {
 
     /** 电子保单下载地址 */
     var ePolicyUrl: String? = null
+
+    /** 支付方式 0-月结 1-微信 */
+    var payType: Int? = null
 }

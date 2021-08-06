@@ -7,4 +7,7 @@ import tech.chaosmin.framework.module.mgmt.domain.dataobject.LetterHead
  * @author Romani min
  * @since 2020/12/9 13:50
  */
-interface LetterHeadService : IService<LetterHead>
+interface LetterHeadService : IService<LetterHead> {
+    fun realDeleteByIds(ids: List<Long>)
+    fun realDeleteByDepartmentId(departmentId: Long)
+}

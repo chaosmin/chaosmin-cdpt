@@ -1,15 +1,15 @@
-package tech.chaosmin.framework.module.mgmt.entity.response
+package tech.chaosmin.framework.module.mgmt.entity.request
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
-import java.io.Serializable
+import tech.chaosmin.framework.base.BaseReq
 
 /**
  * @author Romani min
  * @since 2021/2/18 16:35
  */
-@ApiModel("抬头信息返回参数")
-class LetterheadResp : Serializable {
+@ApiModel("抬头信息请求参数")
+class LetterHeadReq : BaseReq() {
     @ApiModelProperty("抬头名称")
     var title: String? = null
 

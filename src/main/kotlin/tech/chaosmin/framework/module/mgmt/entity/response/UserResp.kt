@@ -3,6 +3,7 @@ package tech.chaosmin.framework.module.mgmt.entity.response
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseResp
+import tech.chaosmin.framework.base.enums.PayTypeEnum
 import tech.chaosmin.framework.base.enums.UserStatusEnum
 
 @ApiModel("用户接口返回参数")
@@ -30,6 +31,9 @@ class UserResp : BaseResp() {
 
     @ApiModelProperty("联系地址")
     var address: String? = null
+
+    @ApiModelProperty("支付方式")
+    var payType: PayTypeEnum? = null
 
     @ApiModelProperty("角色ID")
     var roleIds: List<Long>? = null

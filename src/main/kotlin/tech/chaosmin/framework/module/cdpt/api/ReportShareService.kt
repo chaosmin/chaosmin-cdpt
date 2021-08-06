@@ -1,10 +1,7 @@
 package tech.chaosmin.framework.module.cdpt.api
 
 import io.swagger.annotations.Api
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.*
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.module.cdpt.entity.report.SltCheckReportEntity
 import tech.chaosmin.framework.module.cdpt.entity.report.SltComsReportEntity
@@ -21,7 +18,8 @@ interface ReportShareService {
     fun sltComsReport(
         @PathVariable("userId") userId: Long,
         @PathVariable("startTime") startTime: String,
-        @PathVariable("endTime") endTime: String
+        @PathVariable("endTime") endTime: String,
+        @RequestParam(value = "timeType") timeType: String
     ): RestResult<SltComsReportEntity>
 
     @PostMapping("/slt-coms/{userId}/{startTime}/{endTime}")
@@ -29,19 +27,24 @@ interface ReportShareService {
         @PathVariable("userId") userId: Long,
         @PathVariable("startTime") startTime: String,
         @PathVariable("endTime") endTime: String,
+        @RequestParam(value = "timeType") timeType: String,
         response: HttpServletResponse
     )
 
     @GetMapping("/slt-check/{startTime}/{endTime}")
     fun sltCheckReport(
+        @RequestParam("userId") userId: String,
         @PathVariable("startTime") startTime: String,
-        @PathVariable("endTime") endTime: String
+        @PathVariable("endTime") endTime: String,
+        @RequestParam(value = "timeType") timeType: String
     ): RestResult<SltCheckReportEntity>
 
     @PostMapping("/slt-check/{startTime}/{endTime}")
     fun sltCheckReportDownload(
+        @RequestParam("userId") userId: String,
         @PathVariable("startTime") startTime: String,
         @PathVariable("endTime") endTime: String,
+        @RequestParam(value = "timeType") timeType: String,
         response: HttpServletResponse
     )
 }

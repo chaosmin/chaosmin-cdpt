@@ -5,6 +5,7 @@ import cn.hutool.poi.excel.ExcelUtil
 import org.springframework.web.bind.annotation.RestController
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.RestResultExt
+import tech.chaosmin.framework.base.enums.TimeTypeEnum
 import tech.chaosmin.framework.module.cdpt.api.ReportShareService
 import tech.chaosmin.framework.module.cdpt.entity.report.SltCheckReportEntity
 import tech.chaosmin.framework.module.cdpt.entity.report.SltComsReportEntity
@@ -23,18 +24,19 @@ class ReportShareProvider(
     private val reportSltComsHandler: ReportSltComsHandler,
     private val reportSltCheckHandler: ReportSltCheckHandler
 ) : ReportShareService {
-    override fun sltComsReport(userId: Long, startTime: String, endTime: String): RestResult<SltComsReportEntity> {
+    override fun sltComsReport(userId: Long, startTime: String, endTime: String, timeType: String): RestResult<SltComsReportEntity> {
         val req = SltComsReportEntity().apply {
             this.userId = userId
-            this.statisticsStartTime = DateUtil.beginOfDay(DateUtil.parse(startTime, "yyyy-MM-dd"))
-            this.statisticsEndTime = DateUtil.endOfDay((DateUtil.parse(endTime, "yyyy-MM-dd")))
+            this.timeType = if ("EFFECTIVE_TIME" == timeType) TimeTypeEnum.EFFECTIVE_TIME else TimeTypeEnum.ISSUE_TIME
+            this.startTime = DateUtil.beginOfDay(DateUtil.parse(startTime, "yyyy-MM-dd"))
+            this.endTime = DateUtil.endOfDay((DateUtil.parse(endTime, "yyyy-MM-dd")))
         }
         val result = reportSltComsHandler.operate(req)
         return RestResultExt.mapper<SltComsReportEntity>(result).apply { this.data = result.data }
     }
 
-    override fun sltComsReportDownload(userId: Long, startTime: String, endTime: String, response: HttpServletResponse) {
-        val data = sltComsReport(userId, startTime, endTime).data
+    override fun sltComsReportDownload(userId: Long, startTime: String, endTime: String, timeType: String, response: HttpServletResponse) {
+        val data = sltComsReport(userId, startTime, endTime, timeType).data
         ExcelUtil.getWriter().use { writer ->
             writer.writeHeadRow(listOf("产品名称", "保险公司", "原价", "结算价", "折扣", "协议佣金比", "结算佣金比", "结算佣金"))
             data?.detail?.forEach {
@@ -66,19 +68,21 @@ class ReportShareProvider(
         }
     }
 
-    override fun sltCheckReport(startTime: String, endTime: String): RestResult<SltCheckReportEntity> {
+    override fun sltCheckReport(userId: String, startTime: String, endTime: String, timeType: String): RestResult<SltCheckReportEntity> {
         val req = SltCheckReportEntity().apply {
-            this.statisticsStartTime = DateUtil.beginOfDay(DateUtil.parse(startTime, "yyyy-MM-dd"))
-            this.statisticsEndTime = DateUtil.endOfDay((DateUtil.parse(endTime, "yyyy-MM-dd")))
+            this.userId = if (userId == "null") null else userId.toLong()
+            this.timeType = if ("EFFECTIVE_TIME" == timeType) TimeTypeEnum.EFFECTIVE_TIME else TimeTypeEnum.ISSUE_TIME
+            this.startTime = DateUtil.beginOfDay(DateUtil.parse(startTime, "yyyy-MM-dd"))
+            this.endTime = DateUtil.endOfDay((DateUtil.parse(endTime, "yyyy-MM-dd")))
         }
         val result = reportSltCheckHandler.operate(req)
         return RestResultExt.mapper<SltCheckReportEntity>(result).apply { this.data = result.data }
     }
 
-    override fun sltCheckReportDownload(startTime: String, endTime: String, response: HttpServletResponse) {
-        val data = sltCheckReport(startTime, endTime).data
-        val startTimeStr = DateUtil.format(data?.statisticsStartTime, "yyyy年MM月dd日")
-        val endTimeStr = DateUtil.format(data?.statisticsEndTime, "yyyy年MM月dd日")
+    override fun sltCheckReportDownload(userId: String, startTime: String, endTime: String, timeType: String, response: HttpServletResponse) {
+        val data = sltCheckReport(userId, startTime, endTime, timeType).data
+        val startTimeStr = DateUtil.format(DateUtil.parse(startTime, "yyyy-MM-dd"), "yyyy年MM月dd日")
+        val endTimeStr = DateUtil.format(DateUtil.parse(endTime, "yyyy-MM-dd"), "yyyy年MM月dd日")
         ExcelUtil.getWriter().use { writer ->
             writer.merge(14, "结算清单", true)
             writer.merge(14, "出单日${startTimeStr}-${endTimeStr}", false)
@@ -130,11 +134,12 @@ class ReportShareProvider(
             data?.partnerList?.forEach { p ->
                 writer.writeRow(listOf(p.partnerName, p.totalPremium, p.actualPremium))
             }
-            writer.writeRow(listOf(""))
-            writer.merge(6, "银行账户信息", false)
-            writer.merge(6, "账户名称：中国太平洋财产保险股份有限公司北京分公司", false)
-            writer.merge(6, "开户银行：中国建设银行北京分行兴融支行", false)
-            writer.merge(6, "银行账号：11050167500000000875", false)
+            // 2021-08-05 14:45:50 删除银行信息
+//            writer.writeRow(listOf(""))
+//            writer.merge(6, "银行账户信息", false)
+//            writer.merge(6, "账户名称：中国太平洋财产保险股份有限公司北京分公司", false)
+//            writer.merge(6, "开户银行：中国建设银行北京分行兴融支行", false)
+//            writer.merge(6, "银行账号：11050167500000000875", false)
             writer.autoSizeColumnAll()
             val fileName = URLEncoder.encode("结算清单-出单日${startTimeStr}至${endTimeStr}.xls", "utf-8")
             response.contentType = "application/vnd.ms-excel;charset=utf-8"

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseReq
-import tech.chaosmin.framework.base.enums.PayMethodEnum
+import tech.chaosmin.framework.base.enums.PayTypeEnum
 import tech.chaosmin.framework.module.cdpt.entity.GoodsPlanEntity
 import java.util.*
 
@@ -62,7 +62,7 @@ class PolicyIssueReq : BaseReq() {
     var actualPremium: Double? = null
 
     @ApiModelProperty("支付方式")
-    var payMethod: PayMethodEnum? = null
+    var payType: PayTypeEnum? = null
 
     // 授权产品信息 后台扩展补充字段
     var goodsPlan: GoodsPlanEntity? = null

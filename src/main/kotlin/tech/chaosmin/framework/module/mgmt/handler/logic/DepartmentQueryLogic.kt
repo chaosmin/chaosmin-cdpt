@@ -18,7 +18,7 @@ import tech.chaosmin.framework.utils.SecurityUtil
 class DepartmentQueryLogic(private val departmentService: DepartmentService) : BaseQueryLogic<DepartmentEntity, DepartmentExt> {
 
     override fun get(id: Long): DepartmentEntity? {
-        val department = departmentService.getById(id)
+        val department = departmentService.getByIdExt(id)
         return DepartmentMapper.INSTANCE.convert2Entity(department)
     }
 

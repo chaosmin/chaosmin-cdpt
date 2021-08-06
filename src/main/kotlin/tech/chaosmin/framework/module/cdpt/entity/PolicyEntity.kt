@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.module.cdpt.entity
 
 import tech.chaosmin.framework.base.BaseEntity
+import tech.chaosmin.framework.base.enums.PayTypeEnum
 import tech.chaosmin.framework.base.enums.PolicyStatusEnum
 import java.util.*
 
@@ -31,4 +32,5 @@ class PolicyEntity(id: Long? = null) : BaseEntity<PolicyEntity>(id) {
     var travelDestination: String? = null
     var unitPremium: Double? = null
     var userId: Long? = null
+    var payType: PayTypeEnum? = null
 }

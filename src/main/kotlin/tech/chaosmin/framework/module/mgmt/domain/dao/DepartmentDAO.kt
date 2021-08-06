@@ -14,6 +14,8 @@ import tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.DepartmentExt
  * @since 2020/12/9 13:49
  */
 interface DepartmentDAO : BaseMapper<Department> {
+    fun getByIdExt(@Param("id") id: Long): DepartmentExt
+
     fun pageExt(
         page: Page<DepartmentExt>,
         @Param(Constants.WRAPPER) queryWrapper: Wrapper<DepartmentExt>

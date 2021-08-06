@@ -17,6 +17,12 @@
                     column="id"/>
     </resultMap>
 
+    <select id="getByIdExt" resultMap="departmentExt">
+        select *
+        from department d
+        where d.id = #{id}
+    </select>
+
     <select id="pageExt" resultMap="departmentExt">
         select d.*, (select count(*) from user u where u.is_deleted = 0 and u.department_id = d.id) as number_of_user
         from department d

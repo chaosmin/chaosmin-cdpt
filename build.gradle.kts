@@ -58,10 +58,9 @@ dependencies {
 
     // database
     implementation("mysql:mysql-connector-java:${Vers.Deps.mysqlConnectorVersion}")
-    // implementation("p6spy:p6spy:${Vers.Deps.p6spyVersion}")
+    implementation("p6spy:p6spy:${Vers.Deps.p6spyVersion}")
     implementation("com.baomidou:mybatis-plus-boot-starter:${Vers.Deps.mybatisPlusVersion}") {
         exclude("com.alibaba", "fastjson")
-        exclude("p6spy", "p6spy")
     }
     implementation("com.github.ben-manes.caffeine:caffeine:${Vers.Deps.caffeineVersion}")
 
@@ -75,6 +74,7 @@ dependencies {
     implementation("org.apache.poi:poi:${Vers.Deps.poiVersion}")
     implementation("org.apache.poi:poi-ooxml:${Vers.Deps.poiVersion}")
 
+    implementation("com.github.wechatpay-apiv3:wechatpay-apache-httpclient:0.2.2")
     // config discovery
      implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")
      implementation("org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}") {

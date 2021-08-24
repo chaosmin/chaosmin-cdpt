@@ -16,6 +16,6 @@ internal class UserQueryLogicBootTest : BaseTestMain() {
     @Test
     fun get() {
         val list = userQueryLogic.findSubordinate("admin")
-        println(JsonUtil.encode(list.map { it?.loginName }, true))
+        println(JsonUtil.encode(list.map { it.loginName }, true))
     }
 }

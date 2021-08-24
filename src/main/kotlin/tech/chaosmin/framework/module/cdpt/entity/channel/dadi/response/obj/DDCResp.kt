@@ -2,7 +2,6 @@ package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.response.obj
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner.*
 import java.math.BigDecimal
 import java.util.*
@@ -14,7 +13,6 @@ import java.util.*
  * @since 2021/6/17 21:26
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 class DDCResp {
     // [HAS]
     var isEProposal: String? = null

@@ -2,7 +2,6 @@ package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
 import java.math.BigDecimal
 import java.util.*
 
@@ -13,7 +12,6 @@ import java.util.*
  * @since 2021/6/17 18:49
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 class Installment {
     // 分期序号
     var installmentPeriodSeq: Long? = null

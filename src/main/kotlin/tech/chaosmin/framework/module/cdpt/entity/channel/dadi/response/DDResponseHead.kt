@@ -1,14 +1,12 @@
 package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.response
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
 
 /**
  * @author Romani min
  * @since 2021/6/17 21:23
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 class DDResponseHead {
     // code
     var appCode: String? = null

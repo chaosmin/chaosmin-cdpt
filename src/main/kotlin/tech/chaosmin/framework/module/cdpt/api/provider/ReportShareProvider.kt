@@ -83,9 +83,10 @@ class ReportShareProvider(
         val data = sltCheckReport(userId, startTime, endTime, timeType).data
         val startTimeStr = DateUtil.format(DateUtil.parse(startTime, "yyyy-MM-dd"), "yyyy年MM月dd日")
         val endTimeStr = DateUtil.format(DateUtil.parse(endTime, "yyyy-MM-dd"), "yyyy年MM月dd日")
+        val reportType = if ("EFFECTIVE_TIME" == timeType) "生效日" else "出单日"
         ExcelUtil.getWriter().use { writer ->
             writer.merge(14, "结算清单", true)
-            writer.merge(14, "出单日${startTimeStr}-${endTimeStr}", false)
+            writer.merge(14, "$reportType${startTimeStr}-${endTimeStr}", false)
             writer.writeHeadRow(
                 listOf(
                     "No.",
@@ -141,7 +142,7 @@ class ReportShareProvider(
 //            writer.merge(6, "开户银行：中国建设银行北京分行兴融支行", false)
 //            writer.merge(6, "银行账号：11050167500000000875", false)
             writer.autoSizeColumnAll()
-            val fileName = URLEncoder.encode("结算清单-出单日${startTimeStr}至${endTimeStr}.xls", "utf-8")
+            val fileName = URLEncoder.encode("结算清单-$reportType${startTimeStr}至${endTimeStr}.xls", "utf-8")
             response.contentType = "application/vnd.ms-excel;charset=utf-8"
             response.setHeader("Content-Disposition", fileName)
             response.setHeader("filename", fileName)

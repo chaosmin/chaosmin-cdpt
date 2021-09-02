@@ -3,6 +3,7 @@ package tech.chaosmin.framework.module.payment.service
 import org.junit.jupiter.api.Test
 import tech.chaosmin.framework.BaseTestMain
 import tech.chaosmin.framework.module.payment.entity.wechat.request.NativeReq
+import java.util.*
 import javax.annotation.Resource
 
 /**
@@ -14,13 +15,9 @@ class WechatNativePayServiceImplBootTest : BaseTestMain() {
     lateinit var wechatNativePayService: WechatNativePayService
 
     @Test
-    fun getToken() {
-        wechatNativePayService.token()
-    }
-
-    @Test
     fun createOrder() {
         val nativeReq = NativeReq().apply {
+            this.out_trade_no = UUID.randomUUID().toString().replace("-", "").take(16)
             this.description = "电子铅笔"
             this.amount = Amount().apply {
                 this.total = 1

@@ -1,7 +1,8 @@
 package tech.chaosmin.framework.module.payment.service
 
-import tech.chaosmin.framework.module.payment.entity.wechat.request.NativeReq
-import tech.chaosmin.framework.module.payment.entity.wechat.response.NativeResp
+import tech.chaosmin.framework.module.payment.entity.wechat.request.NativePayReq
+import tech.chaosmin.framework.module.payment.entity.wechat.request.NotifyReq
+import tech.chaosmin.framework.module.payment.entity.wechat.response.NotifyResp
 
 /**
  * 微信支付 外部服务
@@ -10,15 +11,15 @@ import tech.chaosmin.framework.module.payment.entity.wechat.response.NativeResp
  * @since 2021/8/23 16:39
  */
 interface WechatNativePayService {
-    fun token()
+    fun readCertificates()
 
-    fun createOrder(req: NativeReq): NativeResp
+    fun createOrder(req: NativePayReq): String
 
     fun searchOrder()
 
     fun closeOrder()
 
-    fun notifyPay()
+    fun notifyPay(req: NotifyReq): NotifyResp
 
     fun refund()
 

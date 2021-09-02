@@ -13,11 +13,20 @@ import org.springframework.stereotype.Component
 @EnableConfigurationProperties(WechatPayParam::class)
 object WechatPayParam {
     const val CERTIFICATES = "certificates"
+    const val CREATE_NATIVE_ORDER = "createNativeOrder"
+    const val SEARCH_ORDER = "searchOrder"
+    const val CLOSE_ORDER = "closeOrder"
+    const val REFUND = "refund"
 
     var privateKey: String? = null
     var appId: String? = null
     var merchantId: String? = null
     var serialNumber: String? = null
     var v3Key: String? = null
+
+    // 回调通知接口
+    var notifyUrl: String? = null
+
+    // 支付渠道请求链接
     var url: Map<String, String>? = null
 }

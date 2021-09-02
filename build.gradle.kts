@@ -74,12 +74,14 @@ dependencies {
     implementation("org.apache.poi:poi:${Vers.Deps.poiVersion}")
     implementation("org.apache.poi:poi-ooxml:${Vers.Deps.poiVersion}")
 
+    implementation("com.google.zxing:core:3.4.1")
+
     implementation("com.github.wechatpay-apiv3:wechatpay-apache-httpclient:0.2.2")
     // config discovery
-     implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")
-     implementation("org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}") {
-         exclude("com.alibaba", "fastjson")
-     }
+    implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")
+    implementation("org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}") {
+        exclude("com.alibaba", "fastjson")
+    }
 
     // swagger
     implementation("io.springfox:springfox-boot-starter:${Vers.Deps.swaggerVersion}")

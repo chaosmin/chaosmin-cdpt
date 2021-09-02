@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty
  * @since 2021/8/23 16:47
  */
 @ApiModel("微信Native支付下单请求参数")
-class NativeReq {
+class NativePayReq {
     @ApiModelProperty("应用ID", required = true, notes = "由微信生成的应用ID，全局唯一")
     var appid: String? = null
 

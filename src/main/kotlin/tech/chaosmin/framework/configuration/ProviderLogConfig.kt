@@ -1,6 +1,5 @@
 package tech.chaosmin.framework.configuration
 
-import org.apache.catalina.connector.RequestFacade
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -23,11 +22,7 @@ import kotlin.reflect.KClass
 @Component
 @ConditionalOnProperty(prefix = "log.provider", name = ["enable"], havingValue = "true", matchIfMissing = false)
 class ProviderLogConfig {
-    private val ignoreTypes: Array<KClass<*>> = arrayOf(
-        RequestFacade::class,
-        ServletRequest::class,
-        ServletResponse::class
-    )
+    private val ignoreTypes: Array<KClass<*>> = arrayOf(ServletRequest::class, ServletResponse::class)
     private val log: Logger = LoggerFactory.getLogger(ProviderLogConfig::class.java)
 
     @Around("execution(public * tech.chaosmin.framework.provider.*.*(..))")

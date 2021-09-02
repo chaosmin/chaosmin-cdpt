@@ -2,7 +2,6 @@ package tech.chaosmin.framework.configuration.strategy
 
 import com.p6spy.engine.logging.Category
 import com.p6spy.engine.spy.appender.FormattedLogger
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 
 /**
@@ -21,15 +20,15 @@ class P6SpyLogger : FormattedLogger() {
     }
 
     override fun logSQL(connectionId: Int, now: String?, elapsed: Long, category: Category?, prepared: String?, sql: String?, url: String?) {
-        val msg = strategy.formatMessage(connectionId, now, elapsed, category.toString(), prepared, sql, url);
-        if (StringUtils.isEmpty(msg)) {
+        val msg = strategy.formatMessage(connectionId, now, elapsed, category.toString(), prepared, sql, url)
+        if (msg.isNullOrBlank()) {
             return
         }
         when {
-            Category.ERROR.equals(category) -> logger.error(msg);
-            Category.WARN.equals(category) -> logger.warn(msg);
-            Category.DEBUG.equals(category) -> logger.debug(msg);
-            else -> logger.info(msg);
+            Category.ERROR.equals(category) -> logger.error(msg)
+            Category.WARN.equals(category) -> logger.warn(msg)
+            Category.DEBUG.equals(category) -> logger.debug(msg)
+            else -> logger.info(msg)
         }
     }
 

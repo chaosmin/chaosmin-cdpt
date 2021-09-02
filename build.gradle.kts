@@ -25,6 +25,15 @@ repositories {
     jcenter()
 }
 
+configurations.all {
+    // nacos强制依赖fastjson
+    // exclude("com.alibaba", "fastjson")
+    exclude("com.netflix.archaius", "archaius-core")
+    exclude("org.springframework.cloud", "spring-cloud-netflix-archaius")
+    exclude("org.springframework.cloud", "spring-cloud-starter-netflix-archaius")
+    exclude("org.springframework.boot", "spring-boot-starter-tomcat")
+}
+
 dependencies {
     implementation(kotlin("reflect"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Vers.Deps.kotlinCoroutinesVersion}")
@@ -32,9 +41,7 @@ dependencies {
 
     // spring boot
     implementation("org.springframework.boot:spring-boot-starter:${Vers.Deps.springBootVersion}")
-    implementation("org.springframework.boot:spring-boot-starter-web:${Vers.Deps.springBootVersion}"){
-        exclude("org.springframework.boot:spring-boot-starter-tomcat")
-    }
+    implementation("org.springframework.boot:spring-boot-starter-web:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-undertow:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-aop:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-actuator:${Vers.Deps.springBootVersion}")
@@ -43,6 +50,22 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-security:${Vers.Deps.springBootVersion}")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:${Vers.Deps.springBootVersion}")
+
+    // config discovery
+    implementation("org.springframework.cloud:spring-cloud-starter-bootstrap:3.0.3")
+    implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer:3.0.3")
+    implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery:${Vers.Deps.nacosVersion}")
+    implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}")
+
+    // swagger
+    implementation("io.springfox:springfox-boot-starter:${Vers.Deps.swaggerVersion}") {
+        exclude("org.springframework.boot")
+    }
+
+    // logback
+    implementation("ch.qos.logback:logback-classic:${Vers.Deps.logbackVersion}")
+    implementation("org.codehaus.janino:janino:${Vers.Deps.janinoVersion}")
+    implementation("org.codehaus.janino:commons-compiler:${Vers.Deps.janinoVersion}")
 
     // jackson
     implementation("com.fasterxml.jackson.core:jackson-core:${Vers.Deps.jacksonVersion}")
@@ -60,11 +83,12 @@ dependencies {
     implementation("mysql:mysql-connector-java:${Vers.Deps.mysqlConnectorVersion}")
     implementation("p6spy:p6spy:${Vers.Deps.p6spyVersion}")
     implementation("com.baomidou:mybatis-plus-boot-starter:${Vers.Deps.mybatisPlusVersion}") {
+        exclude("org.springframework.boot")
         exclude("com.alibaba", "fastjson")
     }
-    implementation("com.github.ben-manes.caffeine:caffeine:${Vers.Deps.caffeineVersion}")
 
     // common tools
+    implementation("jakarta.servlet:jakarta.servlet-api:4.0.4")
     implementation("commons-codec:commons-codec:${Vers.Deps.commonsCodecVersion}")
     implementation("org.mapstruct:mapstruct:${Vers.Deps.mapStructVersion}")
     kapt("org.mapstruct:mapstruct-processor:${Vers.Deps.mapStructVersion}")
@@ -73,23 +97,8 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt:${Vers.Deps.jwtVersion}")
     implementation("org.apache.poi:poi:${Vers.Deps.poiVersion}")
     implementation("org.apache.poi:poi-ooxml:${Vers.Deps.poiVersion}")
-
     implementation("com.google.zxing:core:3.4.1")
-
     implementation("com.github.wechatpay-apiv3:wechatpay-apache-httpclient:0.2.2")
-    // config discovery
-    implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:${Vers.Deps.springCloudVersion}")
-    implementation("org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:${Vers.Deps.nacosVersion}") {
-        exclude("com.alibaba", "fastjson")
-    }
-
-    // swagger
-    implementation("io.springfox:springfox-boot-starter:${Vers.Deps.swaggerVersion}")
-
-    // logback
-    implementation("ch.qos.logback:logback-classic:${Vers.Deps.logbackVersion}")
-    implementation("org.codehaus.janino:janino:${Vers.Deps.janinoVersion}")
-    implementation("org.codehaus.janino:commons-compiler:${Vers.Deps.janinoVersion}")
 
     // test
     testImplementation("org.springframework.boot:spring-boot-starter-test:${Vers.Deps.springBootVersion}")

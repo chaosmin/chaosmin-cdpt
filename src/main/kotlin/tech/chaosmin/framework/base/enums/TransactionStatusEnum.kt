@@ -11,7 +11,9 @@ enum class TransactionStatusEnum(@EnumValue private val code: Int, private val d
     WAITING_FOR_PAY(0, "初始化"),
     PAYING(1, "支付中"),
     SUCCESS(2, "支付成功"),
-    FAILED(3, "支付失败");
+    FAILED(3, "支付失败"),
+    CLOSE(4, "订单关闭"),
+    REFUND(5, "已退款");
 
     override fun getCode(): Int = this.code
     override fun getDesc(): String = this.desc

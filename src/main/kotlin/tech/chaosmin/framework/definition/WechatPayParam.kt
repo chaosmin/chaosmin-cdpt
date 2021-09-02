@@ -18,6 +18,7 @@ object WechatPayParam {
     const val CLOSE_ORDER = "closeOrder"
     const val REFUND = "refund"
 
+    var mock: Boolean? = null
     var privateKey: String? = null
     var appId: String? = null
     var merchantId: String? = null

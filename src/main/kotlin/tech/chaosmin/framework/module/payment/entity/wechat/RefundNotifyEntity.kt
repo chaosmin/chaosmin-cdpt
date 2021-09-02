@@ -2,7 +2,6 @@ package tech.chaosmin.framework.module.payment.entity.wechat
 
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.enums.WechatRefundStatusEnum
-import tech.chaosmin.framework.module.payment.entity.wechat.response.NativeRefundResp
 
 /**
  * @author Romani min
@@ -34,7 +33,7 @@ class RefundNotifyEntity {
     var user_received_account: String? = null
 
     @ApiModelProperty("金额信息", required = true, notes = "金额信息")
-    var amount: NativeRefundResp.Amount? = null
+    var amount: Amount? = null
 
     inner class Amount {
         @ApiModelProperty("订单金额", required = true, notes = "订单总金额，单位为分")

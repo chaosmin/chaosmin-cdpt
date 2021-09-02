@@ -3,6 +3,7 @@ package tech.chaosmin.framework.module.payment.entity
 import tech.chaosmin.framework.base.BaseEntity
 import tech.chaosmin.framework.base.enums.TradeChannelEnum
 import tech.chaosmin.framework.base.enums.TransactionStatusEnum
+import tech.chaosmin.framework.base.enums.WechatTradeTypeEnum
 import java.util.*
 
 /**
@@ -11,12 +12,15 @@ import java.util.*
  */
 class PaymentTransactionEntity(id: Long? = null) : BaseEntity<PaymentTransactionEntity>(id) {
     var channel: TradeChannelEnum? = null
+    var tradeType: WechatTradeTypeEnum? = null
     var status: TransactionStatusEnum? = null
     var transactionId: String? = null
     var outTradeNo: String? = null
     var description: String? = null
     var amount: Long? = null
+    var refundAmount: Long? = null
     var payer: String? = null
+    var refundAccount: String? = null
     var payUrl: String? = null
     var expireTime: Date? = null
     var orderTime: Date? = null

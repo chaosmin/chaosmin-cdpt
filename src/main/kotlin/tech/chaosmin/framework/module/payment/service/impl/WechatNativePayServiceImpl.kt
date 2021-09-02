@@ -1,5 +1,6 @@
 package tech.chaosmin.framework.module.payment.service.impl
 
+import cn.hutool.core.date.DateUtil
 import cn.hutool.core.img.ImgUtil
 import cn.hutool.extra.qrcode.QrCodeUtil
 import cn.hutool.extra.qrcode.QrConfig
@@ -17,15 +18,13 @@ import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.util.EntityUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import tech.chaosmin.framework.base.enums.ErrorCodeEnum
-import tech.chaosmin.framework.base.enums.HttpMethodEnum
-import tech.chaosmin.framework.base.enums.TradeChannelEnum
-import tech.chaosmin.framework.base.enums.TransactionStatusEnum
+import tech.chaosmin.framework.base.enums.*
 import tech.chaosmin.framework.definition.WechatPayParam
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.mgmt.domain.dataobject.ChannelHttpRequest
 import tech.chaosmin.framework.module.mgmt.service.ChannelHttpRequestService
 import tech.chaosmin.framework.module.payment.domain.dataobject.PaymentTransaction
+import tech.chaosmin.framework.module.payment.entity.PaymentTransactionEntity
 import tech.chaosmin.framework.module.payment.entity.wechat.PayNotifyEntity
 import tech.chaosmin.framework.module.payment.entity.wechat.RefundNotifyEntity
 import tech.chaosmin.framework.module.payment.entity.wechat.request.NativePayReq
@@ -36,7 +35,6 @@ import tech.chaosmin.framework.module.payment.entity.wechat.response.NativePayRe
 import tech.chaosmin.framework.module.payment.entity.wechat.response.NativeQueryResp
 import tech.chaosmin.framework.module.payment.entity.wechat.response.NativeRefundResp
 import tech.chaosmin.framework.module.payment.entity.wechat.response.NotifyResp
-import tech.chaosmin.framework.module.payment.helper.convert.PaymentTransactionConvert
 import tech.chaosmin.framework.module.payment.helper.mapper.PaymentTransactionMapper
 import tech.chaosmin.framework.module.payment.service.PaymentTransactionService
 import tech.chaosmin.framework.module.payment.service.WechatNativePayService
@@ -85,6 +83,13 @@ open class WechatNativePayServiceImpl(
         req.appid = wechatPayParam.appId
         req.mchid = wechatPayParam.merchantId
         req.notify_url = wechatPayParam.notifyUrl
+
+        // TODO 金额校验
+
+        if (wechatPayParam.mock != null && wechatPayParam.mock!!) {
+            // 如果开启了mock开关, 则将支付金额设置为1
+            req.amount?.total = 1
+        }
         return req
     }
 
@@ -106,10 +111,13 @@ open class WechatNativePayServiceImpl(
 
     override fun createOrder(req: NativePayReq): String {
         // 保存支付信息
-        val transaction = PaymentTransactionConvert.INSTANCE.convert2Entity(req)
-        transaction.status = TransactionStatusEnum.WAITING_FOR_PAY
-        transaction.channel = TradeChannelEnum.WECHAT
-        transaction.orderTime = Date()
+        val transaction = PaymentTransactionEntity().apply {
+            this.status = TransactionStatusEnum.WAITING_FOR_PAY
+            this.amount = req.amount?.total?.toLong()
+            this.channel = TradeChannelEnum.WECHAT
+            this.outTradeNo = req.out_trade_no
+            this.orderTime = Date()
+        }
         paymentTransactionService.save(PaymentTransactionMapper.INSTANCE.convert2DO(transaction))
 
         val url = wechatPayParam.url?.get(wechatPayParam.CREATE_NATIVE_ORDER)
@@ -198,6 +206,10 @@ open class WechatNativePayServiceImpl(
                 this.responseBody = bodyAsString
                 logger.info("POST ${this.httpUrl}[${this.httpHeader}]\nrequest param: ${this.requestBody}\nresponse param: ${this.responseBody}")
             })
+            paymentTransactionService.updateByTradeNo(PaymentTransaction().apply {
+                this.status = TransactionStatusEnum.CLOSE.getCode()
+                this.closeTime = Date()
+            }, outTradeNo)
             logger.info("wechat.native.close_order response_param: $bodyAsString")
         }
     }
@@ -222,7 +234,18 @@ open class WechatNativePayServiceImpl(
             val decryptStr = AESUtil.decryptAES256GCM(wechatPayParam.v3Key!!, associatedData, nonce!!, ciphertext!!)
             logger.info("wechatpay decrypt AEAD_AES_256_GCM: $decryptStr")
             val payNotify = JsonUtil.decode(decryptStr, PayNotifyEntity::class.java)
-            // TODO 处理回调信息
+
+            if (payNotify?.trade_state == WechatTradeStateEnum.SUCCESS) {
+                paymentTransactionService.updateByTradeNo(PaymentTransaction().apply {
+                    this.payer = payNotify.payer?.openid
+                    this.status = TransactionStatusEnum.SUCCESS.getCode()
+                    this.payTime = DateUtil.parse(payNotify.success_time)
+                }, payNotify.out_trade_no!!)
+            } else {
+                // TODO 邮件通知警告
+                logger.error("微信支付失败! $payNotify")
+            }
+
             // 处理支付返回
             NotifyResp().apply {
                 this.code = ErrorCodeEnum.SUCCESS.code
@@ -289,7 +312,20 @@ open class WechatNativePayServiceImpl(
             val decryptStr = AESUtil.decryptAES256GCM(wechatPayParam.v3Key!!, associatedData, nonce!!, ciphertext!!)
             logger.info("wechatpay decrypt AEAD_AES_256_GCM: $decryptStr")
             val refundNotify = JsonUtil.decode(decryptStr, RefundNotifyEntity::class.java)
-            // TODO 处理退款回调信息
+
+            // 退款成功时, 更新系统支付交易状态
+            if (refundNotify?.refund_status == WechatRefundStatusEnum.SUCCESS) {
+                paymentTransactionService.updateByTradeNo(PaymentTransaction().apply {
+                    this.refundAmount = refundNotify.amount?.payer_refund
+                    this.refundAccount = refundNotify.user_received_account
+                    this.status = TransactionStatusEnum.REFUND.getCode()
+                    this.refundTime = DateUtil.parse(refundNotify.success_time)
+                }, refundNotify.out_trade_no!!)
+            } else {
+                // TODO 邮件通知警告
+                logger.error("微信支付退款失败! $refundNotify")
+            }
+
             // 处理支付返回
             NotifyResp().apply {
                 this.code = ErrorCodeEnum.SUCCESS.code

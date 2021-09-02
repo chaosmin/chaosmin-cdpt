@@ -58,7 +58,7 @@ class WechatPayShareProvider(private val wechatpayNativePayService: WechatNative
 
     override fun refundNotify(req: NotifyReq): NotifyResp {
         logger.info("WechatPayShareProvider.refundNotify.request: ${JsonUtil.encode(req)}")
-        val resp = wechatpayNativePayService.notifyPay(req)
+        val resp = wechatpayNativePayService.notifyRefund(req)
         logger.info("WechatPayShareProvider.refundNotify.response: ${JsonUtil.encode(resp)}")
         return resp
     }

@@ -47,6 +47,9 @@ class NativeQueryResp {
     @ApiModelProperty("支付金额", notes = "支付金额信息")
     var amount: Amount? = null
 
+    @ApiModelProperty("优惠功能", notes = "优惠功能")
+    var promotion_detail: List<PromotionDetail>? = null
+
     inner class Payer {
         @ApiModelProperty("用户标识", required = true, notes = "用户在直连商户appid下的唯一标识")
         var openid: String? = null
@@ -64,5 +67,13 @@ class NativeQueryResp {
 
         @ApiModelProperty("用户支付币种", notes = "用户支付币种")
         var payer_currency: String? = null
+    }
+
+    inner class PromotionDetail {
+        @ApiModelProperty("券ID", notes = "券ID")
+        var coupon_id: String? = null
+
+        @ApiModelProperty("优惠券面额", notes = "优惠券面额")
+        var amount: Long? = null
     }
 }

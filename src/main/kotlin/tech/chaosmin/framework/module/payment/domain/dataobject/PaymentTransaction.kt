@@ -31,11 +31,17 @@ open class PaymentTransaction(id: Long? = null) : BaseDO(id, 0) {
     // 支付金额
     var amount: Long? = null
 
+    // 退款金额
+    var refundAmount: Long? = null
+
     // 支付链接
     var payUrl: String? = null
 
     // 付款人
     var payer: String? = null
+
+    // 退款入账账户
+    var refundAccount: String? = null
 
     // 支付单过期时间
     var expireTime: Date? = null

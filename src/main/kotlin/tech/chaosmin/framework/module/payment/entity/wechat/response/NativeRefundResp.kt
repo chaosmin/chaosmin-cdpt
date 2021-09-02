@@ -65,5 +65,16 @@ class NativeRefundResp {
 
         @ApiModelProperty("货币类型", required = true, notes = "CNY：人民币，境内商户号仅支持人民币")
         var currency: String? = null
+
+        @ApiModelProperty("退款出资账户及金额", notes = "退款出资账户及金额")
+        var from: List<From>? = null
+
+        inner class From {
+            @ApiModelProperty("出资账户类型", notes = "出资账户类型")
+            var account: String? = null
+
+            @ApiModelProperty("出资金额", notes = "出资金额")
+            var amount: Long? = null
+        }
     }
 }

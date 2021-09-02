@@ -133,16 +133,15 @@ tasks {
     }
 }
 
-tasks.register<Exec>("imageBuild") {
-    dependsOn("bootJar")
+tasks.create<Exec>("imageBuild") {
     println("准备创建Docker镜像...")
-    commandLine("docker", "build", "-t", "chaosmin/chaosmin-cdpt:latest", ".")
-    commandLine("docker", "rmi", """$(docker images | grep "none" | awk '{print $3}')""")
+    commandLine("docker", "build", "-t", "registry.cn-shanghai.aliyuncs.com/chaosmin/chaosmin-cdpt:latest", ".")
+    commandLine("docker", "rmi", """$(docker images | grep "none" | awk '{print $3}') -f""")
     println("Docker镜像创建成功!")
     println("准备推送Docker镜像...")
-    commandLine("docker", "push", "chaosmin/chaosmin-cdpt:latest")
+    commandLine("docker", "push", "registry.cn-shanghai.aliyuncs.com/chaosmin/chaosmin-cdpt:latest")
     println("Docker镜像推送成功!")
-}
+}.dependsOn("bootJar")
 
 tasks.create("deploy") {
     println(">>> Prepare to deploy service to online environment...")
@@ -162,6 +161,7 @@ tasks.create("deploy") {
                 execute("docker-compose stop chaosmin-cdpt")
                 execute("docker-compose rm -f")
                 execute("docker-compose pull")
+                execute("""docker rmi ${'$'}(docker images | grep "none" | awk '{print ${'$'}3}') -f """)
                 execute("docker-compose up --build -d chaosmin-cdpt")
             })
         })

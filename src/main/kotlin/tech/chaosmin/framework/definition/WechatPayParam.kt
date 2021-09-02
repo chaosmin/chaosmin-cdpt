@@ -26,6 +26,7 @@ object WechatPayParam {
 
     // 回调通知接口
     var notifyUrl: String? = null
+    var refundNotifyUrl: String? = null
 
     // 支付渠道请求链接
     var url: Map<String, String>? = null

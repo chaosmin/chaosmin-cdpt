@@ -1,6 +1,5 @@
 package tech.chaosmin.framework.configuration
 
-import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -8,6 +7,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurer
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.util.concurrent.ListenableFuture
+import tech.chaosmin.framework.definition.SystemConst
 import java.util.concurrent.Callable
 import java.util.concurrent.Executor
 import java.util.concurrent.Future
@@ -30,7 +30,7 @@ open class ThreadPoolConfig : AsyncConfigurer {
         taskExecutor.corePoolSize = 10
         taskExecutor.maxPoolSize = 50
         taskExecutor.keepAliveSeconds = 60
-        taskExecutor.threadNamePrefix = "cs-executor-"
+        taskExecutor.threadNamePrefix = "${SystemConst.ISS}-executor-"
         taskExecutor.setQueueCapacity(500)
         taskExecutor.setWaitForTasksToCompleteOnShutdown(true)
         taskExecutor.setAwaitTerminationSeconds(60)
@@ -42,10 +42,9 @@ open class ThreadPoolConfig : AsyncConfigurer {
     }
 
     class VisibleThreadPoolTaskExecutor : ThreadPoolTaskExecutor() {
-        private val log = LoggerFactory.getLogger(VisibleThreadPoolTaskExecutor::class.java)
         private fun showThreadPoolInfo(prefix: String) {
             val threadPoolExecutor = threadPoolExecutor
-            log.debug(
+            logger.debug(
                 "线程名:$threadNamePrefix $prefix," +
                         "总计:${threadPoolExecutor.taskCount}," +
                         "完成:${threadPoolExecutor.completedTaskCount}," +

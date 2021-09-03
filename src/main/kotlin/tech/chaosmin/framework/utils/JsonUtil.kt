@@ -1,5 +1,6 @@
 package tech.chaosmin.framework.utils
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.JsonGenerationException
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.JsonMappingException
@@ -27,6 +28,8 @@ object JsonUtil {
         configure(SerializationFeature.INDENT_OUTPUT, false)
         // 默认时间格式
         dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+        // null值不进行序列化
+        setSerializationInclusion(JsonInclude.Include.NON_NULL)
     }
 
     fun encode(obj: Any?, prettyPrinter: Boolean = false): String {

@@ -1,7 +1,6 @@
 package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
 import java.math.BigDecimal
 
 /**
@@ -11,7 +10,6 @@ import java.math.BigDecimal
  * @since 2021/6/17 18:58
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 class Engineering {
     // 施工单位
     var builder: String? = null

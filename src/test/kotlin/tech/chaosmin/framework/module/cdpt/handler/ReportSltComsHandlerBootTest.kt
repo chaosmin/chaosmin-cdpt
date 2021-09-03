@@ -19,8 +19,8 @@ internal class ReportSltComsHandlerBootTest : BaseTestMain() {
     fun operate() {
         val req = SltComsReportEntity().apply {
             this.userId = 47L
-            this.statisticsStartTime = DateUtil.parse("2021-06-01 00:00:00", "yyyy-MM-dd HH:mm:ss")
-            this.statisticsEndTime = DateUtil.parse("2021-06-30 23:59:59", "yyyy-MM-dd HH:mm:ss")
+            this.startTime = DateUtil.parse("2021-06-01 00:00:00", "yyyy-MM-dd HH:mm:ss")
+            this.endTime = DateUtil.parse("2021-06-30 23:59:59", "yyyy-MM-dd HH:mm:ss")
         }
         val result = reportSltComsHandler.operate(req)
         println(JsonUtil.encode(result, true))

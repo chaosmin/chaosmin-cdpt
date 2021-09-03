@@ -18,8 +18,8 @@ internal class ReportSltCheckHandlerBootTest : BaseTestMain() {
     @Test
     fun operate() {
         val req = SltCheckReportEntity().apply {
-            this.statisticsStartTime = DateUtil.parse("2021-06-01 00:00:00", "yyyy-MM-dd HH:mm:ss")
-            this.statisticsEndTime = DateUtil.parse("2021-06-30 23:59:59", "yyyy-MM-dd HH:mm:ss")
+            this.startTime = DateUtil.parse("2021-06-01 00:00:00", "yyyy-MM-dd HH:mm:ss")
+            this.endTime = DateUtil.parse("2021-06-30 23:59:59", "yyyy-MM-dd HH:mm:ss")
         }
         val result = reportSltCheckHandler.operate(req)
         println(JsonUtil.encode(result, true))

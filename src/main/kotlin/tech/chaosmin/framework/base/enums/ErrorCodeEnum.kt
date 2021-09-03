@@ -15,6 +15,7 @@ enum class ErrorCodeEnum(val code: String, val msg: String) {
     DATA_ERROR("BIZ_00002", "数据异常"),
     STATUS_ERROR("BIZ_00003", "状态异常"),
 
+    SYSTEM_ERROR("SYS_00000", "系统初始化失败"),
     FAILURE("SYS_00001", "请求失败"),
     NOT_SUPPORTED_FUNCTION("SYS_00002", "不支持的请求方式"),
     NOT_SUPPORTED_PARAM_TYPE("SYS_00003", "不支持的参数类型"),

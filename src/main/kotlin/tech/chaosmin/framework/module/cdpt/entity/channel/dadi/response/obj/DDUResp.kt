@@ -1,7 +1,6 @@
 package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.response.obj
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 
 /**
@@ -11,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
  * @since 2021/6/17 21:40
  */
 @JsonIgnoreProperties(value = ["epolicyURL"], ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 class DDUResp {
     // 移动端支付链接
     var mobilePaymentLink: String? = null

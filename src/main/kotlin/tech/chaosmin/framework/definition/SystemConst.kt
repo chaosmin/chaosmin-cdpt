@@ -17,6 +17,7 @@ object SystemConst {
     const val RATE_TABLE_ZH = "费率表"
 
     // 系统默认值
+    const val ISS = "chaosmin"
     const val APPLICATION_NAME = "chaosmin_cdpt"
     const val DEFAULT_RETRY_TIME = 3
     const val DEFAULT_SLEEP_TIME = 1000L

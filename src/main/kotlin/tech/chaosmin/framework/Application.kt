@@ -2,6 +2,8 @@ package tech.chaosmin.framework
 
 import org.mybatis.spring.annotation.MapperScan
 import org.slf4j.LoggerFactory
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
+import org.springframework.amqp.support.converter.MessageConverter
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.cache.annotation.EnableCaching
@@ -12,7 +14,6 @@ import org.springframework.context.annotation.Import
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.springframework.web.client.RestTemplate
 import springfox.documentation.oas.annotations.EnableOpenApi
-
 
 @EnableCaching
 @EnableOpenApi
@@ -26,6 +27,11 @@ open class Application {
     @LoadBalanced
     open fun restTemplate(): RestTemplate {
         return RestTemplate()
+    }
+
+    @Bean
+    open fun createMessageConverter(): MessageConverter {
+        return Jackson2JsonMessageConverter()
     }
 
     fun start(args: Array<String>) {

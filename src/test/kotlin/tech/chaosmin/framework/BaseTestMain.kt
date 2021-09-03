@@ -9,8 +9,6 @@ open class BaseTestMain {
         System.setProperty("NACOS_GROUP", "chaosmin")
         System.setProperty("NACOS_ENABLE", "true")
         System.setProperty("SPRING_DISCOVERY_ENABLE", "false")
-        System.setProperty("CONFIG_SERVER_URL", "106.14.40.2:8848")
-        System.setProperty("CONSUL_HOST", "106.14.40.2")
-        System.setProperty("CONSUL_PORT", "8500")
+        System.setProperty("NACOS_SERVER_URL", "106.14.40.2:8848")
     }
 }

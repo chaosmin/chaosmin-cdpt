@@ -47,6 +47,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-jdbc:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-data-redis:${Vers.Deps.springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-amqp:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-mail:${Vers.Deps.springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-security:${Vers.Deps.springBootVersion}")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:${Vers.Deps.springBootVersion}")

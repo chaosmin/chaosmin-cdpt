@@ -15,4 +15,12 @@ import tech.chaosmin.framework.module.cdpt.entity.enums.PayStatusEnum
  * @author Romani min
  * @since 2021/9/5 21:12
  */
-data class PaymentNotifyEntity(val orderNo: String, val status: PayStatusEnum)
+class PaymentNotifyEntity() {
+    var orderNo: String? = null
+    var status: PayStatusEnum? = null
+
+    constructor(orderNo: String, status: PayStatusEnum) : this() {
+        this.orderNo = orderNo
+        this.status = status
+    }
+}

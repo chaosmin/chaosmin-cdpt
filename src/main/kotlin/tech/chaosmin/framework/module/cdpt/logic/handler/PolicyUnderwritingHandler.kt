@@ -24,6 +24,7 @@ import tech.chaosmin.framework.module.cdpt.api.convert.IssuerConvert
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.response.DDResp
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.response.obj.DDCResp
+import tech.chaosmin.framework.module.cdpt.entity.enums.OrderStatusEnum
 import tech.chaosmin.framework.module.cdpt.entity.enums.PayStatusEnum
 import tech.chaosmin.framework.module.cdpt.entity.enums.PayTypeEnum
 import tech.chaosmin.framework.module.cdpt.entity.enums.PolicyStatusEnum
@@ -39,6 +40,7 @@ import java.util.*
  */
 @Component
 open class PolicyUnderwritingHandler(
+    private val orderModifyHandler: OrderModifyHandler,
     private val policyCheckHandler: PolicyCheckHandler,
     private val dadiInsurerService: DadiInsurerService,
     private val rabbitTemplate: RabbitTemplate
@@ -87,8 +89,11 @@ open class PolicyUnderwritingHandler(
             rabbitTemplate.convertAndSend("policy", policyEn.update())
             // 如果是线下承保, 则后台自动进行后续流程
             if (policyEn.payType == PayTypeEnum.OFFLINE) {
+                orderModifyHandler.saveOrUpdate(policyEn.orderNo!!, OrderStatusEnum.PROCESSING)
                 logger.info("Send message to queue [insurer], message: ${JsonUtil.encode(policyEn)}")
                 rabbitTemplate.convertAndSend("insurer", policyEn)
+            } else {
+                orderModifyHandler.saveOrUpdate(policyEn.orderNo!!, OrderStatusEnum.TO_BE_PAID)
             }
         } catch (e: Exception) {
             throw FrameworkException(ErrorCodeEnum.SYSTEM_ERROR.code, e, "对接保司")

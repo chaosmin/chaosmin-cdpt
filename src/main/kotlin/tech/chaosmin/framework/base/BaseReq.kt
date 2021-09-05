@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.base
 
 import io.swagger.annotations.ApiModelProperty
+import tech.chaosmin.framework.utils.JsonUtil
 import java.io.Serializable
 
 /**
@@ -10,4 +11,8 @@ import java.io.Serializable
 open class BaseReq : Serializable {
     @ApiModelProperty("扩展信息")
     var extraInfo: String? = null
+
+    override fun toString(): String {
+        return JsonUtil.encode(this)
+    }
 }

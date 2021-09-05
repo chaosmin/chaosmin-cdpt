@@ -2,7 +2,7 @@ package tech.chaosmin.framework.module.cdpt.api.provider
 
 import org.junit.jupiter.api.Test
 import tech.chaosmin.framework.BaseTestMain
-import tech.chaosmin.framework.module.cdpt.api.ProductShareService
+import tech.chaosmin.framework.module.cdpt.api.ProductAPI
 import tech.chaosmin.framework.module.mgmt.entity.request.UploadFileReq
 import javax.annotation.Resource
 
@@ -12,7 +12,7 @@ import javax.annotation.Resource
  */
 internal class ProductShareProviderBootTest : BaseTestMain() {
     @Resource
-    lateinit var productShareService: ProductShareService
+    lateinit var productShareService: ProductAPI
 
     @Test
     fun upload() {

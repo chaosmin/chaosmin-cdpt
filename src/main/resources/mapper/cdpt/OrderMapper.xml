@@ -2,11 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="tech.chaosmin.framework.module.cdpt.domain.dao.OrderDAO">
     <sql id="extSelectFields">
-        `order`.*, policy.actual_premium, policy.insured_size, policy.effective_time, policy.expiry_time, goods_plan.partner_name,
-        policy.create_time as 'issue_time', policy.creator as 'issuer'
+        `order`.*,
+        policy.proposal_no, policy.actual_premium, policy.insured_size, policy.effective_time, policy.expiry_time, policy.issue_time,
+        goods_plan.product_name, goods_plan.partner_name, goods_plan.user_name as 'issuer_name'
     </sql>
 
-    <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.OrderExt">
+    <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.OrderEx">
         select
         <include refid="extSelectFields"/>
         from `order`

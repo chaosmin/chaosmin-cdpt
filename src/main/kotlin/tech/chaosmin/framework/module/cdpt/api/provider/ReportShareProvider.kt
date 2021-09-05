@@ -9,8 +9,8 @@ import tech.chaosmin.framework.base.enums.TimeTypeEnum
 import tech.chaosmin.framework.module.cdpt.api.ReportShareService
 import tech.chaosmin.framework.module.cdpt.entity.report.SltCheckReportEntity
 import tech.chaosmin.framework.module.cdpt.entity.report.SltComsReportEntity
-import tech.chaosmin.framework.module.cdpt.handler.ReportSltCheckHandler
-import tech.chaosmin.framework.module.cdpt.handler.ReportSltComsHandler
+import tech.chaosmin.framework.module.cdpt.logic.handler.ReportSltCheckHandler
+import tech.chaosmin.framework.module.cdpt.logic.handler.ReportSltComsHandler
 import tech.chaosmin.framework.utils.NumberUtil
 import java.net.URLEncoder
 import javax.servlet.http.HttpServletResponse
@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse
  * @since 2021/6/29 21:32
  */
 @RestController
-class ReportShareProvider(
+open class ReportShareProvider(
     private val reportSltComsHandler: ReportSltComsHandler,
     private val reportSltCheckHandler: ReportSltCheckHandler
 ) : ReportShareService {

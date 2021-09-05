@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil
 import org.junit.jupiter.api.Test
 import tech.chaosmin.framework.BaseTestMain
 import tech.chaosmin.framework.module.cdpt.entity.report.SltComsReportEntity
+import tech.chaosmin.framework.module.cdpt.logic.handler.ReportSltComsHandler
 import tech.chaosmin.framework.utils.JsonUtil
 import javax.annotation.Resource
 

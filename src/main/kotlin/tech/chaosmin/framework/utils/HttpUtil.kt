@@ -28,9 +28,11 @@ object HttpUtil {
      * @param body 请求体
      * @param timeout 超时时间(毫秒) 默认60s
      */
-    fun doRequest(method: Method, url: String, headers: Map<String, String>, body: String, timeout: Int = 60000): String {
+    fun doRequest(method: Method, url: String, headers: Map<String, String>, body: String, timeout: Int = 60000): Pair<Int, String> {
         val request = setHeaders(HttpUtil.createRequest(method, url), headers)
-        request.timeout(timeout).body(body).execute().use { return it.body() }
+        request.timeout(timeout).body(body).execute().use {
+            return it.status to it.body()
+        }
     }
 
     fun write(response: HttpServletResponse, data: RestResult<*>) {

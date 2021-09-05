@@ -3,6 +3,7 @@ package tech.chaosmin.framework.module.cdpt.service.inner
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import tech.chaosmin.framework.BaseTestMain
+import tech.chaosmin.framework.module.cdpt.domain.service.GoodsPlanService
 import javax.annotation.Resource
 
 /**

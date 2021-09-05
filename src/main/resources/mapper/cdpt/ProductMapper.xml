@@ -9,7 +9,7 @@
         (select count(*) from product_plan pp where pp.product_id = product.id) as number_of_plan
     </sql>
 
-    <select id="getByIdExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductExt">
+    <select id="getByIdExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductEx">
         select
         <include refid="selectExt"/>
         from product
@@ -19,7 +19,7 @@
         where product.id = #{id} and partner.is_deleted = 0
     </select>
 
-    <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductExt">
+    <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductEx">
         select
         <include refid="selectExt"/>
         from product

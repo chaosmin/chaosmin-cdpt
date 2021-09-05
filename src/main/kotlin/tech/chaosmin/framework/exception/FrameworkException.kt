@@ -1,5 +1,6 @@
 package tech.chaosmin.framework.exception
 
+import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.utils.ExceptionMessageHelper
 import java.io.PrintStream
 import java.io.PrintWriter
@@ -23,6 +24,8 @@ class FrameworkException : RuntimeException {
         this.errCode = errCode
     }
 
+    constructor(errorType: ErrorCodeEnum, vararg params: Any) : this(errorType.code, params)
+
     constructor(errCode: String, cause: Throwable, vararg params: Any) : super(ExceptionMessageHelper.getExtMsg(errCode, *params), cause) {
         this.errCode = errCode
     }
@@ -42,7 +45,7 @@ class FrameworkException : RuntimeException {
             if (causeMessage == null) {
                 causeMessage = ""
             }
-            return message ?: "" + causeMessage
+            return message ?: ("" + causeMessage)
         }
         return if (message != null) "$s: $message" else s
     }

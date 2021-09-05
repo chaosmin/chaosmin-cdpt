@@ -1,8 +1,8 @@
 package tech.chaosmin.framework.module.mgmt.entity
 
 import tech.chaosmin.framework.base.BaseEntity
-import tech.chaosmin.framework.base.enums.PayTypeEnum
 import tech.chaosmin.framework.base.enums.StatusEnum
+import tech.chaosmin.framework.module.cdpt.entity.enums.PayTypeEnum
 
 /**
  * 部门信息实体对象 <p>

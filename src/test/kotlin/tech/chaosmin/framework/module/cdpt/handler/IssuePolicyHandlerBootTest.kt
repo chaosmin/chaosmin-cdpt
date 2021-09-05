@@ -6,6 +6,7 @@ import tech.chaosmin.framework.BaseTestMain
 import tech.chaosmin.framework.base.enums.BizNoTypeEnum
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyInsuredReq
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
+import tech.chaosmin.framework.module.cdpt.logic.handler.IssuePolicyHandler
 import tech.chaosmin.framework.utils.BizNoUtil
 import java.util.*
 import javax.annotation.Resource

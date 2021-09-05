@@ -17,7 +17,7 @@ class ProductPlanEntity(id: Long? = null) : BaseEntity<ProductPlanEntity>(id) {
 
     // TODO 这个是前端用来调整的佣金比例, 如何优化前端不让后端返回这个值
     var iComsRatio: Double? = null
-    var liabilities = mutableListOf<PlanLiabilityEntity>()
+    var liabilities = mutableListOf<ProductPlanLibEntity>()
     var partnerName: String? = null
     var planCode: String? = null
     var planName: String? = null
@@ -25,12 +25,12 @@ class ProductPlanEntity(id: Long? = null) : BaseEntity<ProductPlanEntity>(id) {
     var productCode: String? = null
     var productId: Long? = null
     var productName: String? = null
-    var rateTable = mutableListOf<PlanRateTableEntity>()
+    var rateTable = mutableListOf<ProductPlanRaTeEntity>()
     var status: StatusEnum? = null
 
     fun addLiability(category: String, liability: String, amount: String) {
         synchronized(this) {
-            val lia = PlanLiabilityEntity().apply {
+            val lia = ProductPlanLibEntity().apply {
                 this.modifyType = ModifyTypeEnum.SAVE
                 this.liabilityCategory = category
                 this.liabilityName = liability
@@ -42,7 +42,7 @@ class ProductPlanEntity(id: Long? = null) : BaseEntity<ProductPlanEntity>(id) {
 
     fun addRateTable(startDay: Int, endDay: Int, amount: String, remark: String) {
         synchronized(this) {
-            val lia = PlanRateTableEntity().apply {
+            val lia = ProductPlanRaTeEntity().apply {
                 this.modifyType = ModifyTypeEnum.SAVE
                 this.type = RateTableTypeEnum.DAY
                 this.dayStart = startDay

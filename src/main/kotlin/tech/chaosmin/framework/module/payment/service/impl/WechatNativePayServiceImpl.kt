@@ -239,7 +239,7 @@ open class WechatNativePayServiceImpl(
                 paymentTransactionService.updateByTradeNo(PaymentTransaction().apply {
                     this.payer = payNotify.payer?.openid
                     this.status = TransactionStatusEnum.SUCCESS.getCode()
-                    this.payTime = DateUtil.parse(payNotify.success_time)
+                    this.payTime = DateUtil.parseUTC(payNotify.success_time)
                 }, payNotify.out_trade_no!!)
             } else {
                 // TODO 邮件通知警告
@@ -319,7 +319,7 @@ open class WechatNativePayServiceImpl(
                     this.refundAmount = refundNotify.amount?.payer_refund
                     this.refundAccount = refundNotify.user_received_account
                     this.status = TransactionStatusEnum.REFUND.getCode()
-                    this.refundTime = DateUtil.parse(refundNotify.success_time)
+                    this.refundTime = DateUtil.parseUTC(refundNotify.success_time)
                 }, refundNotify.out_trade_no!!)
             } else {
                 // TODO 邮件通知警告

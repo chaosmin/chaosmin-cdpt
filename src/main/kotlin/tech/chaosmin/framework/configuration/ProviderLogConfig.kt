@@ -8,12 +8,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import org.springframework.web.multipart.MultipartFile
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.RestResultExt
 import tech.chaosmin.framework.utils.JsonUtil
-import java.util.function.Function
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import kotlin.reflect.KClass
@@ -23,9 +23,12 @@ import kotlin.reflect.KClass
 @ConditionalOnProperty(prefix = "log.provider", name = ["enable"], havingValue = "true", matchIfMissing = false)
 class ProviderLogConfig {
     private val ignoreTypes: Array<KClass<*>> = arrayOf(ServletRequest::class, ServletResponse::class)
-    private val log: Logger = LoggerFactory.getLogger(ProviderLogConfig::class.java)
+    private val logger = LoggerFactory.getLogger(ProviderLogConfig::class.java)
 
-    @Around("execution(public * tech.chaosmin.framework.provider.*.*(..))")
+    @Around(
+        "execution(public * tech.chaosmin.framework.base.AbstractAPI.*(..))" +
+                "|| execution(public * tech.chaosmin.framework.module.*.api.provider.*.*(..))"
+    )
     @Throws(Throwable::class)
     fun doAround(joinPoint: ProceedingJoinPoint): Any? {
         // 1 先过滤出有RequestMapping的方法
@@ -35,33 +38,13 @@ class ProviderLogConfig {
         val lineSeparator = System.lineSeparator()
         val logContent = StringBuilder(lineSeparator)
 
-        // 2.2 获取接口的类及方法名
         logContent.append(String.format("%-25s: %s.%s", "Provider class", method.declaringClass.name, method.name))
         logContent.append(lineSeparator)
 
-        // 2.3 拼装接口URL
-        // 2.3.1 获取Class上的FeignURL
-        val parentClazz = method.declaringClass.interfaces[0]
-        var url = ""
-        val reqMappingFunc = Function { p: RequestMapping ->
-            java.lang.String.join(",", *if (p.value.isNotEmpty()) p.value else p.path)
-        }
+        val attributes = RequestContextHolder.getRequestAttributes() as ServletRequestAttributes
+        val request = attributes.request
 
-        val baseMapping = parentClazz.getAnnotation(RequestMapping::class.java)
-
-        if (baseMapping != null) {
-            url += reqMappingFunc.apply(baseMapping)
-        }
-
-        val methodParent = parentClazz.getDeclaredMethod(method.name, *method.parameterTypes)
-
-        // 2.3.2 获取Class RequestMapping URL
-        val methodReqMapping = methodParent.getAnnotation(RequestMapping::class.java)
-        if (methodReqMapping != null) {
-            url += reqMappingFunc.apply(methodReqMapping)
-        }
-
-        logContent.append(String.format("%-25s: %s", "Provider URL", url + lineSeparator))
+        logContent.append(String.format("%-25s: %s", "Provider URL", "[${request.method}] ${request.requestURI}" + lineSeparator))
 
         val params = HashMap<String, Any>()
         val args = joinPoint.args
@@ -79,9 +62,9 @@ class ProviderLogConfig {
         } catch (ex: java.lang.Exception) {
             logContent.append(String.format("%-25s: %s", "Provider Error", ex.message + lineSeparator))
             logContent.append(String.format("%-25s: %sms", "Provider cost time", (System.currentTimeMillis() - startTime)))
-            onException(log, ex)
+            onException(logger, ex)
         } finally {
-            log.info(logContent.toString())
+            logger.info(logContent.toString())
         }
     }
 

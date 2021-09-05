@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.core.io.ClassPathResource
 import org.springframework.mock.web.MockMultipartFile
 import tech.chaosmin.framework.BaseTestMain
+import tech.chaosmin.framework.module.cdpt.logic.handler.UploadProductHandler
 import tech.chaosmin.framework.module.mgmt.entity.request.UploadFileReq
 import javax.annotation.Resource
 

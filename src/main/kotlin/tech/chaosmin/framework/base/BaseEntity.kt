@@ -1,6 +1,7 @@
 package tech.chaosmin.framework.base
 
 import tech.chaosmin.framework.base.enums.ModifyTypeEnum
+import tech.chaosmin.framework.utils.JsonUtil
 import java.util.*
 
 /**
@@ -31,6 +32,10 @@ open class BaseEntity<T : BaseEntity<T>>(var id: Long? = null) {
 
     // 是否逻辑删除
     var deleted: Int? = null
+
+    override fun toString(): String {
+        return JsonUtil.encode(this)
+    }
 
     // TODO 如何优化以下三个方法, 简化代码写法
     fun save(): T {

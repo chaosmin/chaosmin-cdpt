@@ -3,8 +3,7 @@ package tech.chaosmin.framework.module.cdpt.entity.request
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseReq
-import tech.chaosmin.framework.base.enums.OrderStatusEnum
-import java.util.*
+import tech.chaosmin.framework.module.cdpt.entity.enums.OrderStatusEnum
 
 /**
  * @author Romani min
@@ -15,18 +14,9 @@ class OrderReq : BaseReq() {
     @ApiModelProperty("订单号")
     var orderNo: String? = null
 
-    @ApiModelProperty("产品计划ID")
-    var productPlanId: Long? = null
-
-    @ApiModelProperty("起保时间")
-    var startTime: Date? = null
-
-    @ApiModelProperty("停保时间")
-    var endTime: Date? = null
-
-    @ApiModelProperty("旅行目的地")
-    var travelDestination: String? = null
-
     @ApiModelProperty("状态")
     var status: OrderStatusEnum? = null
+
+    @ApiModelProperty("订单所属用户ID")
+    var userId: Long? = null
 }

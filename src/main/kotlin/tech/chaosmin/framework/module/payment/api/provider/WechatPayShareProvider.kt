@@ -19,7 +19,7 @@ import tech.chaosmin.framework.utils.JsonUtil
  * @since 2021/8/25 14:35
  */
 @RestController
-class WechatPayShareProvider(private val wechatpayNativePayService: WechatNativePayService) : WechatPayShareService {
+open class WechatPayShareProvider(private val wechatpayNativePayService: WechatNativePayService) : WechatPayShareService {
     private val logger = LoggerFactory.getLogger(WechatPayShareService::class.java)
 
     override fun createTrade(req: NativePayReq): RestResult<String> {

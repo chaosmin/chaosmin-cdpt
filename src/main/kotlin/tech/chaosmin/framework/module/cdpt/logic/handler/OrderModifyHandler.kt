@@ -63,7 +63,8 @@ open class OrderModifyHandler(
 
     fun saveOrUpdate(orderNo: String, status: OrderStatusEnum, param: String? = null): RestResult<OrderEntity> {
         val orderEntity = OrderEntity().apply {
-            this.userId = SecurityUtil.getUserId()
+            // 如果没有获取到用户信息的话, 则不更新该字段了
+            this.userId = if (SecurityUtil.getUserId() == -1L) null else SecurityUtil.getUserId()
             this.orderNo = orderNo
             this.status = status
             this.param = param

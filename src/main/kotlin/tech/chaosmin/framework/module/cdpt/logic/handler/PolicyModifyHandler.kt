@@ -26,6 +26,10 @@ import tech.chaosmin.framework.module.cdpt.entity.enums.PolicyStatusEnum
 import tech.chaosmin.framework.module.cdpt.logic.convert.PolicyHolderMapper
 import tech.chaosmin.framework.module.cdpt.logic.convert.PolicyInsurantMapper
 import tech.chaosmin.framework.module.cdpt.logic.convert.PolicyMapper
+import tech.chaosmin.framework.module.payment.entity.wechat.request.NativeRefundReq
+import tech.chaosmin.framework.module.payment.service.WechatNativePayService
+import tech.chaosmin.framework.utils.JsonUtil
+import java.math.BigDecimal
 import java.util.*
 
 /**
@@ -36,7 +40,8 @@ import java.util.*
 open class PolicyModifyHandler(
     private val policyService: PolicyService,
     private val policyHolderService: PolicyHolderService,
-    private val policyInsurantService: PolicyInsurantService
+    private val policyInsurantService: PolicyInsurantService,
+    private val wechatNativePayService: WechatNativePayService
 ) : AbstractTemplateOperate<PolicyEntity, PolicyEntity>() {
     private val logger = LoggerFactory.getLogger(PolicyModifyHandler::class.java)
 
@@ -85,8 +90,17 @@ open class PolicyModifyHandler(
                         if (exist.payStatus == PayStatusEnum.PAYMENT_SUCCESSFUL.getCode()) {
                             // 如果保单支付渠道为线上, 则进行退费动作, 支付回调后更新保单信息
                             if (exist.payType == PayTypeEnum.ONLINE.getCode()) {
-                                logger.error("此处需要进行退费")
-                                // TODO 保单退费, 发送退费处理消息
+                                val refundReq = NativeRefundReq().apply {
+                                    this.out_trade_no = exist.orderNo
+                                    this.out_refund_no = exist.orderNo
+                                    this.reason = "用户主动退保"
+                                    // 保费转化为分
+                                    val premium = BigDecimal(exist.actualPremium!!).multiply(BigDecimal(100))
+                                    this.amount.total = premium.toInt()
+                                    this.amount.total = premium.toInt()
+                                }
+                                logger.info("保单退保触发退费处理: ${JsonUtil.encode(refundReq)}")
+                                wechatNativePayService.refund(refundReq)
                             } else {
                                 // 如果保单支付渠道为线下, 直接更新支付状态为已退费
                                 policy.payStatus = PayStatusEnum.REFUNDED.getCode()

@@ -100,6 +100,13 @@ open class WechatNativePayServiceImpl(
     private fun beforeRequest(req: NativeRefundReq): NativeRefundReq {
         // 补充微信支付信息
         req.notify_url = wechatPayParam.refundNotifyUrl
+        req.amount.currency = "CNY"
+
+        if (wechatPayParam.mock != null && wechatPayParam.mock!!) {
+            // 如果开启了mock开关, 则将退款金额设置为1
+            req.amount.refund = 1
+            req.amount.total = 1
+        }
         return req
     }
 

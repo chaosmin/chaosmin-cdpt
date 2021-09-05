@@ -18,6 +18,7 @@ import tech.chaosmin.framework.module.cdpt.api.convert.OrderConvert
 import tech.chaosmin.framework.module.cdpt.api.convert.PolicyTraceConvert
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.OrderEx
 import tech.chaosmin.framework.module.cdpt.entity.OrderEntity
+import tech.chaosmin.framework.module.cdpt.entity.enums.OrderStatusEnum
 import tech.chaosmin.framework.module.cdpt.entity.request.OrderReq
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyTraceReq
@@ -81,7 +82,7 @@ open class OrderProvider(
     }
 
     override fun saveDraft(orderNo: String, req: PolicyIssueReq): RestResult<String> {
-        orderModifyHandler.saveOrUpdate(orderNo, JsonUtil.encode(req))
+        orderModifyHandler.saveOrUpdate(orderNo, OrderStatusEnum.DRAFT, JsonUtil.encode(req))
         return RestResultExt.successRestResult()
     }
 }

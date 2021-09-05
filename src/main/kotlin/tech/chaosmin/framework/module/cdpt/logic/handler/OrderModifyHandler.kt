@@ -45,12 +45,12 @@ open class OrderModifyHandler(
             ModifyTypeEnum.SAVE -> {
                 logger.info("order.create.input: $order")
                 orderService.save(order)
-                orderDraftService.saveOrUpdate(order.orderNo!!, arg.param ?: "{}")
+                if (!arg.param.isNullOrBlank()) orderDraftService.saveOrUpdate(order.orderNo!!, arg.param!!)
             }
             ModifyTypeEnum.UPDATE -> {
                 logger.info("order.update.input: $order")
                 orderService.updateById(order)
-                orderDraftService.saveOrUpdate(order.orderNo!!, arg.param ?: "{}")
+                if (!arg.param.isNullOrBlank()) orderDraftService.saveOrUpdate(order.orderNo!!, arg.param!!)
             }
             ModifyTypeEnum.REMOVE -> {
                 logger.info("order.remove.input: $order")
@@ -61,11 +61,11 @@ open class OrderModifyHandler(
         return res.success(arg)
     }
 
-    fun saveOrUpdate(orderNo: String, param: String): RestResult<OrderEntity> {
+    fun saveOrUpdate(orderNo: String, status: OrderStatusEnum, param: String? = null): RestResult<OrderEntity> {
         val orderEntity = OrderEntity().apply {
             this.userId = SecurityUtil.getUserId()
-            this.status = OrderStatusEnum.DRAFT
             this.orderNo = orderNo
+            this.status = status
             this.param = param
         }
         val id = orderService.findByOrderNo(orderNo).id

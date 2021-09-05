@@ -54,7 +54,15 @@ class PolicyInterrogator(
     }
 
     fun getOne(ew: Wrapper<Policy>): PolicyEntity? {
-        return PolicyMapper.INSTANCE.toEn(policyService.getOne(ew))
+        val en = PolicyMapper.INSTANCE.toEn(policyService.getOne(ew))
+        return en?.apply {
+            // 保单投保人信息
+            this.holder = PolicyHolderMapper.INSTANCE.toEn(policyHolderService.listByPolicyId(en.id!!).firstOrNull())
+            // 保单被保人信息
+            this.insuredList = PolicyInsurantMapper.INSTANCE.toEn(policyInsurantService.listByPolicyId(en.id!!))
+            // 保单产品信息
+            this.goodsPlan = goodsPlanInterrogator.getOne(en.goodsPlanId!!)
+        } ?: en
     }
 
     override fun page(cond: PageQuery<PolicyEx>): IPage<PolicyEntity> {

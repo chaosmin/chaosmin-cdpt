@@ -22,8 +22,10 @@ import tech.chaosmin.framework.module.cdpt.api.convert.ChannelRequestConvert
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.response.DDResp
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.response.obj.DDUResp
+import tech.chaosmin.framework.module.cdpt.entity.enums.OrderStatusEnum
 import tech.chaosmin.framework.module.cdpt.entity.enums.PayStatusEnum
 import tech.chaosmin.framework.module.cdpt.entity.enums.PolicyStatusEnum
+import tech.chaosmin.framework.module.cdpt.logic.handler.OrderModifyHandler
 import tech.chaosmin.framework.module.cdpt.logic.outer.partner.DadiInsurerService
 import tech.chaosmin.framework.utils.JsonUtil
 
@@ -33,6 +35,7 @@ import tech.chaosmin.framework.utils.JsonUtil
  */
 @Component
 class QueueInsurerListener(
+    private val orderModifyHandler: OrderModifyHandler,
     private val dadiInsurerService: DadiInsurerService,
     private val rabbitTemplate: RabbitTemplate
 ) {
@@ -55,6 +58,8 @@ class QueueInsurerListener(
         if ("1" == response?.responseHead?.resultCode) {
             logger.error(response.responseHead?.resultMessage ?: "请求第三方核保接口异常")
         } else {
+            // 更新订单状态
+            orderModifyHandler.saveOrUpdate(message.orderNo!!, OrderStatusEnum.SUCCESSFULLY_INSURED)
             // 保司承保成功, 更新保单状态
             message.issueTime = DateUtil.parseUTC(response?.responseHead?.responseTime)
             message.status = PolicyStatusEnum.INSURED

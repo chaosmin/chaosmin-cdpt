@@ -17,13 +17,16 @@ import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.util.EntityUtils
 import org.slf4j.LoggerFactory
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.stereotype.Service
 import tech.chaosmin.framework.base.enums.*
 import tech.chaosmin.framework.definition.WechatPayParam
 import tech.chaosmin.framework.exception.FrameworkException
+import tech.chaosmin.framework.module.cdpt.entity.enums.PayStatusEnum
 import tech.chaosmin.framework.module.mgmt.domain.dataobject.ChannelHttpRequest
 import tech.chaosmin.framework.module.mgmt.service.ChannelHttpRequestService
 import tech.chaosmin.framework.module.payment.domain.dataobject.PaymentTransaction
+import tech.chaosmin.framework.module.payment.entity.PaymentNotifyEntity
 import tech.chaosmin.framework.module.payment.entity.PaymentTransactionEntity
 import tech.chaosmin.framework.module.payment.entity.wechat.PayNotifyEntity
 import tech.chaosmin.framework.module.payment.entity.wechat.RefundNotifyEntity
@@ -55,7 +58,8 @@ import java.util.*
 open class WechatNativePayServiceImpl(
     private val wechatPayParam: WechatPayParam,
     private val paymentTransactionService: PaymentTransactionService,
-    private val channelHttpRequestService: ChannelHttpRequestService
+    private val channelHttpRequestService: ChannelHttpRequestService,
+    private val rabbitTemplate: RabbitTemplate
 ) : WechatNativePayService {
     private val logger = LoggerFactory.getLogger(WechatNativePayService::class.java)
     private var httpClient: CloseableHttpClient? = null
@@ -241,8 +245,12 @@ open class WechatNativePayServiceImpl(
                     this.status = TransactionStatusEnum.SUCCESS.getCode()
                     this.payTime = DateUtil.parseUTC(payNotify.success_time)
                 }, payNotify.out_trade_no!!)
+                val noticeMessage = PaymentNotifyEntity(payNotify.out_trade_no!!, PayStatusEnum.PAYMENT_SUCCESSFUL)
+                rabbitTemplate.convertAndSend("payment", noticeMessage)
             } else {
                 // TODO 邮件通知警告
+                val noticeMessage = PaymentNotifyEntity(payNotify?.out_trade_no!!, PayStatusEnum.PAYMENT_FAILED)
+                rabbitTemplate.convertAndSend("payment", noticeMessage)
                 logger.error("微信支付失败! $payNotify")
             }
 
@@ -321,6 +329,8 @@ open class WechatNativePayServiceImpl(
                     this.status = TransactionStatusEnum.REFUND.getCode()
                     this.refundTime = DateUtil.parseUTC(refundNotify.success_time)
                 }, refundNotify.out_trade_no!!)
+                val noticeMessage = PaymentNotifyEntity(refundNotify.out_trade_no!!, PayStatusEnum.REFUNDED)
+                rabbitTemplate.convertAndSend("payment", noticeMessage)
             } else {
                 // TODO 邮件通知警告
                 logger.error("微信支付退款失败! $refundNotify")

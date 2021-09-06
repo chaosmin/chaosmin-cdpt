@@ -43,13 +43,15 @@ open class DadiInsurerService(thirdPartyRequestHandler: ThirdPartyRequestHandler
     override fun getRequestInfo(process: PolicyProcessEnum): Pair<Method, String> {
         val api = properties.apiList?.firstOrNull { it.process == process }
             ?: throw FrameworkException(ErrorCodeEnum.NOT_SUPPORTED_PARAM_TYPE, process.name)
-        return api.method!! to "${properties.server}/${api.url}"
+        return api.method!! to "${properties.server}${api.url}"
     }
 
     override fun header(process: PolicyProcessEnum, body: BaseChannelReq): Map<String, String> {
         val api = getRequestInfo(process)
+        logger.info("大地保险明文请求报文: ${JsonUtil.encode(body)}")
         val bodyBytes = JsonUtil.encode(body).toByteArray(Charset.defaultCharset())
         val bodyMD5 = SignUtil.base64AndMD5(bodyBytes)
+        logger.info("大地保险密文请求报文: $bodyMD5")
         val content = "${api.first.name}\n$bodyMD5\n${api.second}"
         logger.info("大地保险明文签名: $content")
         val keyBytes = properties.securityKey?.toByteArray(Charset.defaultCharset())
@@ -62,7 +64,7 @@ open class DadiInsurerService(thirdPartyRequestHandler: ThirdPartyRequestHandler
         val builder = StringBuilder()
         builder.append(encoder.encode(digestBytes))
         val signature = builder.toString()
-        logger.info("大地保险密文前面: $signature")
+        logger.info("大地保险密文签名: $signature")
         return mapOf("AG-Access-Key" to (properties.accessKey ?: ""), "AG-Signature" to signature)
     }
 }

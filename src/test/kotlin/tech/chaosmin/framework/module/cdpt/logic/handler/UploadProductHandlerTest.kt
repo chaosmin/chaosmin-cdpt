@@ -1,13 +1,13 @@
-package tech.chaosmin.framework.module.cdpt.handler
+package tech.chaosmin.framework.module.cdpt.logic.handler
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper
 import com.nhaarman.mockitokotlin2.anyOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.anyString
 import org.mockito.MockitoAnnotations
 import org.springframework.core.io.ClassPathResource
 import org.springframework.mock.web.MockMultipartFile
@@ -16,10 +16,6 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.Partner
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ProductCategory
 import tech.chaosmin.framework.module.cdpt.domain.service.PartnerService
 import tech.chaosmin.framework.module.cdpt.entity.ProductEntity
-import tech.chaosmin.framework.module.cdpt.logic.handler.ProductModifyHandler
-import tech.chaosmin.framework.module.cdpt.logic.handler.ProductPlanModifyHandler
-import tech.chaosmin.framework.module.cdpt.logic.handler.UploadProductHandler
-import tech.chaosmin.framework.module.cdpt.service.inner.ProductCategoryService
 import tech.chaosmin.framework.module.mgmt.entity.request.UploadFileReq
 import tech.chaosmin.framework.utils.JsonUtil
 
@@ -35,9 +31,6 @@ internal class UploadProductHandlerTest {
     lateinit var partnerService: PartnerService
 
     @Mock
-    lateinit var categoryService: ProductCategoryService
-
-    @Mock
     lateinit var productModifyHandler: ProductModifyHandler
 
     @Mock
@@ -50,7 +43,7 @@ internal class UploadProductHandlerTest {
 
     @BeforeEach
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         // mock partner data
         partner.id = 1
         partner.partnerName = "MockPartner"
@@ -58,7 +51,7 @@ internal class UploadProductHandlerTest {
         productCategory.id = 1
         // set mock function return
         `when`(partnerService.listEqPartnerCode(anyString())).thenReturn(listOf(partner))
-        `when`(categoryService.list(any<Wrapper<ProductCategory>>())).thenReturn(listOf(productCategory))
+        // `when`(categoryService.list(any<Wrapper<ProductCategory>>())).thenReturn(listOf(productCategory))
         `when`(productModifyHandler.operate(anyOrNull())).thenReturn(RestResultExt.successRestResult(productEntity))
         `when`(productPlanModifyHandler.operate(anyOrNull())).thenReturn(RestResultExt.successRestResult())
     }

@@ -1,4 +1,4 @@
-package tech.chaosmin.framework.module.cdpt.handler
+package tech.chaosmin.framework.module.cdpt.logic.handler
 
 import cn.hutool.core.date.DateUtil
 import org.junit.jupiter.api.Test
@@ -6,7 +6,6 @@ import tech.chaosmin.framework.BaseTestMain
 import tech.chaosmin.framework.base.enums.BizNoTypeEnum
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyInsuredReq
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
-import tech.chaosmin.framework.module.cdpt.logic.handler.IssuePolicyHandler
 import tech.chaosmin.framework.utils.BizNoUtil
 import java.util.*
 import javax.annotation.Resource
@@ -15,9 +14,9 @@ import javax.annotation.Resource
  * @author Romani min
  * @since 2021/6/21 19:41
  */
-internal class IssuePolicyHandlerBootTest : BaseTestMain() {
+internal class PolicyUnderwritingHandlerBootTest : BaseTestMain() {
     @Resource
-    lateinit var issuePolicyHandler: IssuePolicyHandler
+    lateinit var policyUnderwritingHandler: PolicyUnderwritingHandler
 
     @Test
     fun operate() {
@@ -38,6 +37,6 @@ internal class IssuePolicyHandlerBootTest : BaseTestMain() {
             this.gender = "男"
             this.mobile = "17601348927"
         })
-        issuePolicyHandler.operate(policyIssueReq)
+        policyUnderwritingHandler.operate(policyIssueReq)
     }
 }

@@ -62,11 +62,40 @@ open class PolicyUnderwritingHandler(
         }
     }
 
+    override fun processor(arg: PolicyIssueReq, res: RestResult<PolicyEntity>): RestResult<PolicyEntity> {
+        val checkResult = policyCheckHandler.operate(arg)
+        // 数据校验失败, 直接返回结果
+        if (!checkResult.success) return RestResultExt.mapper(checkResult)
+        // 保存投保单信息
+        val policyEn = IssuerConvert.INSTANCE.convert2PolicyEntity(arg)
+        policyEn.userId = SecurityUtil.getUserId()
+        policyEn.status = PolicyStatusEnum.TO_BE_INSURED
+        policyEn.payStatus = PayStatusEnum.TO_BE_PAID
+
+        // TODO 此处为大地保险特殊处理逻辑, 后续接入其他保司需要注意
+        // 如果被保人数量为2时, 需要分开出单
+        if (policyEn.insuredList?.size == 2) {
+            // 重新设置被保人数
+            policyEn.insuredSize = 1
+            // 重新计算原价保费及结算保费
+            policyEn.totalPremium = policyEn.totalPremium?.div(2)
+            policyEn.actualPremium = policyEn.actualPremium?.div(2)
+            // 循环被保人列表出单
+            policyEn.insuredList?.forEachIndexed { index, it ->
+                // 修改幂等建
+                policyEn.orderNo = "${arg.orderNo}-${index + 1}"
+                // 重新设置被保人列表
+                policyEn.insuredList = Collections.singletonList(it)
+                issuePolicy(policyEn)
+            }
+        } else issuePolicy(policyEn)
+        return RestResultExt.successRestResult(policyEn)
+    }
+
     private fun issuePolicy(policyEn: PolicyEntity) {
         // 发布消息新建保单对象
         logger.info("Send async message to queue [policy], message: ${JsonUtil.encode(policyEn)}")
-        rabbitTemplate.convertSendAndReceive("policy", policyEn.save())
-
+        rabbitTemplate.convertAndSend("policy", policyEn.save())
         // 第三方保司核保
         // TODO 目前仅支持大地保险一家, 后续考虑抽成通用
         try {
@@ -98,37 +127,5 @@ open class PolicyUnderwritingHandler(
         } catch (e: Exception) {
             throw FrameworkException(ErrorCodeEnum.SYSTEM_ERROR.code, e, "对接保司")
         }
-    }
-
-    override fun processor(arg: PolicyIssueReq, res: RestResult<PolicyEntity>): RestResult<PolicyEntity> {
-        val checkResult = policyCheckHandler.operate(arg)
-        // 数据校验失败, 直接返回结果
-        if (!checkResult.success) return RestResultExt.mapper(checkResult)
-
-        // 保存投保单信息
-        val policyEn = IssuerConvert.INSTANCE.convert2PolicyEntity(arg)
-        policyEn.userId = SecurityUtil.getUserId()
-        policyEn.status = PolicyStatusEnum.TO_BE_INSURED
-        policyEn.payStatus = PayStatusEnum.TO_BE_PAID
-
-        // TODO 此处为大地保险特殊处理逻辑, 后续接入其他保司需要注意
-        // 如果被保人数量为2时, 需要分开出单
-        if (policyEn.insuredList?.size == 2) {
-            // 重新设置被保人数
-            policyEn.insuredSize = 1
-            // 重新计算原价保费及结算保费
-            policyEn.totalPremium = policyEn.totalPremium?.div(2)
-            policyEn.actualPremium = policyEn.actualPremium?.div(2)
-            // 循环被保人列表出单
-            policyEn.insuredList?.forEachIndexed { index, it ->
-                // 修改幂等建
-                policyEn.orderNo = "${arg.orderNo}-${index + 1}"
-                // 重新设置被保人列表
-                policyEn.insuredList = Collections.singletonList(it)
-                issuePolicy(policyEn)
-            }
-        } else issuePolicy(policyEn)
-
-        return RestResultExt.successRestResult(policyEn)
     }
 }

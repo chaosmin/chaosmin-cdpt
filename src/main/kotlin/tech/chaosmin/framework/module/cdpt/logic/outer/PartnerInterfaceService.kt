@@ -26,16 +26,18 @@ abstract class PartnerInterfaceService(private val thirdPartyRequestHandler: Thi
     private val logger = LoggerFactory.getLogger(PartnerInterfaceService::class.java)
 
     // 获取请求信息(请求方式 + 请求地址)
-    abstract fun getRequestInfo(process: PolicyProcessEnum): Pair<Method, String>
+    abstract fun getRequestInfo(process: PolicyProcessEnum): RequestDTO
 
     abstract fun header(process: PolicyProcessEnum, body: BaseChannelReq): Map<String, String>
 
     fun <T> request(process: PolicyProcessEnum, requestBody: BaseChannelReq, func: (String?) -> T): T? {
-        val (method, url) = getRequestInfo(process)
+        val (method, server, `interface`) = getRequestInfo(process)
         val header = header(process, requestBody)
-        val response = thirdPartyRequestHandler.doRequest(method, url, header, requestBody)
+        val response = thirdPartyRequestHandler.doRequest(method, "${server}${`interface`}", header, requestBody)
         val result = func.invoke(response)
         logger.info("partner interface request result: ${JsonUtil.encode(result)}")
         return result
     }
+
+    data class RequestDTO(val method: Method, val server: String, val `interface`: String)
 }

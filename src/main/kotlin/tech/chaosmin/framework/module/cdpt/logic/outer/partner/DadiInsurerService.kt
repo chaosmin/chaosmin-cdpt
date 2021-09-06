@@ -9,7 +9,6 @@
  */
 package tech.chaosmin.framework.module.cdpt.logic.outer.partner
 
-import cn.hutool.http.Method
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service
@@ -40,19 +39,20 @@ open class DadiInsurerService(thirdPartyRequestHandler: ThirdPartyRequestHandler
     @Resource
     lateinit var properties: DadiInsurerProperties
 
-    override fun getRequestInfo(process: PolicyProcessEnum): Pair<Method, String> {
+    override fun getRequestInfo(process: PolicyProcessEnum): RequestDTO {
         val api = properties.apiList?.firstOrNull { it.process == process }
             ?: throw FrameworkException(ErrorCodeEnum.NOT_SUPPORTED_PARAM_TYPE, process.name)
-        return api.method!! to "${properties.server}${api.url}"
+        return RequestDTO(api.method!!, properties.server!!, api.url!!)
     }
 
     override fun header(process: PolicyProcessEnum, body: BaseChannelReq): Map<String, String> {
-        val api = getRequestInfo(process)
+        val (method, _, `interface`) = getRequestInfo(process)
         logger.info("大地保险明文请求报文: ${JsonUtil.encode(body)}")
         val bodyBytes = JsonUtil.encode(body).toByteArray(Charset.defaultCharset())
         val bodyMD5 = SignUtil.base64AndMD5(bodyBytes)
         logger.info("大地保险密文请求报文: $bodyMD5")
-        val content = "${api.first.name}\n$bodyMD5\n${api.second}"
+        // 请求方式(大写)\n请求报文MD5\n请求链接(不包含域名)
+        val content = "${method}\n$bodyMD5\n${`interface`}"
         logger.info("大地保险明文签名: $content")
         val keyBytes = properties.securityKey?.toByteArray(Charset.defaultCharset())
         val contentBytes = content.toByteArray(Charset.defaultCharset())

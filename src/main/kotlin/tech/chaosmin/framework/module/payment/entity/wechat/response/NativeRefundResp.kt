@@ -1,5 +1,13 @@
+/**
+ * Copyright (c) 2020-2021 Romani Min
+ * All rights reserved.
+ *
+ * If you are not the intended user, you are hereby notified that any use, disclosure, copying, printing, forwarding or
+ * dissemination of this property is strictly prohibited. If you have got this file in error, delete it from your system.
+ */
 package tech.chaosmin.framework.module.payment.entity.wechat.response
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 
@@ -8,6 +16,7 @@ import io.swagger.annotations.ApiModelProperty
  * @since 2021/9/2 20:23
  */
 @ApiModel("微信Native支付退款响应参数")
+@JsonIgnoreProperties(ignoreUnknown = true)
 class NativeRefundResp {
     @ApiModelProperty("微信支付退款单号", required = true, notes = "微信支付退款单号")
     var refund_id: String? = null
@@ -40,6 +49,9 @@ class NativeRefundResp {
 
     @ApiModelProperty("金额信息", required = true, notes = "金额信息")
     var amount: Amount? = null
+
+    @ApiModelProperty("资金账户", notes = "退款所使用资金对应的资金账户类型")
+    var funds_account: String? = null
 
     inner class Amount {
         @ApiModelProperty("订单金额", required = true, notes = "订单总金额，单位为分")

@@ -1,5 +1,13 @@
+/**
+ * Copyright (c) 2020-2021 Romani Min
+ * All rights reserved.
+ *
+ * If you are not the intended user, you are hereby notified that any use, disclosure, copying, printing, forwarding or
+ * dissemination of this property is strictly prohibited. If you have got this file in error, delete it from your system.
+ */
 package tech.chaosmin.framework.module.payment.entity.wechat.response
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.enums.WechatTradeStateEnum
@@ -10,6 +18,7 @@ import tech.chaosmin.framework.base.enums.WechatTradeTypeEnum
  * @since 2021/9/2 20:00
  */
 @ApiModel("微信Native支付订单查询返回参数")
+@JsonIgnoreProperties(ignoreUnknown = true)
 class NativeQueryResp {
     @ApiModelProperty("应用ID", required = true, notes = "由微信生成的应用ID，全局唯一")
     var appid: String? = null

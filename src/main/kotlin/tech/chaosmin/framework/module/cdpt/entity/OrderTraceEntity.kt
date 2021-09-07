@@ -1,19 +1,19 @@
 package tech.chaosmin.framework.module.cdpt.entity
 
 import tech.chaosmin.framework.base.BaseEntity
-import tech.chaosmin.framework.base.enums.PolicyKhsEnum
+import tech.chaosmin.framework.module.cdpt.entity.enums.OrderTraceEnum
 import java.util.*
 
 /**
  * @author Romani min
  * @since 2021/6/7 10:49
  */
-class PolicyTraceEntity(id: Long? = null) : BaseEntity<PolicyTraceEntity>(id) {
+class OrderTraceEntity(id: Long? = null) : BaseEntity<OrderTraceEntity>(id) {
     /** 保单ID */
     var policyId: Long? = null
 
     /** 可回溯材料类型 */
-    var khsType: PolicyKhsEnum? = null
+    var type: OrderTraceEnum? = null
 
     /** 可回溯材料生成时间 */
     var fileTime: Date? = null

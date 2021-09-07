@@ -11,7 +11,7 @@ import java.util.*
  * @since 2020/12/23 15:50
  */
 @Suppress("UNCHECKED_CAST")
-open class BaseEntity<T : BaseEntity<T>>(var id: Long? = null) {
+open class BaseEntity<out T : BaseEntity<T>>(var id: Long? = null) {
     // 操作类型 SAVE,UPDATE,REMOVE
     var modifyType: ModifyTypeEnum? = null
 

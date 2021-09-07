@@ -12,6 +12,8 @@ package tech.chaosmin.framework.base
 import com.baomidou.mybatisplus.core.metadata.IPage
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
+import tech.chaosmin.framework.base.enums.ErrorCodeEnum
+import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.utils.RequestUtil
 import javax.servlet.http.HttpServletRequest
 
@@ -51,12 +53,9 @@ abstract class AbstractAPI<D : BaseDO, E : BaseEntity<E>, RE : BaseReq, RQ : Bas
         val entity = convert.toEn(req).update(id)
         val restResult = handler.operate(entity)
         return restResult.convert { convert.toResp(it) }
-
     }
 
     override fun delete(@PathVariable("id") id: Long): RestResult<RQ> {
-        val entity = Class<E>::newInstance.call().remove(id)
-        val restResult = handler.operate(entity)
-        return restResult.convert { convert.toResp(it) }
+        throw FrameworkException(ErrorCodeEnum.NOT_SUPPORTED_FUNCTION, "删除")
     }
 }

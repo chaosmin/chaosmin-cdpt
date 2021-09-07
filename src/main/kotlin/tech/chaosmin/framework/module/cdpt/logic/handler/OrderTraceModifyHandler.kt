@@ -14,29 +14,29 @@ import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.base.enums.ModifyTypeEnum
 import tech.chaosmin.framework.exception.FrameworkException
-import tech.chaosmin.framework.module.cdpt.domain.service.PolicyTraceService
-import tech.chaosmin.framework.module.cdpt.entity.PolicyTraceEntity
-import tech.chaosmin.framework.module.cdpt.logic.convert.PolicyTraceMapper
+import tech.chaosmin.framework.module.cdpt.domain.service.OrderTraceService
+import tech.chaosmin.framework.module.cdpt.entity.OrderTraceEntity
+import tech.chaosmin.framework.module.cdpt.logic.convert.OrderTraceMapper
 
 /**
  * @author Romani min
  * @since 2021/6/7 11:12
  */
 @Component
-open class PolicyTraceModifyHandler(private val policyTraceService: PolicyTraceService) :
-    AbstractTemplateOperate<PolicyTraceEntity, PolicyTraceEntity>() {
-    override fun validation(arg: PolicyTraceEntity, res: RestResult<PolicyTraceEntity>) {
+open class OrderTraceModifyHandler(private val orderTraceService: OrderTraceService) :
+    AbstractTemplateOperate<OrderTraceEntity, OrderTraceEntity>() {
+    override fun validation(arg: OrderTraceEntity, res: RestResult<OrderTraceEntity>) {
         if (arg.modifyType == null) {
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code, "modifyType")
         }
     }
 
-    override fun processor(arg: PolicyTraceEntity, res: RestResult<PolicyTraceEntity>): RestResult<PolicyTraceEntity> {
-        val policyKhs = PolicyTraceMapper.INSTANCE.toDO(arg) ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code)
+    override fun processor(arg: OrderTraceEntity, res: RestResult<OrderTraceEntity>): RestResult<OrderTraceEntity> {
+        val policyKhs = OrderTraceMapper.INSTANCE.toDO(arg) ?: throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL.code)
         when (arg.modifyType) {
-            ModifyTypeEnum.SAVE -> policyTraceService.save(policyKhs)
-            ModifyTypeEnum.UPDATE -> policyTraceService.updateById(policyKhs)
-            ModifyTypeEnum.REMOVE -> policyTraceService.remove(Wrappers.query(policyKhs))
+            ModifyTypeEnum.SAVE -> orderTraceService.save(policyKhs)
+            ModifyTypeEnum.UPDATE -> orderTraceService.updateById(policyKhs)
+            ModifyTypeEnum.REMOVE -> orderTraceService.remove(Wrappers.query(policyKhs))
         }
         arg.id = policyKhs.id
         return res.success(arg)

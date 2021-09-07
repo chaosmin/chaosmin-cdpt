@@ -9,7 +9,7 @@ import java.util.*
  * @since 2021/6/9 10:04
  */
 @ApiModel("保单可回溯请求参数")
-class PolicyTraceReq : BaseReq() {
+class OrderTraceReq : BaseReq() {
     var type: String? = null
     var time: Date? = null
     var url: String? = null

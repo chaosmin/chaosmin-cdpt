@@ -15,16 +15,16 @@ import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.RestResultExt
 import tech.chaosmin.framework.module.cdpt.api.OrderAPI
 import tech.chaosmin.framework.module.cdpt.api.convert.OrderConvert
-import tech.chaosmin.framework.module.cdpt.api.convert.PolicyTraceConvert
+import tech.chaosmin.framework.module.cdpt.api.convert.OrderTraceConvert
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.OrderEx
 import tech.chaosmin.framework.module.cdpt.entity.OrderEntity
 import tech.chaosmin.framework.module.cdpt.entity.enums.OrderStatusEnum
 import tech.chaosmin.framework.module.cdpt.entity.request.OrderReq
+import tech.chaosmin.framework.module.cdpt.entity.request.OrderTraceReq
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
-import tech.chaosmin.framework.module.cdpt.entity.request.PolicyTraceReq
 import tech.chaosmin.framework.module.cdpt.entity.response.OrderResp
 import tech.chaosmin.framework.module.cdpt.logic.handler.OrderModifyHandler
-import tech.chaosmin.framework.module.cdpt.logic.handler.PolicyTraceModifyHandler
+import tech.chaosmin.framework.module.cdpt.logic.handler.OrderTraceModifyHandler
 import tech.chaosmin.framework.module.cdpt.logic.interrogator.OrderInterrogator
 import tech.chaosmin.framework.module.payment.entity.wechat.request.NativePayReq
 import tech.chaosmin.framework.module.payment.service.WechatNativePayService
@@ -41,7 +41,7 @@ open class OrderProvider(
     private val taskExecutor: Executor,
     private val orderInterrogator: OrderInterrogator,
     private val orderModifyHandler: OrderModifyHandler,
-    private val policyTraceModifyHandler: PolicyTraceModifyHandler,
+    private val orderTraceModifyHandler: OrderTraceModifyHandler,
     private val wechatNativePayService: WechatNativePayService
 ) : AbstractAPI<OrderEx, OrderEntity, OrderReq, OrderResp>(
     OrderConvert.INSTANCE, orderInterrogator, orderModifyHandler
@@ -62,21 +62,22 @@ open class OrderProvider(
         }
         logger.info("创建微信支付订单: ${JsonUtil.encode(nativeReq)}")
         val result = wechatNativePayService.createOrder(nativeReq)
-        logger.info("创建微信订单返回: ${result}")
+        logger.info("创建微信订单返回: $result")
         return RestResultExt.successRestResult(data = result)
     }
 
-    override fun saveOrderTrace(orderNo: String, req: PolicyTraceReq): RestResult<String> {
+    override fun saveOrderTrace(orderNo: String, req: OrderTraceReq): RestResult<String> {
         taskExecutor.execute {
-            val policyTraceEntity = PolicyTraceConvert.INSTANCE.toEn(req)
+            val policyTraceEntity = OrderTraceConvert.INSTANCE.toEn(req)
             policyTraceEntity.orderNo = orderNo
-            policyTraceModifyHandler.operate(policyTraceEntity.save())
+            orderTraceModifyHandler.operate(policyTraceEntity.save())
         }
         return RestResultExt.successRestResult()
     }
 
     override fun getDraft(orderNo: String): RestResult<PolicyIssueReq> {
         val draftJson = orderInterrogator.loadDraft(orderNo)
+        // 反序列化成投保参数, 返回前端加载
         val issueReq = JsonUtil.decode(draftJson, PolicyIssueReq::class.java)!!
         return RestResultExt.successRestResult(issueReq)
     }
@@ -84,5 +85,10 @@ open class OrderProvider(
     override fun saveDraft(orderNo: String, req: PolicyIssueReq): RestResult<String> {
         orderModifyHandler.saveOrUpdate(orderNo, OrderStatusEnum.DRAFT, JsonUtil.encode(req))
         return RestResultExt.successRestResult()
+    }
+
+    override fun delete(id: Long): RestResult<OrderResp> {
+        val restResult = orderModifyHandler.operate(OrderEntity().remove(id))
+        return RestResultExt.mapper(restResult)
     }
 }

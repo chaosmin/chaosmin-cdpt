@@ -7,4 +7,4 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.OrderDraft
  * @author Romani min
  * @since 2021/1/26 15:29
  */
-interface OrderTempDAO : BaseMapper<OrderDraft>
+interface OrderDraftDAO : BaseMapper<OrderDraft>

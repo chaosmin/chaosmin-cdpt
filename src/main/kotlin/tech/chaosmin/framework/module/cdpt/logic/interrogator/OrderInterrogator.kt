@@ -29,6 +29,7 @@ import tech.chaosmin.framework.utils.SecurityUtil
 @Component
 class OrderInterrogator(
     private val userInterrogator: UserInterrogator,
+    private val orderDraftInterrogator: OrderDraftInterrogator,
     private val orderService: OrderService
 ) : Interrogator<OrderEntity, OrderEx> {
     override fun getOne(id: Long): OrderEntity? {
@@ -53,7 +54,8 @@ class OrderInterrogator(
     }
 
     fun loadDraft(orderNo: String): String {
-        // return orderTempService.listByOrderNo(orderNo).firstOrNull()?.param ?: "{}"
-        TODO("Not yet implemented")
+        val draft = orderDraftInterrogator.getOneByOrderNo(orderNo)
+        // 如果为空的话, 返回空json串
+        return draft?.param ?: "{}"
     }
 }

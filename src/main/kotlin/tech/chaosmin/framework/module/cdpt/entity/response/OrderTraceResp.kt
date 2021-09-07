@@ -9,7 +9,7 @@ import tech.chaosmin.framework.base.BaseResp
  * @since 2021/6/9 09:58
  */
 @ApiModel("保单可回溯信息返回参数")
-class PolicyTraceResp : BaseResp() {
+class OrderTraceResp : BaseResp() {
     @ApiModelProperty("保单ID")
     var policyId: Long? = null
 

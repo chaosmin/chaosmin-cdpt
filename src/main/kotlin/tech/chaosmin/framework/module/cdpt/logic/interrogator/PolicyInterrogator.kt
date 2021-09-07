@@ -19,8 +19,8 @@ import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyEx
 import tech.chaosmin.framework.module.cdpt.domain.service.PolicyHolderService
 import tech.chaosmin.framework.module.cdpt.domain.service.PolicyInsurantService
 import tech.chaosmin.framework.module.cdpt.domain.service.PolicyService
+import tech.chaosmin.framework.module.cdpt.entity.OrderTraceEntity
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
-import tech.chaosmin.framework.module.cdpt.entity.PolicyTraceEntity
 import tech.chaosmin.framework.module.cdpt.entity.response.DashboardResp
 import tech.chaosmin.framework.module.cdpt.logic.convert.PolicyHolderMapper
 import tech.chaosmin.framework.module.cdpt.logic.convert.PolicyInsurantMapper
@@ -86,7 +86,7 @@ class PolicyInterrogator(
     /**
      * 查询保单可回溯信息
      */
-    fun queryKhs(id: Long): PolicyTraceEntity {
+    fun queryKhs(id: Long): OrderTraceEntity {
 //        val policy = this.page(PageQuery.eqQuery("policy.id", id)).records.firstOrNull() ?: return PolicyKhsEntity()
 //        val list = policyKhsService.listByOrderNo(policy.orderNo!!)
 //        val policyKhsEntity = PolicyKhsEntity().apply {

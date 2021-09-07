@@ -10,17 +10,17 @@ package tech.chaosmin.framework.module.cdpt.api.convert
 import org.mapstruct.Mapper
 import org.mapstruct.factory.Mappers
 import tech.chaosmin.framework.base.IConvert
-import tech.chaosmin.framework.module.cdpt.entity.PolicyTraceEntity
-import tech.chaosmin.framework.module.cdpt.entity.request.PolicyTraceReq
-import tech.chaosmin.framework.module.cdpt.entity.response.PolicyTraceResp
+import tech.chaosmin.framework.module.cdpt.entity.OrderTraceEntity
+import tech.chaosmin.framework.module.cdpt.entity.request.OrderTraceReq
+import tech.chaosmin.framework.module.cdpt.entity.response.OrderTraceResp
 
 /**
  * @author Romani min
  * @since 2020/12/23 21:39
  */
 @Mapper
-interface PolicyTraceConvert : IConvert<PolicyTraceEntity, PolicyTraceReq, PolicyTraceResp> {
+interface OrderTraceConvert : IConvert<OrderTraceEntity, OrderTraceReq, OrderTraceResp> {
     companion object {
-        val INSTANCE: PolicyTraceConvert = Mappers.getMapper(PolicyTraceConvert::class.java)
+        val INSTANCE: OrderTraceConvert = Mappers.getMapper(OrderTraceConvert::class.java)
     }
 }

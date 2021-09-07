@@ -8,18 +8,18 @@
 package tech.chaosmin.framework.module.cdpt.domain.service
 
 import com.baomidou.mybatisplus.extension.service.IService
-import tech.chaosmin.framework.module.cdpt.domain.dataobject.PolicyTrace
+import tech.chaosmin.framework.module.cdpt.domain.dataobject.OrderTrace
 
 /**
  * @author Romani min
  * @since 2021/6/7 11:10
  */
-interface PolicyTraceService : IService<PolicyTrace> {
+interface OrderTraceService : IService<OrderTrace> {
     /**
      * 关联可回溯文件信息的保单及订单关系
      * @return 影响的条数
      */
     fun linkOrderAndPolicy(orderNo: String, policyId: Long): Int
-    fun listByPolicyId(policyId: Long): List<PolicyTrace>
-    fun listByOrderNo(orderNo: String): List<PolicyTrace>
+    fun listByPolicyId(policyId: Long): List<OrderTrace>
+    fun listByOrderNo(orderNo: String): List<OrderTrace>
 }

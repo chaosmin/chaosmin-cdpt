@@ -11,7 +11,7 @@ import java.util.*
  * @since 2021/6/7 10:38
  */
 @TableName("policy_khs")
-class PolicyTrace(id: Long? = null) : BaseDO(id, 0) {
+class OrderTrace(id: Long? = null) : BaseDO(id, 0) {
     /** 保单ID */
     var policyId: Long? = null
 

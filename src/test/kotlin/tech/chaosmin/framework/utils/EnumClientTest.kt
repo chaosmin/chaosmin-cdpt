@@ -2,9 +2,8 @@ package tech.chaosmin.framework.utils
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import tech.chaosmin.framework.base.enums.PolicyKhsEnum
-
 import tech.chaosmin.framework.base.enums.UserStatusEnum
+import tech.chaosmin.framework.module.cdpt.entity.enums.OrderTraceEnum
 
 /**
  * @author Romani min
@@ -26,7 +25,7 @@ internal class EnumClientTest {
 
     @Test
     fun getEnumByName() {
-        println(PolicyKhsEnum.values().firstOrNull { "SCHEDULE" == it.name }?.getDesc())
-        println(PolicyKhsEnum.values().firstOrNull { "SSS" == it.name }?.getDesc())
+        println(OrderTraceEnum.values().firstOrNull { "SCHEDULE" == it.name }?.getDesc())
+        println(OrderTraceEnum.values().firstOrNull { "SSS" == it.name }?.getDesc())
     }
 }

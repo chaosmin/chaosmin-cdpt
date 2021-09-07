@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*
 import tech.chaosmin.framework.base.BaseAPI
 import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.module.cdpt.entity.request.OrderReq
+import tech.chaosmin.framework.module.cdpt.entity.request.OrderTraceReq
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
-import tech.chaosmin.framework.module.cdpt.entity.request.PolicyTraceReq
 import tech.chaosmin.framework.module.cdpt.entity.response.OrderResp
 
 @Api(tags = ["订单操作接口"], consumes = "application/json;charset=utf-8")
@@ -25,7 +25,7 @@ interface OrderAPI : BaseAPI<OrderReq, OrderResp> {
     fun payment(@PathVariable("orderNo") orderNo: String): RestResult<String>
 
     @PostMapping("/{orderNo}/trace")
-    fun saveOrderTrace(@PathVariable("orderNo") orderNo: String, @RequestBody req: PolicyTraceReq): RestResult<String>
+    fun saveOrderTrace(@PathVariable("orderNo") orderNo: String, @RequestBody req: OrderTraceReq): RestResult<String>
 
     @GetMapping("/{orderNo}/draft-box")
     @ApiOperation(value = "读取指定订单的草稿箱")

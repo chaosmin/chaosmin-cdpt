@@ -10,6 +10,7 @@ package tech.chaosmin.framework.module.payment.entity.wechat.response
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
+import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 
 /**
  * @author Romani min
@@ -23,4 +24,20 @@ class NotifyResp {
 
     @ApiModelProperty("返回信息", required = true, notes = "返回信息，如非空，为错误原因。")
     var message: String? = null
+
+    companion object {
+        fun success(): NotifyResp {
+            return NotifyResp().apply {
+                this.code = ErrorCodeEnum.SUCCESS.code
+                this.message = ErrorCodeEnum.SUCCESS.msg
+            }
+        }
+
+        fun failed(error: ErrorCodeEnum, msg: String? = null): NotifyResp {
+            return NotifyResp().apply {
+                this.code = error.code
+                this.message = msg ?: error.msg
+            }
+        }
+    }
 }

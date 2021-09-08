@@ -110,6 +110,27 @@ open class WechatNativePayServiceImpl(
         return req
     }
 
+    /**
+     * 微信支付 字符串解密方法
+     */
+    private fun decrypt(resource: NotifyReq.Resource): String {
+        val associatedData = resource.associated_data
+        val nonce = resource.nonce
+        val ciphertext = resource.ciphertext
+        if (nonce.isNullOrBlank() || ciphertext.isNullOrBlank()) {
+            NotifyResp().apply {
+                this.code = ErrorCodeEnum.PARAM_IS_NULL.code
+                this.message = ExceptionMessageHelper.getExtMsg(ErrorCodeEnum.PARAM_IS_NULL.msg, "resource.nonce or resource.ciphertext")
+            }
+        }
+        val decryptStr = AESUtil.decryptAES256GCM(wechatPayParam.v3Key!!, associatedData, nonce!!, ciphertext!!)
+        logger.info("wechatpay decrypt str AEAD_AES_256_GCM: $decryptStr")
+        return decryptStr
+    }
+
+    /**
+     * 证书自动更新方法
+     */
     override fun readCertificates() {
         val uriBuilder = URIBuilder(wechatPayParam.url?.get(wechatPayParam.CERTIFICATES))
         val httpGet = HttpGet(uriBuilder.build())
@@ -127,6 +148,7 @@ open class WechatNativePayServiceImpl(
             this.amount = req.amount?.total?.toLong()
             this.channel = TradeChannelEnum.WECHAT
             this.outTradeNo = req.out_trade_no
+            this.description = req.description
             this.orderTime = Date()
         }
         paymentTransactionService.save(PaymentTransactionMapper.INSTANCE.convert2DO(transaction))
@@ -139,19 +161,11 @@ open class WechatNativePayServiceImpl(
         val requestStr = JsonUtil.encode(beforeRequest(req))
         logger.info("wechat.native.create_order request_param: $requestStr")
         httpPost.entity = StringEntity(requestStr, "UTF-8")
-        getClient().execute(httpPost).use {
-            val bodyAsString = EntityUtils.toString(it.entity)
-            channelHttpRequestService.save(ChannelHttpRequest().apply {
-                this.httpMethod = HttpMethodEnum.POST.name
-                this.httpUrl = url
-                this.httpHeader = JsonUtil.encode(httpPost.allHeaders)
-                this.requestBody = requestStr
-                this.responseBody = bodyAsString
-                logger.info("POST ${this.httpUrl}[${this.httpHeader}]\nrequest param: ${this.requestBody}\nresponse param: ${this.responseBody}")
-            })
-            logger.info("wechat.native.create_order response_param: $bodyAsString")
-            try {
-                val resp = JsonUtil.decode(bodyAsString, NativePayResp::class.java)
+        try {
+            getClient().execute(httpPost).use {
+                val resp = channelHttpRequestService.saveRequest(httpPost, requestStr, it.entity) { str ->
+                    JsonUtil.decode(str, NativePayResp::class.java)
+                }
                 // 设置状态为支付中并更新支付链接
                 paymentTransactionService.updateByTradeNo(PaymentTransaction().apply {
                     this.status = TransactionStatusEnum.PAYING.getCode()
@@ -159,10 +173,10 @@ open class WechatNativePayServiceImpl(
                 }, req.out_trade_no!!)
                 // 生成二维码
                 return QrCodeUtil.generateAsBase64(resp?.code_url, QrConfig.create(), ImgUtil.IMAGE_TYPE_PNG)
-            } catch (e: Exception) {
-                logger.error("调用微信Native下单接口失败", e)
-                throw FrameworkException(ErrorCodeEnum.FAILURE.code, "调用微信Native下单接口失败")
             }
+        } catch (e: Exception) {
+            logger.error("调用微信Native下单接口失败", e)
+            throw FrameworkException(ErrorCodeEnum.FAILURE.code, "调用微信Native下单接口失败")
         }
     }
 
@@ -175,23 +189,16 @@ open class WechatNativePayServiceImpl(
         httpGet.addHeader("Accept", "application/json")
         httpGet.addHeader("Content-type", "application/json; charset=utf-8")
         logger.info("wechat.native.search_order request_param: $outTradeNo")
-        getClient().execute(httpGet).use {
-            val bodyAsString = EntityUtils.toString(it.entity)
-            channelHttpRequestService.save(ChannelHttpRequest().apply {
-                this.httpMethod = HttpMethodEnum.GET.name
-                this.httpUrl = url
-                this.httpHeader = JsonUtil.encode(httpGet.allHeaders)
-                this.requestBody = JsonUtil.encode(NativeQueryReq().apply { this.transaction_id = outTradeNo })
-                this.responseBody = bodyAsString
-                logger.info("GET ${this.httpUrl}[${this.httpHeader}]\nrequest param: ${this.requestBody}\nresponse param: ${this.responseBody}")
-            })
-            logger.info("wechat.native.search_order response_param: $bodyAsString")
-            try {
-                return JsonUtil.decode(bodyAsString, NativeQueryResp::class.java) ?: NativeQueryResp()
-            } catch (e: Exception) {
-                logger.error("调用微信Native查单接口失败", e)
-                throw FrameworkException(ErrorCodeEnum.FAILURE.code, "调用微信Native查单接口失败")
+        try {
+            getClient().execute(httpGet).use {
+                val resp = channelHttpRequestService.saveRequest(httpGet, "", it.entity) { str ->
+                    JsonUtil.decode(str, NativeQueryResp::class.java)
+                }
+                return resp ?: NativeQueryResp()
             }
+        } catch (e: Exception) {
+            logger.error("调用微信Native查单接口失败", e)
+            throw FrameworkException(ErrorCodeEnum.FAILURE.code, "调用微信Native查单接口失败")
         }
     }
 
@@ -207,50 +214,39 @@ open class WechatNativePayServiceImpl(
         val requestStr = JsonUtil.encode(req)
         logger.info("wechat.native.close_order request_param: $requestStr")
         httpPost.entity = StringEntity(requestStr, "UTF-8")
-        getClient().execute(httpPost).use {
-            val bodyAsString = EntityUtils.toString(it.entity)
-            channelHttpRequestService.save(ChannelHttpRequest().apply {
-                this.httpMethod = HttpMethodEnum.POST.name
-                this.httpUrl = url
-                this.httpHeader = JsonUtil.encode(httpPost.allHeaders)
-                this.requestBody = requestStr
-                this.responseBody = bodyAsString
-                logger.info("POST ${this.httpUrl}[${this.httpHeader}]\nrequest param: ${this.requestBody}\nresponse param: ${this.responseBody}")
-            })
-            paymentTransactionService.updateByTradeNo(PaymentTransaction().apply {
-                this.status = TransactionStatusEnum.CLOSE.getCode()
-                this.closeTime = Date()
-            }, outTradeNo)
-            logger.info("wechat.native.close_order response_param: $bodyAsString")
+        try {
+            getClient().execute(httpPost).use {
+                channelHttpRequestService.saveRequest(httpPost, requestStr, it.entity) {}
+                paymentTransactionService.updateByTradeNo(PaymentTransaction().apply {
+                    this.status = TransactionStatusEnum.CLOSE.getCode()
+                    this.closeTime = Date()
+                }, outTradeNo)
+            }
+        } catch (e: Exception) {
+            logger.error("调用微信Native取消接口失败", e)
+            throw FrameworkException(ErrorCodeEnum.FAILURE.code, "调用微信Native取消接口失败")
         }
     }
 
     override fun notifyPay(req: NotifyReq): NotifyResp {
-        val result = if (req.resource == null) {
-            NotifyResp().apply {
-                this.code = ErrorCodeEnum.PARAM_IS_NULL.code
-                this.message = ExceptionMessageHelper.getExtMsg(ErrorCodeEnum.PARAM_IS_NULL.msg, "resource")
-            }
+        channelHttpRequestService.save(ChannelHttpRequest().apply {
+            this.httpMethod = HttpMethodEnum.POST.name
+            this.httpUrl = "https://[localhost]:[port]/api/wechatpay/notify"
+            this.requestBody = JsonUtil.encode(req)
+            this.responseBody = JsonUtil.encode(req)
+            logger.info("POST ${this.httpUrl}[${this.httpHeader}]\nrequest param: ${this.requestBody}\nresponse param: ${this.responseBody}")
+        })
+        if (req.resource == null) {
+            return NotifyResp.failed(ErrorCodeEnum.PARAM_IS_NULL, "resource is null")
         } else {
-            val resource = req.resource!!
-            val associatedData = resource.associated_data
-            val nonce = resource.nonce
-            val ciphertext = resource.ciphertext
-            if (nonce.isNullOrBlank() || ciphertext.isNullOrBlank()) {
-                NotifyResp().apply {
-                    this.code = ErrorCodeEnum.PARAM_IS_NULL.code
-                    this.message = ExceptionMessageHelper.getExtMsg(ErrorCodeEnum.PARAM_IS_NULL.msg, "resource.nonce or resource.ciphertext")
-                }
-            }
-            val decryptStr = AESUtil.decryptAES256GCM(wechatPayParam.v3Key!!, associatedData, nonce!!, ciphertext!!)
-            logger.info("wechatpay decrypt AEAD_AES_256_GCM: $decryptStr")
+            val decryptStr = decrypt(req.resource!!)
             val payNotify = JsonUtil.decode(decryptStr, PayNotifyEntity::class.java)
-
             if (payNotify?.trade_state == WechatTradeStateEnum.SUCCESS) {
                 paymentTransactionService.updateByTradeNo(PaymentTransaction().apply {
-                    this.payer = payNotify.payer?.openid
-                    this.status = TransactionStatusEnum.SUCCESS.getCode()
                     this.payTime = DateUtil.parseUTC(payNotify.success_time)
+                    this.status = TransactionStatusEnum.SUCCESS.getCode()
+                    this.transactionId = payNotify.transaction_id
+                    this.payer = payNotify.payer?.openid
                 }, payNotify.out_trade_no!!)
                 val noticeMessage = PaymentNotifyEntity(payNotify.out_trade_no!!, PayStatusEnum.PAYMENT_SUCCESSFUL)
                 rabbitTemplate.convertAndSend("payment", noticeMessage)
@@ -258,24 +254,11 @@ open class WechatNativePayServiceImpl(
                 // TODO 邮件通知警告
                 val noticeMessage = PaymentNotifyEntity(payNotify?.out_trade_no!!, PayStatusEnum.PAYMENT_FAILED)
                 rabbitTemplate.convertAndSend("payment", noticeMessage)
-                logger.error("微信支付失败! $payNotify")
+                logger.error("微信支付失败! $decryptStr")
             }
-
             // 处理支付返回
-            NotifyResp().apply {
-                this.code = ErrorCodeEnum.SUCCESS.code
-                this.message = ErrorCodeEnum.SUCCESS.msg
-            }
+            return NotifyResp.success()
         }
-        channelHttpRequestService.save(ChannelHttpRequest().apply {
-            this.httpMethod = HttpMethodEnum.POST.name
-            this.httpUrl = "https://[localhost]:[port]/api/wechatpay/notify"
-            this.requestBody = JsonUtil.encode(req)
-            this.responseBody = JsonUtil.encode(result)
-            // this.extraInfo = decryptStr
-            logger.info("POST ${this.httpUrl}[${this.httpHeader}]\nrequest param: ${this.requestBody}\nresponse param: ${this.responseBody}")
-        })
-        return result
     }
 
     override fun refund(req: NativeRefundReq): NativeRefundResp {
@@ -287,45 +270,31 @@ open class WechatNativePayServiceImpl(
         val requestStr = JsonUtil.encode(beforeRequest(req))
         logger.info("wechat.native.refund request_param: $requestStr")
         httpPost.entity = StringEntity(requestStr, "UTF-8")
-        getClient().execute(httpPost).use {
-            val bodyAsString = EntityUtils.toString(it.entity)
-            channelHttpRequestService.save(ChannelHttpRequest().apply {
-                this.httpMethod = HttpMethodEnum.POST.name
-                this.httpUrl = url
-                this.httpHeader = JsonUtil.encode(httpPost.allHeaders)
-                this.requestBody = requestStr
-                this.responseBody = bodyAsString
-                logger.info("POST ${this.httpUrl}[${this.httpHeader}]\nrequest param: ${this.requestBody}\nresponse param: ${this.responseBody}")
-            })
-            logger.info("wechat.native.refund response_param: $bodyAsString")
-            try {
-                return JsonUtil.decode(bodyAsString, NativeRefundResp::class.java) ?: NativeRefundResp()
-            } catch (e: Exception) {
-                logger.error("调用微信Native退款接口失败", e)
-                throw FrameworkException(ErrorCodeEnum.FAILURE.code, "调用微信Native退款接口失败")
+        try {
+            getClient().execute(httpPost).use {
+                val resp = channelHttpRequestService.saveRequest(httpPost, requestStr, it.entity) { str ->
+                    JsonUtil.decode(str, NativeRefundResp::class.java)
+                }
+                return resp ?: NativeRefundResp()
             }
+        } catch (e: Exception) {
+            logger.error("调用微信Native退款接口失败", e)
+            throw FrameworkException(ErrorCodeEnum.FAILURE.code, "调用微信Native退款接口失败")
         }
     }
 
     override fun notifyRefund(req: NotifyReq): NotifyResp {
-        val result = if (req.resource == null) {
-            NotifyResp().apply {
-                this.code = ErrorCodeEnum.PARAM_IS_NULL.code
-                this.message = ExceptionMessageHelper.getExtMsg(ErrorCodeEnum.PARAM_IS_NULL.msg, "resource")
-            }
+        channelHttpRequestService.save(ChannelHttpRequest().apply {
+            this.httpMethod = HttpMethodEnum.POST.name
+            this.httpUrl = "https://[localhost]:[port]/api/wechatpay/refunds/notify"
+            this.requestBody = JsonUtil.encode(req)
+            this.responseBody = JsonUtil.encode(req)
+            logger.info("POST ${this.httpUrl}[${this.httpHeader}]\nrequest param: ${this.requestBody}\nresponse param: ${this.responseBody}")
+        })
+        if (req.resource == null) {
+            return NotifyResp.failed(ErrorCodeEnum.PARAM_IS_NULL, "resource is null")
         } else {
-            val resource = req.resource!!
-            val associatedData = resource.associated_data
-            val nonce = resource.nonce
-            val ciphertext = resource.ciphertext
-            if (nonce.isNullOrBlank() || ciphertext.isNullOrBlank()) {
-                NotifyResp().apply {
-                    this.code = ErrorCodeEnum.PARAM_IS_NULL.code
-                    this.message = ExceptionMessageHelper.getExtMsg(ErrorCodeEnum.PARAM_IS_NULL.msg, "resource.nonce or resource.ciphertext")
-                }
-            }
-            val decryptStr = AESUtil.decryptAES256GCM(wechatPayParam.v3Key!!, associatedData, nonce!!, ciphertext!!)
-            logger.info("wechatpay decrypt AEAD_AES_256_GCM: $decryptStr")
+            val decryptStr = decrypt(req.resource!!)
             val refundNotify = JsonUtil.decode(decryptStr, RefundNotifyEntity::class.java)
 
             // 退款成功时, 更新系统支付交易状态
@@ -340,23 +309,10 @@ open class WechatNativePayServiceImpl(
                 rabbitTemplate.convertAndSend("payment", noticeMessage)
             } else {
                 // TODO 邮件通知警告
-                logger.error("微信支付退款失败! $refundNotify")
+                logger.error("微信支付退款失败! $decryptStr")
             }
-
             // 处理支付返回
-            NotifyResp().apply {
-                this.code = ErrorCodeEnum.SUCCESS.code
-                this.message = ErrorCodeEnum.SUCCESS.msg
-            }
+            return NotifyResp.success()
         }
-        channelHttpRequestService.save(ChannelHttpRequest().apply {
-            this.httpMethod = HttpMethodEnum.POST.name
-            this.httpUrl = "https://[localhost]:[port]/api/wechatpay/refunds/notify"
-            this.requestBody = JsonUtil.encode(req)
-            this.responseBody = JsonUtil.encode(result)
-            // this.extraInfo = decryptStr
-            logger.info("POST ${this.httpUrl}[${this.httpHeader}]\nrequest param: ${this.requestBody}\nresponse param: ${this.responseBody}")
-        })
-        return result
     }
 }

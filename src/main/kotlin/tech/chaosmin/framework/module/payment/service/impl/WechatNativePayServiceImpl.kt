@@ -249,6 +249,7 @@ open class WechatNativePayServiceImpl(
                     this.payer = payNotify.payer?.openid
                 }, payNotify.out_trade_no!!)
                 val noticeMessage = PaymentNotifyEntity(payNotify.out_trade_no!!, PayStatusEnum.PAYMENT_SUCCESSFUL)
+                logger.info("Send message to queue [payment]: ${JsonUtil.encode(noticeMessage)}")
                 rabbitTemplate.convertAndSend("payment", noticeMessage)
             } else {
                 // TODO 邮件通知警告
@@ -306,6 +307,7 @@ open class WechatNativePayServiceImpl(
                     this.refundTime = DateUtil.parseUTC(refundNotify.success_time)
                 }, refundNotify.out_trade_no!!)
                 val noticeMessage = PaymentNotifyEntity(refundNotify.out_trade_no!!, PayStatusEnum.REFUNDED)
+                logger.info("Send message to queue [payment]: ${JsonUtil.encode(noticeMessage)}")
                 rabbitTemplate.convertAndSend("payment", noticeMessage)
             } else {
                 // TODO 邮件通知警告

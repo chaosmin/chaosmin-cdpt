@@ -71,6 +71,12 @@ object JsonUtil {
         return objectMapper.readValue(json, javaType)
     }
 
+    fun <T> convert2List(json: String?, valueType: Class<T>): List<T> {
+        if (json.isNullOrBlank()) return emptyList()
+        val constructCollectionType = objectMapper.typeFactory.constructCollectionLikeType(List::class.java, valueType)
+        return objectMapper.readValue(json, constructCollectionType)
+    }
+
     fun convert2Map(json: String?): Map<String, String> {
         if (json.isNullOrBlank()) return emptyMap()
         val typeFactory = TypeFactory.defaultInstance()

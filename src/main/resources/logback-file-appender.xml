@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <appender name="ChaosminTraceAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs/${HOSTNAME}-trace-ss_micro_app_${project.name}_lt_trace.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${log.dir}/logs/${HOSTNAME}-trace-ss_micro_app_${project.name}_lt_trace-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <!-- 日志文件最大尺寸 -->
+            <maxFileSize>1024MB</maxFileSize>
+            <!--日志文件保留天数-->
+            <MaxHistory>15</MaxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d [%thread] %-5p [%c] [%F:%L] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="AsyncChaosminTraceAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="ChaosminTraceAppender"/>
+    </appender>
+
+    <appender name="DebugAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs/${HOSTNAME}-ss_micro_app_${project.name}_lt_debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/logs/${project.name}_debug-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>${TRACE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="InfoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs/${HOSTNAME}-ss_micro_app_${project.name}_lt_info.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/logs/${HOSTNAME}-ss_micro_app_${project.name}_lt_info_%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>${TRACE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ErrorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs/${HOSTNAME}-ss_micro_app_${project.name}_lt_error.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/logs/${HOSTNAME}-ss_micro_app_${project.name}_lt_error_%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>${TRACE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="AsyncDebugAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <includeCallerData>true</includeCallerData>
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="DebugAppender"/>
+    </appender>
+
+    <appender name="AsyncInfoAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="InfoAppender"/>
+    </appender>
+
+    <appender name="AsyncErrorAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="ErrorAppender"/>
+    </appender>
+
+    <logger name="org.apache">
+        <level value="WARN"/>
+        <appender-ref ref="AsyncErrorAppender"/>
+        <appender-ref ref="AsyncInfoAppender"/>
+    </logger>
+
+    <logger name="org.springframework">
+        <level value="WARN"/>
+        <appender-ref ref="AsyncErrorAppender"/>
+        <appender-ref ref="AsyncInfoAppender"/>
+    </logger>
+    <logger name="tech.chaosmin">
+        <level value="INFO"/>
+        <appender-ref ref="AsyncErrorAppender"/>
+        <appender-ref ref="AsyncInfoAppender"/>
+    </logger>
+
+    <logger name="com.netflix">
+        <level value="WARN"/>
+        <appender-ref ref="AsyncErrorAppender"/>
+        <appender-ref ref="AsyncInfoAppender"/>
+    </logger>
+</included>

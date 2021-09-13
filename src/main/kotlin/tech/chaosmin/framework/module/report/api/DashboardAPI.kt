@@ -7,13 +7,13 @@
  * If you are not the intended user, you are hereby notified that any use, disclosure, copying, printing, forwarding or
  * dissemination of this property is strictly prohibited. If you have got this file in error, delete it from your system.
  */
-package tech.chaosmin.framework.module.cdpt.api
+package tech.chaosmin.framework.module.report.api
 
 import io.swagger.annotations.Api
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import tech.chaosmin.framework.base.RestResult
-import tech.chaosmin.framework.module.cdpt.entity.response.DashboardResp
+import tech.chaosmin.framework.module.report.entity.response.DashboardResp
 
 /**
  * @author Romani min

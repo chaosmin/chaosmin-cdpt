@@ -50,9 +50,6 @@ class PersonalComsSetHandler(
         arg: ReportEntity<TwoLatitude<PolicyLatitude, UserLatitude>, PersonalComsSetResult>,
         res: RestResult<ReportEntity<TwoLatitude<PolicyLatitude, UserLatitude>, PersonalComsSetResult>>
     ) {
-        if (arg.type == null) {
-            throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL, "报表类型[type]")
-        }
         if (arg.condition == null) {
             throw FrameworkException(ErrorCodeEnum.PARAM_IS_NULL, "报表数据范围[condition]")
         }
@@ -133,6 +130,7 @@ class PersonalComsSetHandler(
             val userIds = c.second?.mapNotNull { it.userId }
             if (userIds?.isNotEmpty() == true) wa.`in`("policy.user_id", userIds)
         }
+        // TODO 优化在大数据量情况下的表现
         return PageQueryUtil.queryAll(policyInterrogator, wa)
     }
 }

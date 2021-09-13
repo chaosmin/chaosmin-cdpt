@@ -1,4 +1,4 @@
-package tech.chaosmin.framework.module.cdpt.entity.response
+package tech.chaosmin.framework.module.report.entity.response
 
 import java.io.Serializable
 

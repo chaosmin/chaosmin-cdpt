@@ -21,7 +21,6 @@ import tech.chaosmin.framework.module.cdpt.domain.service.PolicyInsurantService
 import tech.chaosmin.framework.module.cdpt.domain.service.PolicyService
 import tech.chaosmin.framework.module.cdpt.entity.OrderTraceEntity
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
-import tech.chaosmin.framework.module.cdpt.entity.response.DashboardResp
 import tech.chaosmin.framework.module.cdpt.logic.convert.PolicyHolderMapper
 import tech.chaosmin.framework.module.cdpt.logic.convert.PolicyInsurantMapper
 import tech.chaosmin.framework.module.cdpt.logic.convert.PolicyMapper
@@ -112,33 +111,6 @@ class PolicyInterrogator(
 //            policyKhsEntity.issuePicUrl = this.resourceUrl
 //        }
 //        return policyKhsEntity
-        TODO("Not yet implemented")
-    }
-
-    fun dashboardData(): DashboardResp {
-//        val startOfThisWeek = DateUtil.beginOfWeek(Date()).time
-//        val ew = Wrappers.query<PolicyExt>().eq("policy.status", PolicyStatusEnum.INSURED.getCode())
-//        // 全量数据
-//        val list = policyService.listExt(ew)
-//        val lineData = list.groupBy { DateUtil.beginOfDay(it.createTime).time }.filter { it.key >= startOfThisWeek }
-//        return DashboardResp().apply {
-//            this.policies.apply {
-//                value = list.size.toDouble()
-//                actualData = (0..6).mapNotNull { lineData[startOfThisWeek + it * 24 * 60 * 60 * 1000]?.size?.toDouble() ?: 0.0 }
-//            }
-//            this.insureds.apply {
-//                value = list.sumByDouble { it.insuredSize?.toDouble() ?: 0.0 }
-//                actualData = (0..6).mapNotNull {
-//                    lineData[startOfThisWeek + it * 24 * 60 * 60 * 1000]?.sumByDouble { i -> i.insuredSize?.toDouble() ?: 0.0 } ?: 0.0
-//                }
-//            }
-//            this.premium.apply {
-//                value = list.sumByDouble { it.actualPremium ?: 0.0 }
-//                actualData =
-//                    (0..6).mapNotNull { lineData[startOfThisWeek + it * 24 * 60 * 60 * 1000]?.sumByDouble { i -> i.actualPremium ?: 0.0 } ?: 0.0 }
-//            }
-//            this.issuers.value = list.distinctBy { it.creator }.size.toDouble()
-//        }
         TODO("Not yet implemented")
     }
 }

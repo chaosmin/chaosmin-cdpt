@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.JsonGenerationException
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.JsonMappingException
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.type.TypeFactory
@@ -30,6 +31,10 @@ object JsonUtil {
         dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
         // null值不进行序列化
         setSerializationInclusion(JsonInclude.Include.NON_NULL)
+    }
+
+    fun readTree(str: String?): JsonNode {
+        return objectMapper.readTree(str)
     }
 
     fun encode(obj: Any?, prettyPrinter: Boolean = false): String {

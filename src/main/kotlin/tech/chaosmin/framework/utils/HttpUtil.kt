@@ -3,6 +3,7 @@ package tech.chaosmin.framework.utils
 import cn.hutool.http.HttpRequest
 import cn.hutool.http.HttpUtil
 import cn.hutool.http.Method
+import cn.hutool.poi.excel.ExcelWriter
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
 import tech.chaosmin.framework.base.RestResult
@@ -32,6 +33,17 @@ object HttpUtil {
         val request = setHeaders(HttpUtil.createRequest(method, url), headers)
         request.timeout(timeout).body(body).execute().use {
             return it.status to it.body()
+        }
+    }
+
+    fun writeExcel(response: HttpServletResponse, fileName: String, writer: ExcelWriter) {
+        response.contentType = "application/vnd.ms-excel;charset=utf-8"
+        response.setHeader("Content-Disposition", fileName)
+        response.setHeader("filename", fileName)
+        response.setHeader("Access-Control-Expose-Headers", "filename")
+        response.outputStream.use { out ->
+            writer.flush(out)
+            out.flush()
         }
     }
 

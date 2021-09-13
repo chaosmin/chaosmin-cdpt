@@ -55,7 +55,7 @@ class ProviderLogConfig {
         logContent.append(String.format("%-25s: %s", "Provider request param", JsonUtil.encode(params) + lineSeparator))
         val startTime = System.currentTimeMillis()
         return try {
-            val r: Any = onProcess(joinPoint)
+            val r = onProcess(joinPoint)
             logContent.append(String.format("%-25s: %s", "Provider response param", JsonUtil.encode(r) + lineSeparator))
             logContent.append(String.format("%-25s: %sms", "Provider cost time", (System.currentTimeMillis() - startTime)))
             r
@@ -69,7 +69,7 @@ class ProviderLogConfig {
     }
 
     @Throws(Throwable::class)
-    private fun onProcess(joinPoint: ProceedingJoinPoint): Any {
+    private fun onProcess(joinPoint: ProceedingJoinPoint): Any? {
         return joinPoint.proceed()
     }
 
@@ -87,7 +87,7 @@ class ProviderLogConfig {
                 param.forEachIndexed { i, v -> addRequestParam(v, "${paramName}[$i]", params) }
             } else if (param is MultipartFile) {
                 params[paramName] = param.originalFilename ?: ""
-            } else if ("request" != paramName && !contains(ignoreTypes, param)) {
+            } else if ("request" != paramName && "response" != paramName && !contains(ignoreTypes, param)) {
                 params[paramName] = param
             }
         }

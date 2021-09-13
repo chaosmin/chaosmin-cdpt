@@ -71,6 +71,7 @@ class BillingListHandler(
                 list.map {
                     BillingListResult.Detail().apply {
                         this.orderNo = it.orderNo
+                        this.policyNo = it.policyNo
                         this.goodsPlanName = "[${goodsPlan.productName}]-${goodsPlan.productPlanName}[${goodsPlan.primaryCoverage}]"
                         this.insuredSize = it.insuredSize
                         this.unitPremium = it.unitPremium

@@ -29,6 +29,8 @@ import java.util.*
 import javax.servlet.http.HttpServletResponse
 
 /**
+ * TODO 这里写的太烂了, 后续需要优化
+ *
  * @author Romani min
  * @since 2021/9/10 16:50
  */
@@ -76,7 +78,9 @@ open class ReportProvider(
                     this.endTime = DateUtil.parse(policy.get("endTime").textValue(), "yyyy-MM-dd")
                 },
                 UserLatitude().apply {
-                    this.userId = user.get("userId").longValue()
+                    if (!user.get("userId").isNull) {
+                        this.userId = user.get("userId").longValue()
+                    }
                 }
             )
         )

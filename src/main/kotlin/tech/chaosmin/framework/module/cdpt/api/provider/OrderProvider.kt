@@ -76,7 +76,7 @@ open class OrderProvider(
     }
 
     override fun getDraft(orderNo: String): RestResult<PolicyIssueReq> {
-        val draftJson = orderInterrogator.loadDraft(orderNo)
+        val draftJson = orderInterrogator.loadDraft(orderNo.substringBefore("-"))
         // 反序列化成投保参数, 返回前端加载
         val issueReq = JsonUtil.decode(draftJson, PolicyIssueReq::class.java)!!
         return RestResultExt.successRestResult(issueReq)

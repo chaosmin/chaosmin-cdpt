@@ -20,15 +20,25 @@ open class OrderDraftServiceImpl : ServiceImpl<OrderDraftDAO, OrderDraft>(), Ord
 
     override fun saveOrUpdate(orderNo: String, param: String) {
         val ew = Wrappers.query<OrderDraft>().eq("order_no", orderNo)
-        val count = baseMapper.selectCount(ew)
-        if (count != 0) {
-            // 移除所有草稿箱
-            baseMapper.delete(ew)
+        val list = baseMapper.selectList(ew)
+        if (list.size == 0) {
+            // 写入新草稿
+            baseMapper.insert(OrderDraft().apply {
+                this.orderNo = orderNo
+                this.param = param
+            })
+        } else if (list.size > 1) {
+            // 删除前size-1个元素
+            list.take(list.size - 1).forEach {
+                baseMapper.deleteById(it.id)
+            }
+            baseMapper.updateById(list.last().apply {
+                this.param = param
+            })
+        } else {
+            baseMapper.updateById(list.first().apply {
+                this.param = param
+            })
         }
-        // 写入新草稿
-        baseMapper.insert(OrderDraft().apply {
-            this.orderNo = orderNo
-            this.param = param
-        })
     }
 }

@@ -27,7 +27,7 @@ import tech.chaosmin.framework.module.cdpt.logic.convert.PolicyHolderMapper
 import tech.chaosmin.framework.module.cdpt.logic.convert.PolicyInsurantMapper
 import tech.chaosmin.framework.module.cdpt.logic.convert.PolicyMapper
 import tech.chaosmin.framework.module.payment.entity.wechat.request.NativeRefundReq
-import tech.chaosmin.framework.module.payment.service.WechatNativePayService
+import tech.chaosmin.framework.module.payment.logic.service.WechatNativePayService
 import tech.chaosmin.framework.utils.JsonUtil
 import java.math.BigDecimal
 import java.util.*

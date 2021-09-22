@@ -1,4 +1,4 @@
-package tech.chaosmin.framework.module.payment.service
+package tech.chaosmin.framework.module.payment.logic.service
 
 import tech.chaosmin.framework.module.payment.entity.wechat.request.NativePayReq
 import tech.chaosmin.framework.module.payment.entity.wechat.request.NativeRefundReq

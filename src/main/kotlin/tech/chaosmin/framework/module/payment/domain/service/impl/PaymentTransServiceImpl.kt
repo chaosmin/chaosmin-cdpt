@@ -1,4 +1,4 @@
-package tech.chaosmin.framework.module.payment.service.impl
+package tech.chaosmin.framework.module.payment.domain.service.impl
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
@@ -9,15 +9,15 @@ import tech.chaosmin.framework.base.enums.TransactionStatusEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.payment.domain.dao.PaymentTransactionDAO
 import tech.chaosmin.framework.module.payment.domain.dataobject.PaymentTransaction
-import tech.chaosmin.framework.module.payment.service.PaymentTransactionService
+import tech.chaosmin.framework.module.payment.domain.service.PaymentTransService
 
 /**
  * @author Romani min
  * @since 2021/8/25 13:40
  */
 @Service
-open class PaymentTransactionServiceImpl : ServiceImpl<PaymentTransactionDAO, PaymentTransaction>(), PaymentTransactionService {
-    private val logger = LoggerFactory.getLogger(PaymentTransactionService::class.java)
+open class PaymentTransServiceImpl : ServiceImpl<PaymentTransactionDAO, PaymentTransaction>(), PaymentTransService {
+    private val logger = LoggerFactory.getLogger(PaymentTransService::class.java)
 
     override fun updateByTradeNo(transaction: PaymentTransaction, outTradeNo: String) {
         val list = baseMapper.selectList(Wrappers.query<PaymentTransaction>().eq("out_trade_no", outTradeNo))

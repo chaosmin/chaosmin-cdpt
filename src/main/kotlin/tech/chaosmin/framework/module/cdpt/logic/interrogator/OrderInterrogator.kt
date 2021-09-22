@@ -38,7 +38,7 @@ class OrderInterrogator(
     }
 
     fun getByOrderNo(orderNo: String): OrderEntity? {
-        val order = orderService.getOne(Wrappers.query<Order?>().eq("order_no", orderNo))
+        val order = orderService.getOne(Wrappers.query<Order>().eq("order_no", orderNo))
         return OrderMapper.INSTANCE.toEn(order)
     }
 

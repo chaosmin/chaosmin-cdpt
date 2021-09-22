@@ -1,9 +1,6 @@
-package tech.chaosmin.framework.module.payment.service.impl
+package tech.chaosmin.framework.module.payment.logic.service.impl
 
 import cn.hutool.core.date.DateUtil
-import cn.hutool.core.img.ImgUtil
-import cn.hutool.extra.qrcode.QrCodeUtil
-import cn.hutool.extra.qrcode.QrConfig
 import com.wechat.pay.contrib.apache.httpclient.WechatPayHttpClientBuilder
 import com.wechat.pay.contrib.apache.httpclient.auth.AutoUpdateCertificatesVerifier
 import com.wechat.pay.contrib.apache.httpclient.auth.PrivateKeySigner
@@ -26,8 +23,9 @@ import tech.chaosmin.framework.module.cdpt.entity.enums.PayStatusEnum
 import tech.chaosmin.framework.module.mgmt.domain.dataobject.ChannelHttpRequest
 import tech.chaosmin.framework.module.mgmt.service.ChannelHttpRequestService
 import tech.chaosmin.framework.module.payment.domain.dataobject.PaymentTransaction
+import tech.chaosmin.framework.module.payment.domain.service.PaymentTransService
 import tech.chaosmin.framework.module.payment.entity.PaymentNotifyEntity
-import tech.chaosmin.framework.module.payment.entity.PaymentTransactionEntity
+import tech.chaosmin.framework.module.payment.entity.PaymentTransEntity
 import tech.chaosmin.framework.module.payment.entity.wechat.PayNotifyEntity
 import tech.chaosmin.framework.module.payment.entity.wechat.RefundNotifyEntity
 import tech.chaosmin.framework.module.payment.entity.wechat.request.NativePayReq
@@ -38,9 +36,8 @@ import tech.chaosmin.framework.module.payment.entity.wechat.response.NativePayRe
 import tech.chaosmin.framework.module.payment.entity.wechat.response.NativeQueryResp
 import tech.chaosmin.framework.module.payment.entity.wechat.response.NativeRefundResp
 import tech.chaosmin.framework.module.payment.entity.wechat.response.NotifyResp
-import tech.chaosmin.framework.module.payment.helper.mapper.PaymentTransactionMapper
-import tech.chaosmin.framework.module.payment.service.PaymentTransactionService
-import tech.chaosmin.framework.module.payment.service.WechatNativePayService
+import tech.chaosmin.framework.module.payment.logic.convert.PaymentTransMapper
+import tech.chaosmin.framework.module.payment.logic.service.WechatNativePayService
 import tech.chaosmin.framework.utils.AESUtil
 import tech.chaosmin.framework.utils.ExceptionMessageHelper
 import tech.chaosmin.framework.utils.JsonUtil
@@ -57,7 +54,7 @@ import java.util.*
 @Service
 open class WechatNativePayServiceImpl(
     private val wechatPayParam: WechatPayParam,
-    private val paymentTransactionService: PaymentTransactionService,
+    private val paymentTransService: PaymentTransService,
     private val channelHttpRequestService: ChannelHttpRequestService,
     private val rabbitTemplate: RabbitTemplate
 ) : WechatNativePayService {
@@ -143,7 +140,7 @@ open class WechatNativePayServiceImpl(
 
     override fun createOrder(req: NativePayReq): String {
         // 保存支付信息
-        val transaction = PaymentTransactionEntity().apply {
+        val transaction = PaymentTransEntity().apply {
             this.status = TransactionStatusEnum.WAITING_FOR_PAY
             this.amount = req.amount?.total?.toLong()
             this.channel = TradeChannelEnum.WECHAT
@@ -151,7 +148,7 @@ open class WechatNativePayServiceImpl(
             this.description = req.description
             this.orderTime = Date()
         }
-        paymentTransactionService.save(PaymentTransactionMapper.INSTANCE.convert2DO(transaction))
+        paymentTransService.save(PaymentTransMapper.INSTANCE.toDO(transaction))
 
         val url = wechatPayParam.url?.get(wechatPayParam.CREATE_NATIVE_ORDER)
         if (url.isNullOrBlank()) throw FrameworkException(ErrorCodeEnum.SYSTEM_ERROR.code, "微信支付配置[${wechatPayParam.CREATE_NATIVE_ORDER}]丢失")
@@ -167,12 +164,12 @@ open class WechatNativePayServiceImpl(
                     JsonUtil.decode(str, NativePayResp::class.java)
                 }
                 // 设置状态为支付中并更新支付链接
-                paymentTransactionService.updateByTradeNo(PaymentTransaction().apply {
+                paymentTransService.updateByTradeNo(PaymentTransaction().apply {
                     this.status = TransactionStatusEnum.PAYING.getCode()
                     this.payUrl = resp?.code_url
                 }, req.out_trade_no!!)
                 // 生成二维码
-                return QrCodeUtil.generateAsBase64(resp?.code_url, QrConfig.create(), ImgUtil.IMAGE_TYPE_PNG)
+                return resp?.code_url ?: ""
             }
         } catch (e: Exception) {
             logger.error("调用微信Native下单接口失败", e)
@@ -217,7 +214,7 @@ open class WechatNativePayServiceImpl(
         try {
             getClient().execute(httpPost).use {
                 channelHttpRequestService.saveRequest(httpPost, requestStr, it.entity) {}
-                paymentTransactionService.updateByTradeNo(PaymentTransaction().apply {
+                paymentTransService.updateByTradeNo(PaymentTransaction().apply {
                     this.status = TransactionStatusEnum.CLOSE.getCode()
                     this.closeTime = Date()
                 }, outTradeNo)
@@ -242,7 +239,7 @@ open class WechatNativePayServiceImpl(
             val decryptStr = decrypt(req.resource!!)
             val payNotify = JsonUtil.decode(decryptStr, PayNotifyEntity::class.java)
             if (payNotify?.trade_state == WechatTradeStateEnum.SUCCESS) {
-                paymentTransactionService.updateByTradeNo(PaymentTransaction().apply {
+                paymentTransService.updateByTradeNo(PaymentTransaction().apply {
                     this.payTime = DateUtil.parseUTC(payNotify.success_time)
                     this.status = TransactionStatusEnum.SUCCESS.getCode()
                     this.transactionId = payNotify.transaction_id
@@ -300,7 +297,7 @@ open class WechatNativePayServiceImpl(
 
             // 退款成功时, 更新系统支付交易状态
             if (refundNotify?.refund_status == WechatRefundStatusEnum.SUCCESS) {
-                paymentTransactionService.updateByTradeNo(PaymentTransaction().apply {
+                paymentTransService.updateByTradeNo(PaymentTransaction().apply {
                     this.refundAmount = refundNotify.amount?.payer_refund
                     this.refundAccount = refundNotify.user_received_account
                     this.status = TransactionStatusEnum.REFUND.getCode()

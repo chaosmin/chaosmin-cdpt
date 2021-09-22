@@ -10,7 +10,7 @@ import java.util.*
  * @author Romani min
  * @since 2021/8/25 11:10
  */
-class PaymentTransactionEntity(id: Long? = null) : BaseEntity<PaymentTransactionEntity>(id) {
+class PaymentTransEntity(id: Long? = null) : BaseEntity<PaymentTransEntity>(id) {
     var channel: TradeChannelEnum? = null
     var tradeType: WechatTradeTypeEnum? = null
     var status: TransactionStatusEnum? = null

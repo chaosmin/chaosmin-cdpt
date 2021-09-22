@@ -16,7 +16,7 @@ import tech.chaosmin.framework.module.payment.entity.wechat.response.NotifyResp
  */
 @Api(tags = ["微信支付操作接口"], consumes = "application/json;charset=utf-8")
 @RequestMapping("/\${application.version}/api/wechatpay")
-interface WechatPayShareService {
+interface WechatPayAPI {
     @PostMapping
     fun createTrade(@RequestBody req: NativePayReq): RestResult<String>
 

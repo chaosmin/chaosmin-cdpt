@@ -3,6 +3,7 @@ package tech.chaosmin.framework.module.payment.service
 import org.junit.jupiter.api.Test
 import tech.chaosmin.framework.BaseTestMain
 import tech.chaosmin.framework.module.payment.entity.wechat.request.NativePayReq
+import tech.chaosmin.framework.module.payment.logic.service.WechatNativePayService
 import java.util.*
 import javax.annotation.Resource
 

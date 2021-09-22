@@ -15,6 +15,7 @@ import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.module.cdpt.entity.request.OrderReq
 import tech.chaosmin.framework.module.cdpt.entity.request.OrderTraceReq
 import tech.chaosmin.framework.module.cdpt.entity.request.PolicyIssueReq
+import tech.chaosmin.framework.module.cdpt.entity.response.OrderPaymentResp
 import tech.chaosmin.framework.module.cdpt.entity.response.OrderResp
 
 @Api(tags = ["订单操作接口"], consumes = "application/json;charset=utf-8")
@@ -22,8 +23,8 @@ import tech.chaosmin.framework.module.cdpt.entity.response.OrderResp
 interface OrderAPI : BaseAPI<OrderReq, OrderResp> {
     @GetMapping("/{orderNo}/pay")
     @ApiOperation(value = "获取指定订单的支付链接")
-    fun payment(@PathVariable("orderNo") orderNo: String): RestResult<String>
-
+    fun payment(@PathVariable("orderNo") orderNo: String): RestResult<OrderPaymentResp>
+    
     @PostMapping("/{orderNo}/trace")
     fun saveOrderTrace(@PathVariable("orderNo") orderNo: String, @RequestBody req: OrderTraceReq): RestResult<String>
 

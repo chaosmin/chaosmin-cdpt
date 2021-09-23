@@ -19,7 +19,8 @@ import tech.chaosmin.framework.base.KeyValueEnum
 enum class ReportTypeEnum(@EnumValue private val code: Int, private val desc: String) : KeyValueEnum {
     BILLING_LIST(1, "结算清单"),
     PERSONAL_COMMISSION_SETTLEMENT(2, "个人佣金结算"),
-    PAYMENT_TRANSACTION_FLOW(3, "支付交易流水");
+    PAYMENT_TRANSACTION_FLOW(3, "支付交易流水"),
+    BUSINESS(4, "业务系统手续费清单");
 
     override fun getCode(): Int = this.code
     override fun getDesc(): String = this.desc

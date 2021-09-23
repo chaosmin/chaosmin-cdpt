@@ -21,8 +21,10 @@ import tech.chaosmin.framework.module.report.entity.enums.ReportTypeEnum
 import tech.chaosmin.framework.module.report.entity.enums.TimeTypeEnum
 import tech.chaosmin.framework.module.report.entity.request.TwoLatitudeReq
 import tech.chaosmin.framework.module.report.entity.result.BillingListResult
+import tech.chaosmin.framework.module.report.entity.result.BusinessResult
 import tech.chaosmin.framework.module.report.entity.result.PersonalComsSetResult
 import tech.chaosmin.framework.module.report.logic.handler.BillingListHandler
+import tech.chaosmin.framework.module.report.logic.handler.BusinessHandler
 import tech.chaosmin.framework.module.report.logic.handler.PersonalComsSetHandler
 import tech.chaosmin.framework.utils.JsonUtil
 import java.util.*
@@ -37,7 +39,8 @@ import javax.servlet.http.HttpServletResponse
 @RestController
 open class ReportProvider(
     private val billingListHandler: BillingListHandler,
-    private val personalComsSetHandler: PersonalComsSetHandler
+    private val personalComsSetHandler: PersonalComsSetHandler,
+    private val businessHandler: BusinessHandler
 ) : ReportAPI {
     override fun billingListReport(req: TwoLatitudeReq<PolicyLatitude, UserLatitude>): RestResult<BillingListResult> {
         val reportType = ReportTypeEnum.BILLING_LIST
@@ -63,6 +66,19 @@ open class ReportProvider(
         val reportType = ReportTypeEnum.PERSONAL_COMMISSION_SETTLEMENT
         val reportEntity = convertToEntity<PersonalComsSetResult>(reportType, req)
         personalComsSetHandler.download(reportEntity, response)
+    }
+
+    override fun businessReport(req: TwoLatitudeReq<PolicyLatitude, UserLatitude>): RestResult<BusinessResult> {
+        val reportType = ReportTypeEnum.BUSINESS
+        val reportEntity = convertToEntity<BusinessResult>(reportType, req)
+        val restResult = businessHandler.operate(reportEntity)
+        return restResult.convert { it.result ?: BusinessResult() }
+    }
+
+    override fun businessReport(req: TwoLatitudeReq<PolicyLatitude, UserLatitude>, response: HttpServletResponse) {
+        val reportType = ReportTypeEnum.BUSINESS
+        val reportEntity = convertToEntity<BusinessResult>(reportType, req)
+        businessHandler.download(reportEntity, response)
     }
 
     private fun <R> convertToEntity(reportType: ReportTypeEnum, req: TwoLatitudeReq<PolicyLatitude, UserLatitude>)

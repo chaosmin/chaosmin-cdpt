@@ -18,6 +18,7 @@ import tech.chaosmin.framework.module.report.entity.condition.PolicyLatitude
 import tech.chaosmin.framework.module.report.entity.condition.UserLatitude
 import tech.chaosmin.framework.module.report.entity.request.TwoLatitudeReq
 import tech.chaosmin.framework.module.report.entity.result.BillingListResult
+import tech.chaosmin.framework.module.report.entity.result.BusinessResult
 import tech.chaosmin.framework.module.report.entity.result.PersonalComsSetResult
 import javax.servlet.http.HttpServletResponse
 
@@ -39,4 +40,10 @@ interface ReportAPI {
 
     @PostMapping("/personal-commission-settlement")
     fun personalComsSetReport(req: TwoLatitudeReq<PolicyLatitude, UserLatitude>, response: HttpServletResponse)
+
+    @GetMapping("/business")
+    fun businessReport(req: TwoLatitudeReq<PolicyLatitude, UserLatitude>): RestResult<BusinessResult>
+
+    @PostMapping("/business")
+    fun businessReport(req: TwoLatitudeReq<PolicyLatitude, UserLatitude>, response: HttpServletResponse)
 }

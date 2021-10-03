@@ -9,7 +9,6 @@ plugins {
     id("org.sonarqube") version Vers.Plugins.sonarqubeVersion
     id("org.hidetake.ssh") version Vers.Plugins.hidetakeSSHVersion
     id("org.springframework.boot") version Vers.Plugins.springBootVersion
-    maven
     jacoco
 }
 

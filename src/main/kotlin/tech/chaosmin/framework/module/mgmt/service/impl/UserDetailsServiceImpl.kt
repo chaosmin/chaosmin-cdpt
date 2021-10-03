@@ -21,6 +21,7 @@ class UserDetailsServiceImpl(private val userService: UserService) : UserDetails
             }
             val roleCodes = roles.mapNotNull { it.code }
             val authorities = roles.flatMap { role -> role.authorities!!.map { GrantedAuthorityImpl(it.authority) } }
+                .filterNot { it.authority.startsWith("null") }.distinctBy { it.authority }
 
             val accountNonExpired = this.status != null && this.status == UserStatusEnum.VALID.getCode()
             val credentialsNonExpired = true

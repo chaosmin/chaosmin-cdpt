@@ -97,7 +97,7 @@ open class PolicyModifyHandler(
                                     // 保费转化为分
                                     val premium = BigDecimal(exist.actualPremium!!).multiply(BigDecimal(100))
                                     this.amount.total = premium.toInt()
-                                    this.amount.total = premium.toInt()
+                                    this.amount.refund = premium.toInt()
                                 }
                                 logger.info("保单退保触发退费处理: ${JsonUtil.encode(refundReq)}")
                                 wechatNativePayService.refund(refundReq)

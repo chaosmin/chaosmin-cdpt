@@ -67,8 +67,7 @@ open class OrderProvider(
             // 存在待支付的订单, 直接打开
             logger.info("存在待支付的订单: ${transEntity.payUrl}")
             resp.amount = BigDecimal(transEntity.amount ?: 0)
-                .div(BigDecimal(100))
-                .setScale(2, RoundingMode.HALF_UP).toPlainString()
+                .divide(BigDecimal(100), 2, RoundingMode.HALF_UP).toPlainString()
             transEntity.payUrl
         } else {
             // 否则创建新的支付链接

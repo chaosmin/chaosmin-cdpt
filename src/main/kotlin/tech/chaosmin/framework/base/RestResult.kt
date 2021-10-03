@@ -17,7 +17,7 @@ data class RestResult<T>(
         this.msg = result.msg
     }
 
-    fun take(data: T): RestResult<T> = this.apply {
+    fun take(data: T?): RestResult<T> = this.apply {
         this.data = data
     }
 
@@ -26,8 +26,12 @@ data class RestResult<T>(
         this.data = data
     }
 
-    fun convert(function: () -> T): RestResult<T> = this.apply {
-        this.data = function()
+    fun <R> convert(mapper: (T) -> R): RestResult<R> {
+        val restResult = RestResultExt.mapper<R>(this)
+        if (this.data != null) {
+            restResult.data = mapper.invoke(this.data!!)
+        }
+        return restResult
     }
 }
 

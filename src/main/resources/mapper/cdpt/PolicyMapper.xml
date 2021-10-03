@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="tech.chaosmin.framework.module.cdpt.domain.dao.PolicyDAO">
     <sql id="extSelectFields">
-        distinct policy.*, policy_holder.name as 'holder_name', goods_plan.partner_name
+        distinct policy.*, policy_holder.name as 'holder_name', goods_plan.partner_name, goods_plan.user_name as 'issuer_name'
     </sql>
 
-    <select id="listExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyExt">
+    <select id="listExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyEx">
         select
         <include refid="extSelectFields"/>
         from policy
@@ -15,7 +15,7 @@
         ${ew.customSqlSegment}
     </select>
 
-    <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyExt">
+    <select id="pageExt" resultType="tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyEx">
         select
         <include refid="extSelectFields"/>
         from policy

@@ -1,7 +1,6 @@
 package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
 import java.util.*
 
 /**
@@ -9,7 +8,6 @@ import java.util.*
  * @since 2021/6/17 11:11
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 class Policy {
     // 单证流水号
     var printNo: String? = null

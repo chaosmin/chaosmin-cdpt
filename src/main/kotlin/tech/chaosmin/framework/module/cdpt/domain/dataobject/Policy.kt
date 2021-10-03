@@ -23,6 +23,12 @@ open class Policy(id: Long? = null) : BaseDO(id, 0) {
     /** 产品授权ID */
     var goodsPlanId: Long? = null
 
+    /** 出单时间 */
+    var orderTime: Date? = null
+
+    /** 承保时间 */
+    var issueTime: Date? = null
+
     /** 起保时间 */
     var effectiveTime: Date? = null
 
@@ -38,7 +44,7 @@ open class Policy(id: Long? = null) : BaseDO(id, 0) {
     /** 被保人数 */
     var insuredSize: Int? = null
 
-    /** 0-待出单 1-出单成功 2-出单失败 3-出单中 */
+    /** 保单状态 */
     var status: Int? = null
 
     /** 单价保费 */
@@ -59,6 +65,15 @@ open class Policy(id: Long? = null) : BaseDO(id, 0) {
     /** 电子保单下载地址 */
     var ePolicyUrl: String? = null
 
-    /** 支付方式 0-月结 1-微信 */
+    /** 支付状态 */
+    var payStatus: Int? = null
+
+    /** 支付方式 */
     var payType: Int? = null
+
+    /** 退保时间 */
+    var cancelTime: Date? = null
+
+    /** 退费时间 */
+    var refundTime: Date? = null
 }

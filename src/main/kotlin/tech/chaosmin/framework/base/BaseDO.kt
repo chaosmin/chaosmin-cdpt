@@ -2,6 +2,7 @@ package tech.chaosmin.framework.base
 
 import com.baomidou.mybatisplus.annotation.*
 import com.fasterxml.jackson.annotation.JsonFormat
+import tech.chaosmin.framework.utils.JsonUtil
 import java.io.Serializable
 import java.util.*
 
@@ -16,7 +17,7 @@ open class BaseDO(
     @TableField(fill = FieldFill.INSERT)
     var creator: String? = null
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     var updateTime: Date? = null
 
@@ -24,4 +25,8 @@ open class BaseDO(
     var updater: String? = null
 
     var extraInfo: String? = null
+
+    override fun toString(): String {
+        return JsonUtil.encode(this)
+    }
 }

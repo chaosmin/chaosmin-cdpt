@@ -3,8 +3,8 @@ package tech.chaosmin.framework.module.mgmt.entity.response
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseResp
-import tech.chaosmin.framework.base.enums.PayTypeEnum
 import tech.chaosmin.framework.base.enums.UserStatusEnum
+import tech.chaosmin.framework.module.cdpt.entity.enums.PayTypeEnum
 
 @ApiModel("用户接口返回参数")
 class UserResp : BaseResp() {

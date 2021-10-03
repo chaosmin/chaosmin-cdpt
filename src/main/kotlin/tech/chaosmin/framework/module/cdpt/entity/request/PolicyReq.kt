@@ -3,7 +3,7 @@ package tech.chaosmin.framework.module.cdpt.entity.request
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseReq
-import tech.chaosmin.framework.base.enums.PolicyStatusEnum
+import tech.chaosmin.framework.module.cdpt.entity.enums.PolicyStatusEnum
 import java.util.*
 
 /**

@@ -1,7 +1,5 @@
 package tech.chaosmin.framework.utils
 
-import org.apache.commons.lang3.StringUtils
-
 /**
  * @author Romani min
  * @since 2021/7/6 17:17
@@ -11,7 +9,7 @@ object NumberUtil {
     private val NUMBERS = arrayOf("零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖")
 
     // 整数部分的单位
-    private val IUNIT = arrayOf("元", "拾", "佰", "仟", "万", "拾", "佰", "仟", "亿", "拾", "佰", "仟", "万", "拾", "佰", "仟")
+    private val UNIT = arrayOf("元", "拾", "佰", "仟", "万", "拾", "佰", "仟", "亿", "拾", "佰", "仟", "万", "拾", "佰", "仟")
 
     // 小数部分的单位
     private val DUNIT = arrayOf("角", "分", "厘")
@@ -20,7 +18,7 @@ object NumberUtil {
     fun toChinese(string: String): String {
         // 判断输入的金额字符串是否符合要求
         var str = string
-        if (StringUtils.isBlank(str) || !str.matches(Regex("(-)?[\\d]*(.)?[\\d]*"))) {
+        if (str.isBlank() || !str.matches(Regex("(-)?[\\d]*(.)?[\\d]*"))) {
             println("抱歉，请输入数字！")
             return str
         }
@@ -56,7 +54,7 @@ object NumberUtil {
         }
 
         //beyond超出计算能力，直接返回
-        if (integerStr.length > IUNIT.size) {
+        if (integerStr.length > UNIT.size) {
             println("$str：超出计算能力")
             return str
         }
@@ -97,18 +95,18 @@ object NumberUtil {
             var key = ""
             if (integers[i] == 0) {
                 if (length - i == 13) //万（亿）
-                    key = IUNIT[4] else if (length - i == 9) { //亿
-                    key = IUNIT[8]
+                    key = UNIT[4] else if (length - i == 9) { //亿
+                    key = UNIT[8]
                 } else if (length - i == 5 && isWan) { //万
-                    key = IUNIT[4]
+                    key = UNIT[4]
                 } else if (length - i == 1) { //元
-                    key = IUNIT[0]
+                    key = UNIT[0]
                 }
                 if (length - i > 1 && integers[i + 1] != 0) {
                     key += NUMBERS[0]
                 }
             }
-            chineseInteger.append(if (integers[i] == 0) key else NUMBERS[integers[i]] + IUNIT[length - i - 1])
+            chineseInteger.append(if (integers[i] == 0) key else NUMBERS[integers[i]] + UNIT[length - i - 1])
         }
         return chineseInteger.toString()
     }

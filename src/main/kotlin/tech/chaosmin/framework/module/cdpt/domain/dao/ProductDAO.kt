@@ -9,19 +9,16 @@ import org.apache.ibatis.annotations.Delete
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Param
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.Product
-import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductExt
+import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductEx
 
 /**
  * @author Romani min
  * @since 2020/12/9 13:49
  */
 interface ProductDAO : BaseMapper<Product> {
-    fun getByIdExt(@Param("id") id: Long): ProductExt?
+    fun getByIdExt(@Param("id") id: Long): ProductEx?
 
-    fun pageExt(
-        page: Page<ProductExt>,
-        @Param(Constants.WRAPPER) queryWrapper: Wrapper<ProductExt>
-    ): IPage<ProductExt>
+    fun pageExt(page: Page<ProductEx>, @Param(Constants.WRAPPER) queryWrapper: Wrapper<ProductEx>): IPage<ProductEx>
 
     @Insert(
         value = ["<script> insert into product_category_relation(product_id,product_category_id) VALUES "

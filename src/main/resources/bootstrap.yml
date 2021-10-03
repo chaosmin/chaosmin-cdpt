@@ -2,51 +2,17 @@ spring:
   application:
     name: chaosmin-cdpt
   cloud:
-    cloud:
-      config:
-        uri: ${CONFIG_SERVER_URL}
-        name: chaosmin-platform
-        label: ${spring.application.name}-${DEPLOY_ENV}
-        failFast: true
-        enabled: ${SPRING_DISCOVERY_ENABLE:true}
     nacos:
-      config:
-        file-extension: yml
-        server-addr: ${CONFIG_SERVER_URL}
-        ext-config[0].data-id: ${NACOS_COMMON:common.yml}
-        ext-config[0].group: ${NACOS_GROUP}
+      discovery:
+        server-addr: ${NACOS_SERVER_URL}
         namespace: ${DEPLOY_ENV}
         group: ${NACOS_GROUP}
         enabled: ${NACOS_ENABLE:false}
-        refresh:
-          enabled: ${NACOS_REFRESH:false}
-    consul:
-      host: ${CONSUL_HOST}
-      port: ${CONSUL_PORT}
       config:
-        enabled: false
-      discovery:
-        health-check-path: /cCo14UwY86DZnm9k/actuator/health
-        health-check-interval: 15s
-        health-check-critical-timeout: 60s
-        query-passing: true
-        prefer-ip-address: true
-        tags: ${spring.application.name}-${DEPLOY_ENV}
-    discovery:
-      client:
-        composite-indicator:
-          enabled: false
-        health-indicator:
-          enabled: false
-    loadbalancer:
-      ribbon:
-        enabled: false
-  sleuth:
-    sampler:
-      percentage: 1.0
-    enabled: true
-
-management:
-  endpoint:
-    health:
-      show-details: always
+        server-addr: ${NACOS_SERVER_URL}
+        file-extension: yml
+        namespace: ${DEPLOY_ENV}
+        ext-config[0].data-id: common.yml
+        ext-config[0].group: ${NACOS_GROUP}
+        group: ${NACOS_GROUP}
+        enabled: ${NACOS_ENABLE:false}

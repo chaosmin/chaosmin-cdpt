@@ -26,4 +26,7 @@ open class ChannelHttpRequest(id: Long? = null) : BaseDO(id, 0) {
 
     // 请求结果
     var httpStatus: String? = null
+
+    // 请求耗时(ms)
+    var costTime: Long? = null
 }

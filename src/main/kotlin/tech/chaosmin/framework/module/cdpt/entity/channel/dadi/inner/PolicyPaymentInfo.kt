@@ -1,7 +1,6 @@
 package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
 
 /**
  * 大地保险付款信息 <p>
@@ -10,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonInclude
  * @since 2021/6/17 18:41
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 class PolicyPaymentInfo {
     // 银行账户持有人姓名
     var accountHolderName: String? = null

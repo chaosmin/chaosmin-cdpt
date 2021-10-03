@@ -1,0 +1,21 @@
+operate,key,value
+add,channel.dadi.apiList,"      -
+        process: PREMIUM_TRIAL
+        method: POST
+        url: /CCIC/1.0/ah/commonProposalQuotePrice
+      -
+        process: UNDERWRITING
+        method: POST
+        url: /CCIC/1.0/ah/commonProposalQuotePrice
+      -
+        process: ACCEPTANCE
+        method: POST
+        url: /CCIC/1.0/ah/commonSubmitUnderWritingPayment
+      -
+        process: POLICY_CANCEL
+        method: POST
+        url: /CCIC/1.0/ah/commonCancelPolicy"
+add,rabbitmq-domain,106.14.40.2
+add,rabbitmq-port,5672
+add,rabbitmq-username,admin
+add,rabbitmq-password,admin@123

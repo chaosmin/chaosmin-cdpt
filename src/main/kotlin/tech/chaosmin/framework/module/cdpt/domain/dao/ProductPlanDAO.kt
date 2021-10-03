@@ -7,15 +7,12 @@ import com.baomidou.mybatisplus.core.toolkit.Constants
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import org.apache.ibatis.annotations.Param
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ProductPlan
-import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductPlanExt
+import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductPlanEx
 
 /**
  * @author Romani min
  * @since 2020/12/9 13:49
  */
 interface ProductPlanDAO : BaseMapper<ProductPlan> {
-    fun pageExt(
-        page: Page<ProductPlanExt>,
-        @Param(Constants.WRAPPER) queryWrapper: Wrapper<ProductPlanExt>
-    ): IPage<ProductPlanExt>
+    fun pageExt(page: Page<ProductPlanEx>, @Param(Constants.WRAPPER) queryWrapper: Wrapper<ProductPlanEx>): IPage<ProductPlanEx>
 }

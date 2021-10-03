@@ -78,10 +78,10 @@ open class GoodsPlanResp : BaseResp() {
     var maxComsRatio: Double? = null
 
     @ApiModelProperty("计划责任")
-    var liabilities: List<PlanLiabilityResp>? = null
+    var liabilities: List<ProductPlanLibResp>? = null
 
     @ApiModelProperty("计划费率表")
-    var rateTable: List<PlanRateTableResp>? = null
+    var rateTable: List<ProductPlanRaTeResp>? = null
 
     @ApiModelProperty("保险条款下载地址")
     var clauseUrl: String? = null

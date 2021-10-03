@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseResp
-import tech.chaosmin.framework.base.enums.PolicyStatusEnum
+import tech.chaosmin.framework.module.cdpt.entity.enums.PayStatusEnum
+import tech.chaosmin.framework.module.cdpt.entity.enums.PayTypeEnum
+import tech.chaosmin.framework.module.cdpt.entity.enums.PolicyStatusEnum
 import java.util.*
 
 /**
@@ -18,6 +20,17 @@ class PolicyResp : BaseResp() {
 
     @ApiModelProperty("保单号")
     var policyNo: String? = null
+
+    @ApiModelProperty("下单时间")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    var orderTime: Date? = null
+
+    @ApiModelProperty("承保时间")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    var issueTime: Date? = null
+
+    @ApiModelProperty("出单人姓名")
+    var issuerName: String? = null
 
     @ApiModelProperty("起保时间")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
@@ -50,6 +63,20 @@ class PolicyResp : BaseResp() {
 
     @ApiModelProperty("电子保单下载地址")
     var ePolicyUrl: String? = null
+
+    @ApiModelProperty("支付状态")
+    var payStatus: PayStatusEnum? = null
+
+    @ApiModelProperty("支付方式")
+    var payType: PayTypeEnum? = null
+
+    @ApiModelProperty("退保时间")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    var cancelTime: Date? = null
+
+    @ApiModelProperty("退费时间")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    var refundTime: Date? = null
 
     @ApiModelProperty("保险产品信息")
     var goodsPlan: GoodsPlanResp? = null

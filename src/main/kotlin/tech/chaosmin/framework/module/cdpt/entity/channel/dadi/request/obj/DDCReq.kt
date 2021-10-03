@@ -1,5 +1,6 @@
 package tech.chaosmin.framework.module.cdpt.entity.channel.dadi.request.obj
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import tech.chaosmin.framework.module.cdpt.entity.channel.dadi.inner.*
 import java.math.BigDecimal
 import java.util.*
@@ -10,6 +11,7 @@ import java.util.*
  * @author Romani min
  * @since 2021/6/17 11:01
  */
+@JsonInclude(JsonInclude.Include.ALWAYS)
 class DDCReq {
     // 投保单号
     var proposalNo: String? = null

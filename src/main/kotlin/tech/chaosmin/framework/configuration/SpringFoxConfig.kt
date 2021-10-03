@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) 2020-2021 Romani Min
+ * All rights reserved.
+ *
+ * If you are not the intended user, you are hereby notified that any use, disclosure, copying, printing, forwarding or
+ * dissemination of this property is strictly prohibited. If you have got this file in error, delete it from your system.
+ */
 package tech.chaosmin.framework.configuration
 
 import org.slf4j.LoggerFactory
@@ -17,10 +24,8 @@ import springfox.documentation.spring.web.plugins.Docket
 import tech.chaosmin.framework.definition.ApplicationParam
 import tech.chaosmin.framework.definition.SwaggerParam
 import tech.chaosmin.framework.definition.SystemConst.INIT_SUCCESSFULLY
-import tech.chaosmin.framework.utils.JsonUtil
 import tech.chaosmin.framework.utils.JwtTokenUtil
 import java.util.*
-
 
 @Configuration
 @Import(BeanValidatorPluginsConfiguration::class)
@@ -33,10 +38,6 @@ open class SpringFoxConfig(
 
     @Bean
     open fun apiDocket(): Docket {
-        if (swaggerParam.enable) {
-            logger.info("Application param information: \n${JsonUtil.encode(applicationParam, true)}")
-            logger.info("Swagger param information: \n${JsonUtil.encode(swaggerParam, true)}")
-        }
         val docket = Docket(DocumentationType.OAS_30)
             .enable(swaggerParam.enable)
             .apiInfo(apiInfo())

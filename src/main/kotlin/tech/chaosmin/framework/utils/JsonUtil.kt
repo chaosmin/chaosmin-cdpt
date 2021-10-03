@@ -1,8 +1,10 @@
 package tech.chaosmin.framework.utils
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.JsonGenerationException
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.JsonMappingException
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.type.TypeFactory
@@ -27,6 +29,12 @@ object JsonUtil {
         configure(SerializationFeature.INDENT_OUTPUT, false)
         // 默认时间格式
         dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+        // null值不进行序列化
+        setSerializationInclusion(JsonInclude.Include.NON_NULL)
+    }
+
+    fun readTree(str: String?): JsonNode {
+        return objectMapper.readTree(str)
     }
 
     fun encode(obj: Any?, prettyPrinter: Boolean = false): String {
@@ -66,6 +74,12 @@ object JsonUtil {
         if (json.isNullOrBlank()) return null
         val javaType = objectMapper.typeFactory.constructParametricType(valueType, *elementClasses)
         return objectMapper.readValue(json, javaType)
+    }
+
+    fun <T> convert2List(json: String?, valueType: Class<T>): List<T> {
+        if (json.isNullOrBlank()) return emptyList()
+        val constructCollectionType = objectMapper.typeFactory.constructCollectionLikeType(List::class.java, valueType)
+        return objectMapper.readValue(json, constructCollectionType)
     }
 
     fun convert2Map(json: String?): Map<String, String> {

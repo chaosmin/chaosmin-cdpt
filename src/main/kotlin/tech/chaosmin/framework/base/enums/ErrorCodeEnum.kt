@@ -15,6 +15,7 @@ enum class ErrorCodeEnum(val code: String, val msg: String) {
     DATA_ERROR("BIZ_00002", "数据异常"),
     STATUS_ERROR("BIZ_00003", "状态异常"),
 
+    SYSTEM_ERROR("SYS_00000", "系统初始化失败"),
     FAILURE("SYS_00001", "请求失败"),
     NOT_SUPPORTED_FUNCTION("SYS_00002", "不支持的请求方式"),
     NOT_SUPPORTED_PARAM_TYPE("SYS_00003", "不支持的参数类型"),
@@ -25,6 +26,8 @@ enum class ErrorCodeEnum(val code: String, val msg: String) {
     RESOURCE_NOT_EXIST("SYS_20001", "资源不存在"),
     RESOURCE_EXISTED("SYS_20002", "资源已存在"),
     RESOURCE_INVALID("SYS_20003", "资源不合法"),
+
+    FAILED_TO_REQUEST("SYS_30001", "请求第三方失败"),
 
     PARAM_IS_NULL("PARAMS_00001", "参数不能为空"),
     PARAM_IS_INVALID("PARAMS_00002", "参数不合法"),

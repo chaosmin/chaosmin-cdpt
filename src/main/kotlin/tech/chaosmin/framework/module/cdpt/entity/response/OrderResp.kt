@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseResp
-import tech.chaosmin.framework.base.enums.OrderStatusEnum
+import tech.chaosmin.framework.module.cdpt.entity.enums.OrderStatusEnum
 import java.util.*
 
 /**
@@ -38,7 +38,7 @@ class OrderResp : BaseResp() {
     var issueTime: Date? = null
 
     @ApiModelProperty("出单人")
-    var issuer: String? = null
+    var issuerName: String? = null
 
     @ApiModelProperty("状态")
     var status: OrderStatusEnum? = null

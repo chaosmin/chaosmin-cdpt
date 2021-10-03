@@ -3,8 +3,8 @@ package tech.chaosmin.framework.module.mgmt.entity.request
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseReq
-import tech.chaosmin.framework.base.enums.PayTypeEnum
 import tech.chaosmin.framework.base.enums.UserStatusEnum
+import tech.chaosmin.framework.module.cdpt.entity.enums.PayTypeEnum
 
 @ApiModel("用户接口请求参数")
 class UserReq : BaseReq() {

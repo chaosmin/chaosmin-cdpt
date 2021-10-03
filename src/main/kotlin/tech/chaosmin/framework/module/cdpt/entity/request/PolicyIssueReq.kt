@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import tech.chaosmin.framework.base.BaseReq
-import tech.chaosmin.framework.base.enums.PayTypeEnum
 import tech.chaosmin.framework.module.cdpt.entity.GoodsPlanEntity
+import tech.chaosmin.framework.module.cdpt.entity.enums.PayTypeEnum
 import java.util.*
 
 /**

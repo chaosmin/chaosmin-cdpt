@@ -65,8 +65,9 @@ class PolicyInterrogator(
     }
 
     override fun page(cond: PageQuery<PolicyEx>): IPage<PolicyEntity> {
+        val roles = SecurityUtil.getUserDetails().roles ?: emptyList()
         var queryWrapper = cond.wrapper
-        if (!SecurityUtil.getUserDetails().isAdmin) {
+        if (!(roles.contains("administrator") || roles.contains("admin") || roles.contains("watcher"))) {
             val subordinate = userInterrogator.findSubordinate().mapNotNull { it.id }.toMutableList()
             subordinate.add(SecurityUtil.getUserId())
             queryWrapper = queryWrapper.`in`("policy.user_id", subordinate)

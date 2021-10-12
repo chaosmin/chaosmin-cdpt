@@ -77,6 +77,8 @@ class BusinessHandler(
                         this.premium = it.totalPremium
                         this.comsRatio = "${goodsPlan.comsRatio}%"
                         this.coms = it.totalPremium?.minus(it.actualPremium ?: 0.0)
+                        this.status = it.status?.getDesc()
+                        this.payType = it.payType?.getDesc()
                     }
                 }
             }
@@ -95,7 +97,7 @@ class BusinessHandler(
                         it.orderNo, it.policyNo,
                         it.issueTime, it.effectiveTime, it.expiryTime,
                         it.partnerName, it.productName, it.issuerName,
-                        it.premium, it.comsRatio, it.coms
+                        it.premium, it.comsRatio, it.coms, it.status, it.payType
                     )
                 )
             }
@@ -108,12 +110,6 @@ class BusinessHandler(
     private fun getData(condition: List<TwoLatitude<PolicyLatitude, UserLatitude>>): List<PolicyEntity> {
         val wa = Wrappers.query<PolicyEx>()
         condition.forEach { c ->
-            val status = c.first?.mapNotNull { it.status?.getCode() }
-            if (status?.isNotEmpty() == true) wa.`in`("policy.status", status)
-            val payType = c.first?.mapNotNull { it.payType?.getCode() }
-            if (payType?.isNotEmpty() == true) wa.`in`("policy.pay_type", payType)
-            val payStatus = c.first?.mapNotNull { it.payStatus?.getCode() }
-            if (payStatus?.isNotEmpty() == true) wa.`in`("policy.pay_status", payStatus)
             c.first?.forEach { p ->
                 when (p.timeType) {
                     TimeTypeEnum.ISSUE_TIME -> wa.between("policy.issue_time", p.startTime ?: Date(), p.endTime ?: Date())

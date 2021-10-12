@@ -18,7 +18,10 @@ import java.util.*
  */
 class BusinessResult : ReportResult() {
     init {
-        header = listOf("订单编号", "保单号", "投保日期", "起保日期", "终保日期", "保险公司", "保险产品", "投保人", "保费", "手续费比例", "手续费")
+        header = listOf(
+            "订单编号", "保单号", "投保日期", "起保日期", "终保日期",
+            "保险公司", "保险产品", "投保人", "保费", "手续费比例", "手续费", "保单状态", "支付方式"
+        )
     }
 
     var detail: List<Detail>? = null
@@ -59,5 +62,11 @@ class BusinessResult : ReportResult() {
 
         // 手续费
         var coms: Double? = null
+
+        // 保单状态
+        var status: String? = null
+
+        // 支付方式
+        var payType: String? = null
     }
 }

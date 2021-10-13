@@ -10,10 +10,12 @@
 package tech.chaosmin.framework.module.cdpt.logic.interrogator
 
 import com.baomidou.mybatisplus.core.metadata.IPage
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.Interrogator
 import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.ProductPlanEx
+import tech.chaosmin.framework.module.cdpt.domain.service.GoodsPlanService
 import tech.chaosmin.framework.module.cdpt.domain.service.ProductPlanService
 import tech.chaosmin.framework.module.cdpt.entity.ProductPlanEntity
 import tech.chaosmin.framework.module.cdpt.logic.convert.ProductPlanMapper
@@ -23,7 +25,10 @@ import tech.chaosmin.framework.module.cdpt.logic.convert.ProductPlanMapper
  * @since 2021/9/4 22:27
  */
 @Component
-class ProductPlanInterrogator(private val productPlanService: ProductPlanService) : Interrogator<ProductPlanEntity, ProductPlanEx> {
+class ProductPlanInterrogator(
+    private val productPlanService: ProductPlanService,
+    private val goodsPlanService: GoodsPlanService
+) : Interrogator<ProductPlanEntity, ProductPlanEx> {
     override fun getOne(id: Long): ProductPlanEntity? {
         val productPlan = productPlanService.getById(id)
         return ProductPlanMapper.INSTANCE.toEn(productPlan)
@@ -34,18 +39,22 @@ class ProductPlanInterrogator(private val productPlanService: ProductPlanService
         return page.convert(ProductPlanMapper.INSTANCE::exToEn)
     }
 
+    /**
+     * 获取可授权产品计划列表
+     */
     fun contract(userId: Long): IPage<ProductPlanEntity> {
-//        val contactPlans = goodsPlanService.getByUser(userId)
-//        if (contactPlans.isEmpty()) {
-//            return Page<ProductPlanEntity>()
-//        }
-//        val ew = PageQuery.inQuery<ProductPlanExt>("product_plan.id", contactPlans.mapNotNull { it.productPlanId })
-//        val result = this.page(ew)
-//        // 更新一下可用的授权佣金比例
-//        result.records.forEach { record ->
-//            record?.comsRatio = contactPlans.first { it.productPlanId == record?.id }.comsRatio
-//        }
-//        return result
-        TODO("Not yet implemented")
+        // 获取当前用户可授权的产品计划信息
+        val contactPlans = goodsPlanService.getByUser(userId)
+        if (contactPlans.isEmpty()) {
+            // 可授权为零
+            return Page<ProductPlanEntity>()
+        }
+        val ew = PageQuery.inQuery<ProductPlanEx>("product_plan.id", contactPlans.mapNotNull { it.productPlanId })
+        val result = this.page(ew)
+        // 更新一下可用的授权佣金比例(最大为自己的佣金上限)
+        result.records.forEach { record ->
+            record?.comsRatio = contactPlans.first { it.productPlanId == record?.id }.comsRatio
+        }
+        return result
     }
 }

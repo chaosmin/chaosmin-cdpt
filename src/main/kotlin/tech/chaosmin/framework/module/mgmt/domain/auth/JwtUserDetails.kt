@@ -9,6 +9,7 @@ class JwtUserDetails(
     username: String,
     password: String,
     var departmentId: Long?,
+    var payType: String?,
     var roles: List<String>,
     authorities: Collection<GrantedAuthority> = emptyList(),
     enabled: Boolean = true,

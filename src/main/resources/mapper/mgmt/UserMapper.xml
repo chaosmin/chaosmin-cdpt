@@ -17,12 +17,13 @@
         <result property="updateTime" column="update_time" />
         <result property="updater" column="updater" />
         <result property="department" column="department" />
+        <result property="payType" column="pay_type"/>
         <collection property="roles" ofType="tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.RoleExt"
                     select="tech.chaosmin.framework.module.mgmt.domain.dao.RoleDAO.fetchRoleByUserId" column="id" />
     </resultMap>
 
     <select id="getByIdExt" resultMap="userExt">
-        select department.name as department, user.*
+        select department.name as department, department.pay_type as pay_type, user.*
         from user
                  left join department on department.id = user.department_id
             and department.status = 1
@@ -32,7 +33,7 @@
     </select>
 
     <select id="listExt" resultMap="userExt">
-        select department.name as department, user.*
+        select department.name as department, department.pay_type as pay_type, user.*
         from user
                  left join department on department.id = user.department_id
             and department.status = 1
@@ -41,7 +42,7 @@
     </select>
 
     <select id="pageExt" resultMap="userExt">
-        select department.name as department, user.*
+        select department.name as department, department.pay_type as pay_type, user.*
         from user
                  left join department on department.id = user.department_id
             and department.status = 1

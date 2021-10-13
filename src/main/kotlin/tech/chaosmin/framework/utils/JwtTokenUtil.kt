@@ -20,6 +20,7 @@ object JwtTokenUtil : Serializable {
     private const val ISS = "chaosmin"
     private const val APP_SECRET_KEY = "chaosmin_secret"
     private const val DEPARTMENT = "department"
+    private const val PAY_TYPE = "payType"
     private const val USERID = "userId"
     private const val USERNAME = "username"
     private const val ROLES = "roles"
@@ -41,9 +42,10 @@ object JwtTokenUtil : Serializable {
     fun generateToken(authentication: Authentication, isRememberMe: Boolean = false): String? {
         val claims: MutableMap<String, Any?> = HashMap(8)
         val userDetails = SecurityUtil.getUserDetails(authentication)
-        claims[USERID] = userDetails.userId
-        claims[USERNAME] = userDetails.userName
         claims[DEPARTMENT] = userDetails.departmentId
+        claims[USERNAME] = userDetails.userName
+        claims[PAY_TYPE] = userDetails.payType
+        claims[USERID] = userDetails.userId
         claims[ROLES] = userDetails.roles
         claims[AUTHORITIES] = authentication.authorities
         claims[CREATED] = Date()
@@ -67,6 +69,7 @@ object JwtTokenUtil : Serializable {
                 val userId = claims[USERID]?.toString()?.toLong()
                 val username = claims[USERNAME]?.toString() ?: return null
                 val department = claims[DEPARTMENT]?.toString()?.toLong()
+                val payType = claims[PAY_TYPE]?.toString()
                 @Suppress("UNCHECKED_CAST") val roles = claims[ROLES] as List<String>
 
                 if (isTokenExpired(claims)) {
@@ -74,7 +77,7 @@ object JwtTokenUtil : Serializable {
                 }
                 // 设置新的Authentication
                 authentication = JwtAuthenticationToken(
-                    JwtUserDetails(userId!!, username, "", department, roles),
+                    JwtUserDetails(userId!!, username, "", department, payType, roles),
                     authorities = generateAuthorities(claims[AUTHORITIES]),
                     token = this
                 )

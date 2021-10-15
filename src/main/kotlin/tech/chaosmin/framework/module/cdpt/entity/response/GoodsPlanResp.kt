@@ -34,6 +34,9 @@ open class GoodsPlanResp : BaseResp() {
     @ApiModelProperty("二级大类")
     var categorySubName: String? = null
 
+    @ApiModelProperty("产品ID")
+    var productId: Long? = null
+
     @ApiModelProperty("产品代码")
     var productCode: String? = null
 

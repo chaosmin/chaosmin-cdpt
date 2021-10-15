@@ -11,9 +11,11 @@ package tech.chaosmin.framework.module.cdpt.logic.interrogator
 
 import com.baomidou.mybatisplus.core.metadata.IPage
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.Interrogator
 import tech.chaosmin.framework.base.PageQuery
+import tech.chaosmin.framework.definition.SystemConst
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.GoodsPlan
 import tech.chaosmin.framework.module.cdpt.domain.service.GoodsPlanService
 import tech.chaosmin.framework.module.cdpt.domain.service.ProductPlanLibService
@@ -24,6 +26,8 @@ import tech.chaosmin.framework.module.cdpt.entity.response.GoodsCategoryResp
 import tech.chaosmin.framework.module.cdpt.logic.convert.GoodsPlanMapper
 import tech.chaosmin.framework.module.cdpt.logic.convert.ProductPlanLibMapper
 import tech.chaosmin.framework.module.cdpt.logic.convert.ProductPlanRaTeMapper
+import tech.chaosmin.framework.utils.JsonUtil
+import java.util.concurrent.TimeUnit
 
 /**
  * @author Romani min
@@ -31,20 +35,31 @@ import tech.chaosmin.framework.module.cdpt.logic.convert.ProductPlanRaTeMapper
  */
 @Component
 class GoodsPlanInterrogator(
+    private val stringRedisTemplate: StringRedisTemplate,
     private val goodsPlanService: GoodsPlanService,
     private val productPlanLibService: ProductPlanLibService,
     private val productPlanRaTeService: ProductPlanRaTeService,
     private val productRichTextService: ProductRichTextService
 ) : Interrogator<GoodsPlanEntity, GoodsPlan> {
     override fun getOne(id: Long): GoodsPlanEntity {
-        val goodsPlan = goodsPlanService.getById(id)
-        return GoodsPlanMapper.INSTANCE.toEn(goodsPlan)?.apply {
-            // 扩展信息填充
-            // TODO 缓存处理
-            this.liabilities = ProductPlanLibMapper.INSTANCE.toEn(productPlanLibService.listByPlanId(this.productPlanId!!))
-            this.rateTable = ProductPlanRaTeMapper.INSTANCE.toEn(productPlanRaTeService.listByPlanId(this.productPlanId!!))
-            this.productExternal = productRichTextService.getByProductId(this.productId!!).externalText
-        } ?: GoodsPlanEntity()
+        val cacheKey = "${SystemConst.APPLICATION_NAME}:goods-plan:$id"
+        val goodsPlan: GoodsPlanEntity? = if (stringRedisTemplate.hasKey(cacheKey)) {
+            val json = stringRedisTemplate.opsForValue().get(cacheKey)
+            JsonUtil.decode(json, GoodsPlanEntity::class.java)
+        } else {
+            val goodsPlan = goodsPlanService.getById(id)
+            GoodsPlanMapper.INSTANCE.toEn(goodsPlan)?.apply {
+                this.liabilities = ProductPlanLibMapper.INSTANCE.toEn(productPlanLibService.listByPlanId(this.productPlanId!!))
+                this.rateTable = ProductPlanRaTeMapper.INSTANCE.toEn(productPlanRaTeService.listByPlanId(this.productPlanId!!))
+                val productRichText = productRichTextService.getByProductId(this.productId!!)
+                this.insuranceNotice = productRichText.insuranceNotice
+                this.productExternal = productRichText.externalText
+            }.also {
+                // 保存缓存数据
+                this.stringRedisTemplate.opsForValue().set(cacheKey, JsonUtil.encode(it), 60, TimeUnit.MINUTES)
+            }
+        }
+        return goodsPlan ?: GoodsPlanEntity()
     }
 
     override fun page(cond: PageQuery<GoodsPlan>): IPage<GoodsPlanEntity> {
@@ -74,8 +89,6 @@ class GoodsPlanInterrogator(
             // 扩展属性
             it.liabilities = ProductPlanLibMapper.INSTANCE.toEn(productPlanLibService.listByPlanId(it.productPlanId!!))
             it.rateTable = ProductPlanRaTeMapper.INSTANCE.toEn(productPlanRaTeService.listByPlanId(it.productPlanId!!))
-            it.insuranceNotice = productRichTextService.getByProductId(it.productId!!).insuranceNotice
-            it.productExternal = productRichTextService.getByProductId(it.productId!!).externalText
             // stringRedisTemplate.opsForSet().add(cacheNameSpace, JsonUtil.encode(it))
         }
         goodsPlanList.addAll(records)

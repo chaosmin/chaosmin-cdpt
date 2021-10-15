@@ -11,9 +11,9 @@ class JwtUserDetails(
     var departmentId: Long?,
     var payType: String?,
     var roles: List<String>,
-    authorities: Collection<GrantedAuthority> = emptyList(),
     enabled: Boolean = true,
     accountNonExpired: Boolean = true,
     credentialsNonExpired: Boolean = true,
-    accountNonLocked: Boolean = true
+    accountNonLocked: Boolean = true,
+    authorities: Collection<GrantedAuthority> = emptyList()
 ) : User(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities), UserDetails

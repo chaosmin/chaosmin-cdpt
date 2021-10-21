@@ -21,6 +21,7 @@ import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyEx
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
 import tech.chaosmin.framework.module.cdpt.entity.enums.PayTypeEnum
+import tech.chaosmin.framework.module.cdpt.entity.enums.PolicyStatusEnum
 import tech.chaosmin.framework.module.cdpt.logic.interrogator.GoodsPlanInterrogator
 import tech.chaosmin.framework.module.cdpt.logic.interrogator.PolicyInterrogator
 import tech.chaosmin.framework.module.report.entity.ReportEntity
@@ -155,14 +156,8 @@ class BillingListHandler(
     }
 
     private fun getData(condition: List<TwoLatitude<PolicyLatitude, UserLatitude>>): List<PolicyEntity> {
-        val wa = Wrappers.query<PolicyEx>()
+        val wa = Wrappers.query<PolicyEx>().eq("policy.status", PolicyStatusEnum.INSURED.getCode())
         condition.forEach { c ->
-            val status = c.first?.mapNotNull { it.status?.getCode() }
-            if (status?.isNotEmpty() == true) wa.`in`("policy.status", status)
-            val payType = c.first?.mapNotNull { it.payType?.getCode() }
-            if (payType?.isNotEmpty() == true) wa.`in`("policy.pay_type", payType)
-            val payStatus = c.first?.mapNotNull { it.payStatus?.getCode() }
-            if (payStatus?.isNotEmpty() == true) wa.`in`("policy.pay_status", payStatus)
             c.first?.forEach { p ->
                 when (p.timeType) {
                     TimeTypeEnum.ISSUE_TIME -> wa.between("policy.issue_time", p.startTime ?: Date(), p.endTime ?: Date())

@@ -11,8 +11,6 @@ import tech.chaosmin.framework.module.cdpt.entity.enums.PayTypeEnum
  */
 class UserEntity(id: Long? = null) : BaseEntity<UserEntity>(id) {
     var address: String? = null
-    var department: String? = null
-    var departmentId: Long? = null
     var email: String? = null
     var loginName: String? = null
     var password: String? = null
@@ -22,4 +20,5 @@ class UserEntity(id: Long? = null) : BaseEntity<UserEntity>(id) {
     var status: UserStatusEnum? = null
     var username: String? = null
     var payType: PayTypeEnum? = null
+    var letterHead: List<LetterHeadEntity>? = null
 }

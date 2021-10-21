@@ -12,11 +12,15 @@ import tech.chaosmin.framework.module.mgmt.service.LetterHeadService
  */
 @Service
 open class LetterHeadServiceImpl : ServiceImpl<LetterHeadDAO, LetterHead>(), LetterHeadService {
+    override fun fetchByUserId(userId: Long): Set<LetterHead> {
+        return baseMapper.fetchHeadByUserId(userId)
+    }
+
     override fun realDeleteByIds(ids: List<Long>) {
         baseMapper.realDeleteByIds(ids)
     }
 
-    override fun realDeleteByDepartmentId(departmentId: Long) {
-        baseMapper.realDeleteByDepartmentId(departmentId)
+    override fun realDeleteByUserId(userId: Long) {
+        baseMapper.realDeleteByUserId(userId)
     }
 }

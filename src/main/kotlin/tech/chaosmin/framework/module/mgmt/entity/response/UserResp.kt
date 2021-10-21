@@ -40,4 +40,8 @@ class UserResp : BaseResp() {
 
     @ApiModelProperty("角色")
     var role: String? = null
+
+    @ApiModelProperty("可用投保抬头")
+    var letterHead: List<LetterHeadResp>? = null
+
 }

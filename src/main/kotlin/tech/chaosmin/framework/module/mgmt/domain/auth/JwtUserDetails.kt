@@ -8,7 +8,6 @@ class JwtUserDetails(
     var userId: Long,
     username: String,
     password: String,
-    var departmentId: Long?,
     var payType: String?,
     var roles: List<String>,
     enabled: Boolean = true,

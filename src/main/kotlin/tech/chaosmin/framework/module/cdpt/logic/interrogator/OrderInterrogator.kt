@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers
 import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.Interrogator
 import tech.chaosmin.framework.base.PageQuery
+import tech.chaosmin.framework.base.enums.YesNoEnum
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.Order
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.OrderEx
 import tech.chaosmin.framework.module.cdpt.domain.service.OrderService
@@ -43,7 +44,7 @@ class OrderInterrogator(
     }
 
     override fun page(cond: PageQuery<OrderEx>): IPage<OrderEntity> {
-        var queryWrapper = cond.wrapper
+        var queryWrapper = cond.wrapper.eq("order.is_deleted", YesNoEnum.NO.getCode())
         if (!SecurityUtil.getUserDetails().isAdmin) {
             val subordinate = userInterrogator.findSubordinate().mapNotNull { it.id }.toMutableList()
             subordinate.add(SecurityUtil.getUserId())

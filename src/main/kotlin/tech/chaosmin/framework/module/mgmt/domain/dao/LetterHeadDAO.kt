@@ -9,9 +9,9 @@ import tech.chaosmin.framework.module.mgmt.domain.dataobject.LetterHead
  * @since 2020/12/9 13:49
  */
 interface LetterHeadDAO : BaseMapper<LetterHead> {
-    fun fetchHeadByDepartmentId(@Param("id") departmentId: Long): Set<LetterHead>
+    fun fetchHeadByUserId(@Param("id") userId: Long): Set<LetterHead>
 
     fun realDeleteByIds(@Param("ids") ids: List<Long>)
 
-    fun realDeleteByDepartmentId(@Param("id") departmentId: Long)
+    fun realDeleteByUserId(@Param("id") userId: Long)
 }

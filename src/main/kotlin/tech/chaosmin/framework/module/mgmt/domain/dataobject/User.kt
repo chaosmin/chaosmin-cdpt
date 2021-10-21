@@ -3,9 +3,6 @@ package tech.chaosmin.framework.module.mgmt.domain.dataobject
 import tech.chaosmin.framework.base.BaseDO
 
 open class User(id: Long? = null) : BaseDO(id, 0) {
-    // 部门id
-    var departmentId: Long? = null
-
     // 用户名
     var username: String? = null
 

@@ -16,9 +16,10 @@ import org.springframework.stereotype.Component
 import tech.chaosmin.framework.base.Interrogator
 import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.definition.SystemConst
-import tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.UserExt
+import tech.chaosmin.framework.module.mgmt.domain.dataobject.User
 import tech.chaosmin.framework.module.mgmt.entity.UserEntity
 import tech.chaosmin.framework.module.mgmt.helper.mapper.UserMapper
+import tech.chaosmin.framework.module.mgmt.service.RoleService
 import tech.chaosmin.framework.module.mgmt.service.UserService
 import tech.chaosmin.framework.utils.SecurityUtil
 import java.util.*
@@ -30,23 +31,32 @@ import javax.annotation.Resource
  * @since 2021/9/4 23:48
  */
 @Component
-class UserInterrogator(private val userService: UserService) : Interrogator<UserEntity, UserExt> {
+class UserInterrogator(
+    private val userService: UserService,
+    private val roleService: RoleService
+) : Interrogator<UserEntity, User> {
     @Resource
     lateinit var redisTemplate: RedisTemplate<String, UserEntity>
 
     override fun getOne(id: Long): UserEntity? {
-        val user = userService.getByIdExt(id)
+        val user = userService.getById(id)
         return UserMapper.INSTANCE.convert2Entity(user)
     }
 
-    override fun page(cond: PageQuery<UserExt>): IPage<UserEntity> {
+    override fun page(cond: PageQuery<User>): IPage<UserEntity> {
         var queryWrapper = cond.wrapper
         if (!SecurityUtil.getUserDetails().isAdmin) {
             // 非管理员补充过滤自身创建的账户
             queryWrapper = queryWrapper.eq("user.creator", SecurityUtil.getUsername())
         }
-        val page = userService.pageExt(cond.page, queryWrapper)
-        return page.convert(UserMapper.INSTANCE::convert2Entity)
+        val page = userService.page(cond.page, queryWrapper)
+        val result: IPage<UserEntity> = page.convert(UserMapper.INSTANCE::convert2Entity)
+        result.records.map { user ->
+            val roles = roleService.findRoles(user.id!!)
+            user.role = roles.joinToString(",") { it.name!! }
+            user.roleIds = roles.map { it.id!! }
+        }
+        return result
     }
 
     fun findSubordinate(username: String? = null): List<UserEntity> {
@@ -55,9 +65,10 @@ class UserInterrogator(private val userService: UserService) : Interrogator<User
         return if (redisTemplate.hasKey(cacheSpName)) {
             redisTemplate.opsForSet().members(cacheSpName)?.toList() ?: emptyList()
         } else {
-            val ew = Wrappers.query<UserExt>().eq("user.creator", creator)
-            val result = userService.listExt(ew).flatMap { sub ->
-                if (sub.roles?.any { "officer" == it.code } == true) {
+            val ew = Wrappers.query<User>().eq("creator", creator)
+            val result = userService.list(ew).flatMap { sub ->
+                val roles = roleService.findRoles(sub.id!!)
+                if (roles.any { "officer" == it.code }) {
                     Collections.singleton(UserMapper.INSTANCE.convert2Entity(sub)!!)
                 } else findSubordinate(sub.loginName)
             }

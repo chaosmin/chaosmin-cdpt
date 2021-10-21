@@ -17,6 +17,8 @@ import tech.chaosmin.framework.module.cdpt.entity.enums.PayTypeEnum
 import tech.chaosmin.framework.module.mgmt.domain.auth.GrantedAuthorityImpl
 import tech.chaosmin.framework.module.mgmt.domain.auth.JwtUserDetails
 import tech.chaosmin.framework.module.mgmt.domain.auth.Rule
+import tech.chaosmin.framework.module.mgmt.service.AuthorityService
+import tech.chaosmin.framework.module.mgmt.service.RoleService
 import tech.chaosmin.framework.module.mgmt.service.StoreService
 import tech.chaosmin.framework.module.mgmt.service.UserService
 import tech.chaosmin.framework.utils.EnumClient
@@ -25,7 +27,11 @@ import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
 
 @Service
-class StoreServiceImpl(private val userService: UserService) : StoreService {
+class StoreServiceImpl(
+    private val userService: UserService,
+    private val roleService: RoleService,
+    private val authorityService: AuthorityService
+) : StoreService {
     private val logger = LoggerFactory.getLogger(StoreService::class.java)
 
     @Resource
@@ -34,8 +40,8 @@ class StoreServiceImpl(private val userService: UserService) : StoreService {
     override fun fetchJwtUserDetail(username: String): JwtUserDetails {
         synchronized(this) {
             return userService.findByLoginName(username)?.run {
-                val roles = this.roles
-                if (roles.isNullOrEmpty()) {
+                val roles = roleService.findRoles(this.id!!)
+                if (roles.isEmpty()) {
                     throw PermissionException(ErrorCodeEnum.NO_PERMISSION.code)
                 }
                 val roleCodes = roles.mapNotNull { it.code }
@@ -45,12 +51,12 @@ class StoreServiceImpl(private val userService: UserService) : StoreService {
                 val accountNonLocked = true
 
                 // 在redis缓存创建用户权限
-                val authorities = roles.flatMap { role -> role.authorities!!.map { GrantedAuthorityImpl(it.authority) } }
+                val authorities = authorityService.findAuthorities(roles.map { it.id!! }.toSet()).map { GrantedAuthorityImpl(it.authority) }
                     .filterNot { it.authority.startsWith("null") }.distinctBy { it.authority }
                 store(username, convert(authorities))
 
                 JwtUserDetails(
-                    this.id!!, username, this.password!!, this.departmentId, payType,
+                    this.id!!, username, this.password!!, payType,
                     roleCodes, accountNonExpired && credentialsNonExpired && accountNonLocked,
                     accountNonExpired, credentialsNonExpired, accountNonLocked
                 )

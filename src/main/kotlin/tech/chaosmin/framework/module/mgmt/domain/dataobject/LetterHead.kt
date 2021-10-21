@@ -7,8 +7,8 @@ import tech.chaosmin.framework.base.BaseDO
  * @since 2021/2/18 16:48
  */
 open class LetterHead(id: Long? = null) : BaseDO(id, 0) {
-    // 部门ID
-    var departmentId: Long? = null
+    // 用户ID
+    var userId: Long? = null
 
     // 抬头名称
     var title: String? = null

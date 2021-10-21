@@ -8,9 +8,6 @@ import tech.chaosmin.framework.module.cdpt.entity.enums.PayTypeEnum
 
 @ApiModel("用户接口请求参数")
 class UserReq : BaseReq() {
-    @ApiModelProperty("所属部门ID")
-    var departmentId: Long? = null
-
     @ApiModelProperty("用户名")
     var username: String? = null
 
@@ -37,4 +34,7 @@ class UserReq : BaseReq() {
 
     @ApiModelProperty("角色ID")
     var roleIds: List<Long>? = null
+
+    @ApiModelProperty("可用投保抬头")
+    var letterHead: List<LetterHeadReq>? = null
 }

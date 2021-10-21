@@ -7,7 +7,6 @@ import tech.chaosmin.framework.module.mgmt.domain.auth.JwtUserDetails
  * @since 2020/12/15 13:02
  */
 class UserDetailResp() {
-    var departmentId: Long? = null
     var userId: Long? = null
     var userName: String? = null
     var roles: List<String>? = null
@@ -17,7 +16,6 @@ class UserDetailResp() {
     var payType: String? = null
 
     constructor(principal: JwtUserDetails) : this() {
-        this.departmentId = principal.departmentId
         this.userName = principal.username
         this.payType = principal.payType
         this.userId = principal.userId

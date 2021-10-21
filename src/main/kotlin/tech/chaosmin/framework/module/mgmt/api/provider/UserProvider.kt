@@ -6,7 +6,7 @@ import tech.chaosmin.framework.base.RestResult
 import tech.chaosmin.framework.base.RestResultExt
 import tech.chaosmin.framework.base.enums.UserStatusEnum
 import tech.chaosmin.framework.module.mgmt.api.UserAPI
-import tech.chaosmin.framework.module.mgmt.domain.dataobject.ext.UserExt
+import tech.chaosmin.framework.module.mgmt.domain.dataobject.User
 import tech.chaosmin.framework.module.mgmt.entity.UserEntity
 import tech.chaosmin.framework.module.mgmt.entity.request.UserPasswordReq
 import tech.chaosmin.framework.module.mgmt.entity.request.UserReq
@@ -48,7 +48,7 @@ open class UserProvider(
     }
 
     override fun page(request: HttpServletRequest): RestResult<IPage<UserResp>> {
-        val queryCondition = RequestUtil.getQueryCondition<UserExt>(request)
+        val queryCondition = RequestUtil.getQueryCondition<User>(request)
         val page = userInterrogator.page(queryCondition)
         return RestResultExt.successRestResult(page.convert(UserConvert.INSTANCE::convert2Resp))
     }

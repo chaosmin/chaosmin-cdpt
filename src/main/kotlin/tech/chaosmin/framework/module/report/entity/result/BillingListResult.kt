@@ -22,7 +22,7 @@ class BillingListResult : ReportResult() {
             "No.", "保单号", "产品名称",
             "人数", "标准单价", "标准保费", "实收单价", "实收保费",
             "生效时间", "终止时间", "出单时间",
-            "团号", "保险公司", "出单人", "目的地"
+            "团号", "保险公司", "出单人", "目的地", "支付方式"
         )
     }
 
@@ -96,6 +96,9 @@ class BillingListResult : ReportResult() {
 
         // 目的地
         var address: String? = null
+
+        // 支付方式
+        var payType: String? = null
     }
 
 }

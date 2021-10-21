@@ -20,6 +20,7 @@ import tech.chaosmin.framework.base.enums.ErrorCodeEnum
 import tech.chaosmin.framework.exception.FrameworkException
 import tech.chaosmin.framework.module.cdpt.domain.dataobject.ext.PolicyEx
 import tech.chaosmin.framework.module.cdpt.entity.PolicyEntity
+import tech.chaosmin.framework.module.cdpt.entity.enums.PayTypeEnum
 import tech.chaosmin.framework.module.cdpt.logic.interrogator.GoodsPlanInterrogator
 import tech.chaosmin.framework.module.cdpt.logic.interrogator.PolicyInterrogator
 import tech.chaosmin.framework.module.report.entity.ReportEntity
@@ -86,6 +87,7 @@ class BillingListHandler(
                         this.partnerName = goodsPlan.partnerName
                         this.issuer = goodsPlan.userName
                         this.address = it.travelDestination
+                        this.payType = if (it.payType == PayTypeEnum.OFFLINE) "月结" else "微信支付"
                     }
                 }
             }
@@ -107,8 +109,8 @@ class BillingListHandler(
         val startTimeStr = DateUtil.format(startTime, "yyyy年MM月dd日")
         val endTimeStr = DateUtil.format(endTime, "yyyy年MM月dd日")
         ExcelUtil.getWriter().use { writer ->
-            writer.merge(14, "结算清单", true)
-            writer.merge(14, "${timeType.getDesc()}${startTimeStr}-${endTimeStr}", false)
+            writer.merge(15, "结算清单", true)
+            writer.merge(15, "${timeType.getDesc()}${startTimeStr}-${endTimeStr}", false)
             writer.writeHeadRow(result.header)
             result.detail?.forEachIndexed { i, e ->
                 writer.writeRow(
@@ -127,12 +129,13 @@ class BillingListHandler(
                         e.groupNo,
                         e.partnerName,
                         e.issuer,
-                        e.address
+                        e.address,
+                        e.payType
                     )
                 )
             }
             writer.writeRow(listOf("合计", "", "", result.totalInsuredSize, "", result.totalPremium, "", result.actualPremium))
-            writer.merge(14, "金额大写: ${NumberUtil.toChinese(result.actualPremium?.toString() ?: "0")}", false)
+            writer.merge(15, "金额大写: ${NumberUtil.toChinese(result.actualPremium?.toString() ?: "0")}", false)
             writer.writeRow(listOf(""))
             writer.merge(2, "保费分类统计", false)
             writer.writeRow(listOf("保险公司", "标准保费", "实收保费"))

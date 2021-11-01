@@ -17,8 +17,11 @@ import tech.chaosmin.framework.base.Interrogator
 import tech.chaosmin.framework.base.PageQuery
 import tech.chaosmin.framework.definition.SystemConst
 import tech.chaosmin.framework.module.mgmt.domain.dataobject.User
+import tech.chaosmin.framework.module.mgmt.entity.LetterHeadEntity
 import tech.chaosmin.framework.module.mgmt.entity.UserEntity
+import tech.chaosmin.framework.module.mgmt.helper.mapper.LetterHeadMapper
 import tech.chaosmin.framework.module.mgmt.helper.mapper.UserMapper
+import tech.chaosmin.framework.module.mgmt.service.LetterHeadService
 import tech.chaosmin.framework.module.mgmt.service.RoleService
 import tech.chaosmin.framework.module.mgmt.service.UserService
 import tech.chaosmin.framework.utils.SecurityUtil
@@ -33,7 +36,8 @@ import javax.annotation.Resource
 @Component
 class UserInterrogator(
     private val userService: UserService,
-    private val roleService: RoleService
+    private val roleService: RoleService,
+    private val letterHeadService: LetterHeadService
 ) : Interrogator<UserEntity, User> {
     @Resource
     lateinit var redisTemplate: RedisTemplate<String, UserEntity>
@@ -55,6 +59,8 @@ class UserInterrogator(
             val roles = roleService.findRoles(user.id!!)
             user.role = roles.joinToString(",") { it.name!! }
             user.roleIds = roles.map { it.id!! }
+            val letters = letterHeadService.fetchByUserId(user.id!!)
+            user.letterHead = letters.map { LetterHeadMapper.INSTANCE.convert2Entity(it) ?: LetterHeadEntity() }
         }
         return result
     }

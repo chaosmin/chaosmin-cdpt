@@ -85,18 +85,7 @@ class GoodsPlanInterrogator(
         val page = goodsPlanService.page(Page(currentPage, 1000), ew)
         currentPage += 1
         val records = page.records.filterNotNull().mapNotNull { GoodsPlanMapper.INSTANCE.toEn(it) }
-        records.forEach {
-            // 扩展属性
-            it.liabilities = ProductPlanLibMapper.INSTANCE.toEn(productPlanLibService.listByPlanId(it.productPlanId!!))
-            it.rateTable = ProductPlanRaTeMapper.INSTANCE.toEn(productPlanRaTeService.listByPlanId(it.productPlanId!!))
-            // stringRedisTemplate.opsForSet().add(cacheNameSpace, JsonUtil.encode(it))
-        }
         goodsPlanList.addAll(records)
-        // TODO 优化
-        // } while (page.records.isNotEmpty() && page.pages <= currentPage)
-        // return stringRedisTemplate.opsForSet().members(cacheNameSpace)?.mapNotNull {
-        //     JsonUtil.decode(it, GoodsPlanEntity::class.java)
-        // } ?: emptyList()
         return goodsPlanList
     }
 }

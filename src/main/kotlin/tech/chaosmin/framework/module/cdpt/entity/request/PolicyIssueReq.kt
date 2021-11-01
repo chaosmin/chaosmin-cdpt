@@ -66,4 +66,7 @@ class PolicyIssueReq : BaseReq() {
 
     // 授权产品信息 后台扩展补充字段
     var goodsPlan: GoodsPlanEntity? = null
+
+    // 投保路径
+    var path: String? = null
 }

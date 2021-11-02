@@ -69,4 +69,10 @@ class PolicyIssueReq : BaseReq() {
 
     // 投保路径
     var path: String? = null
+
+    // 产品大类
+    var categoryName: String? = null
+
+    // 产品分类
+    var categorySubName: String? = null
 }
